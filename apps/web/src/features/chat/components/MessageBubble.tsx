@@ -53,17 +53,23 @@ function FileAttachment({
     }
   };
 
-  const openBlobUrl = (download: boolean = false) => {
+  const openBlobUrl = async (download: boolean = false) => {
     if (download && downloadUrl) {
-      // Create hidden iframe to silently trigger download dialog without leaving page
-      const iframe = document.createElement('iframe');
-      iframe.style.display = 'none';
-      iframe.src = downloadUrl;
-      document.body.appendChild(iframe);
-      // Remove it after a few seconds so it doesn't clutter DOM
-      setTimeout(() => {
-        document.body.removeChild(iframe);
-      }, 5000);
+      try {
+        const response = await fetch(downloadUrl);
+        const blob = await response.blob();
+        const blobUrl = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = blobUrl;
+        a.download = file.original_name;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
+      } catch {
+        // Fallback: tarayıcıya bırak
+        window.open(downloadUrl, '_blank');
+      }
     } else if (url) {
       window.open(url, '_blank');
     }
