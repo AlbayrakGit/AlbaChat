@@ -424,7 +424,7 @@ export default function ChatWindow({ group, onBack }: Props) {
                 <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
               <span className="text-xs text-gray-500">
-                {typing.map((u) => u.username).join(', ')} yazıyor...
+                {typing.map((u) => u.display_name || u.username).join(', ')} yazıyor...
               </span>
             </div>
           </div>

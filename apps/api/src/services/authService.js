@@ -94,7 +94,7 @@ export async function refresh(refreshToken) {
 
   const user = await knex('users')
     .where({ id: decoded.sub, is_active: true })
-    .first('id', 'username', 'role');
+    .first('id', 'username', 'display_name', 'role');
 
   if (!user) {
     throw new AuthError('USER_INACTIVE', 'Hesabınız devre dışı bırakılmıştır.');

@@ -26,6 +26,7 @@ export function setupSocket(io) {
       socket.data.user = {
         id: decoded.sub,
         username: decoded.username,
+        display_name: decoded.display_name,
         role: decoded.role,
       };
       next();

@@ -15,7 +15,7 @@ if (!JWT_SECRET || !REFRESH_SECRET) {
  */
 export function signAccessToken(payload) {
   return jwt.sign(
-    { sub: payload.id, username: payload.username, role: payload.role },
+    { sub: payload.id, username: payload.username, display_name: payload.display_name, role: payload.role },
     JWT_SECRET,
     { expiresIn: JWT_EXPIRES_IN, issuer: 'AlbaChat' }
   );

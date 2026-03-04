@@ -14,6 +14,7 @@ export function setupTypingHandler(io, socket) {
       groupId,
       userId: user.id,
       username: user.username,
+      display_name: user.display_name,
       isTyping: Boolean(isTyping),
     });
   });
