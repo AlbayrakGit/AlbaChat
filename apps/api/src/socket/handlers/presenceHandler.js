@@ -2,11 +2,54 @@ import { knex } from '../../db/knex.js';
 import { setUserOnline, setUserOffline } from '../../utils/redis.js';
 
 /**
+ * Kullanıcının DM geçmişi olan kişiler için kişisel socket odasına katıl.
+ * Format: user:{userId}
+ * Bu sayede DM arkadaşlarına da anlık online/offline bildirimi gidebilir.
+ */
+async function broadcastPresence(io, socket, userId, username, isOnline) {
+  try {
+    const groupIds = socket.data.groupIds || [];
+
+    // 1. Grup üyelerine bildir
+    for (const gid of groupIds) {
+      socket.to(`group:${gid}`).emit('user:online', {
+        userId,
+        username,
+        isOnline,
+      });
+    }
+
+    // 2. DM geçmişi olan kişilere de bildir (user:{id} odası üzerinden)
+    const dmPartnerRows = await knex('groups')
+      .join('group_members as gm1', 'groups.id', 'gm1.group_id')
+      .join('group_members as gm2', 'groups.id', 'gm2.group_id')
+      .where('groups.type', 'direct')
+      .where('gm1.user_id', userId)
+      .whereNot('gm2.user_id', userId)
+      .select('gm2.user_id as partner_id')
+      .distinct();
+
+    for (const row of dmPartnerRows) {
+      io.to(`user:${row.partner_id}`).emit('user:online', {
+        userId,
+        username,
+        isOnline,
+      });
+    }
+  } catch (err) {
+    console.error('[Presence] broadcastPresence error:', err.message);
+  }
+}
+
+/**
  * Bağlantı kurulunca tüm grup odalarına katıl,
  * bağlantı kesilince online durumu güncelle.
  */
 export function setupPresenceHandler(io, socket) {
   const user = socket.data.user;
+
+  // ─── Kullanıcının kişisel odasına katıl (DM bildirimleri için) ──────────
+  socket.join(`user:${user.id}`);
 
   // ─── Bağlantı kuruldu ────────────────────────────────────────────────────
   (async () => {
@@ -30,14 +73,8 @@ export function setupPresenceHandler(io, socket) {
       await setUserOnline(user.id);
       await knex('users').where({ id: user.id }).update({ is_online: true, last_seen: new Date() });
 
-      // Grup üyelerine online bildir
-      for (const gid of groupIds) {
-        socket.to(`group:${gid}`).emit('user:online', {
-          userId: user.id,
-          username: user.username,
-          isOnline: true,
-        });
-      }
+      // Tüm ilgili kişilere online bildir
+      await broadcastPresence(io, socket, user.id, user.username, true);
     } catch (err) {
       console.error('[Presence] connect error:', err.message);
     }
@@ -49,14 +86,8 @@ export function setupPresenceHandler(io, socket) {
       await setUserOffline(user.id);
       await knex('users').where({ id: user.id }).update({ is_online: false, last_seen: new Date() });
 
-      const groupIds = socket.data.groupIds || [];
-      for (const gid of groupIds) {
-        socket.to(`group:${gid}`).emit('user:online', {
-          userId: user.id,
-          username: user.username,
-          isOnline: false,
-        });
-      }
+      // Tüm ilgili kişilere offline bildir
+      await broadcastPresence(io, socket, user.id, user.username, false);
     } catch (err) {
       console.error('[Presence] disconnect error:', err.message);
     }
@@ -74,6 +105,17 @@ export function setupPresenceHandler(io, socket) {
       }
     } catch (err) {
       console.error('[Presence] group:join error:', err.message);
+    }
+  });
+
+  // ─── Heartbeat ping — client'tan düzenli ping gelirse last_seen güncelle ─
+  socket.on('presence:ping', async () => {
+    try {
+      await setUserOnline(user.id);
+      await knex('users').where({ id: user.id }).update({ last_seen: new Date() });
+      socket.emit('presence:pong');
+    } catch (err) {
+      console.error('[Presence] heartbeat error:', err.message);
     }
   });
 }

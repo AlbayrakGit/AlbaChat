@@ -90,39 +90,38 @@ function FileAttachment({
     );
   }
 
+  const handleBalloonClick = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   return (
     <div
       draggable="true"
       onDragStart={handleDragStart}
+      onClick={handleBalloonClick}
       className={`mt-1 flex items-center gap-2.5 rounded-xl px-3 py-2 border transition-all
+        ${url ? 'cursor-pointer hover:opacity-90 active:scale-[0.98]' : 'cursor-default'}
         ${isOwn
           ? 'bg-blue-600 border-blue-700 text-white'
           : 'bg-white border-gray-200 text-gray-900'
         }`}
       style={{ minWidth: 220, maxWidth: 320 }}
+      title={url ? 'Önizleme için tıklayın' : ''}
     >
       <div className={`flex items-center justify-center p-2 rounded-lg flex-shrink-0 ${isOwn ? 'bg-white/20' : 'bg-blue-50'}`}>
         <FileIcon className={`w-5 h-5 ${isOwn ? 'text-white' : 'text-blue-600'}`} />
       </div>
       <div className="flex-1 min-w-0">
-        {url ? (
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={stopProp}
-            className={`text-sm font-medium truncate block cursor-pointer hover:underline ${isOwn ? 'text-white' : 'text-gray-900'}`}
-            title="Ön izleme için tıklayın"
-          >
-            {file.original_name}
-          </a>
-        ) : (
-          <p className={`text-sm font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>{file.original_name}</p>
-        )}
+        {/* Dosya adı — tüm balon tıklanabilir olduğu için saf metin */}
+        <p className={`text-sm font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>
+          {file.original_name}
+        </p>
         <p className={`text-[11px] mt-0.5 ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>
           {formatSize(file.size_bytes)}
         </p>
       </div>
+      {/* Sadece download butonu — eye simgesi kaldırıldı */}
       {url ? (
         <div className="flex items-center gap-1 flex-shrink-0">
           <a
@@ -130,7 +129,7 @@ function FileAttachment({
             download={file.original_name}
             onClick={stopProp}
             className={`p-1.5 rounded-lg transition-colors ${isOwn ? 'hover:bg-white/20 text-white' : 'hover:bg-blue-50 text-blue-600'}`}
-            title="Kaydet"
+            title="İndir"
           >
             <Download className="w-4 h-4" />
           </a>
@@ -141,6 +140,7 @@ function FileAttachment({
     </div>
   );
 }
+
 
 function getInitials(name: string | null, username: string) {
   const src = name || username;

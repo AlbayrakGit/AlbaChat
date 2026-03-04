@@ -26,6 +26,7 @@ export function useSocket() {
   const { showNotification, forceShowAnnouncement } = useElectron();
 
   const isFirstConnectRef = useRef(true);
+  const heartbeatRef = useRef<ReturnType<typeof setInterval> | null>(null);
 
   // ─── Catch-up: son mesaj ID'lerini al, kaçırılanları iste ──────────────
   function sendCatchup() {
@@ -33,7 +34,7 @@ export function useSocket() {
       const socket = getSocket();
       const { messages, groups } = useChatStore.getState();
 
-      const catchupGroups = groups.map((g) => {
+      const catchupGroups = groups.map((g: import('@/store/chatStore').Group) => {
         const list = messages[g.id] || [];
         const last = list[list.length - 1];
         return { groupId: g.id, lastMessageId: last?.id ?? 0 };
@@ -90,12 +91,22 @@ export function useSocket() {
         processOfflineQueue();
       }
       isFirstConnectRef.current = false;
+
+      // ─── Heartbeat: 30sn'de bir presence:ping gönder ─────────────────────
+      heartbeatRef.current = window.setInterval(() => {
+        try { getSocket().emit('presence:ping'); } catch { /* ignore */ }
+      }, 30_000);
     });
 
     // ─── Bağlantı kesildi ───────────────────────────────────────────────
-    socket.on('disconnect', (reason) => {
+    socket.on('disconnect', (reason: string) => {
       console.log('[Socket] Kesildi:', reason);
       setConnectionStatus('disconnected');
+      // Heartbeat'i temizle
+      if (heartbeatRef.current) {
+        clearInterval(heartbeatRef.current);
+        heartbeatRef.current = null;
+      }
     });
 
     // ─── Yeniden bağlanma denemeleri ────────────────────────────────────
@@ -190,12 +201,23 @@ export function useSocket() {
 
     // ─── Online/Offline durum güncellemesi ────────────────────────────────
     socket.on('user:online', ({ userId, isOnline }: { userId: number; username: string; isOnline: boolean }) => {
+      // 1. onlineUsers haritasını güncelle (KİŞİLER sekmesi)
       setUserOnlineStatus(userId, isOnline);
-      // KİŞİLER listesini de güncelle
+
+      // 2. KİŞİLER listesini güncelle
       queryClient.setQueryData(['users-list'], (old: any) => {
         if (!Array.isArray(old)) return old;
         return old.map((u: any) => u.id === userId ? { ...u, is_online: isOnline } : u);
       });
+
+      // 3. DM grubundaki other_user_online alanını güncelle (SOHBETLER sekmesi)
+      const { groups } = useChatStore.getState();
+      const dmGroup = groups.find(
+        (g: import('@/store/chatStore').Group) => g.type === 'direct' && g.other_user_id === userId,
+      );
+      if (dmGroup) {
+        updateGroupInList({ id: dmGroup.id, other_user_online: isOnline });
+      }
     });
 
     // ─── Hesap devre dışı bırakıldı ─────────────────────────────────────
@@ -222,6 +244,11 @@ export function useSocket() {
     });
 
     return () => {
+      // Heartbeat'i temizle
+      if (heartbeatRef.current) {
+        clearInterval(heartbeatRef.current);
+        heartbeatRef.current = null;
+      }
       socket.off('connect');
       socket.off('disconnect');
       socket.off('reconnect_attempt');
