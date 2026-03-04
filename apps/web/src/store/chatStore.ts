@@ -57,7 +57,7 @@ export interface Group {
 export interface TypingUser {
   userId: number;
   username: string;
-  display_name?: string | null;
+  displayName?: string;
 }
 
 // ─── State ────────────────────────────────────────────────────────────────────

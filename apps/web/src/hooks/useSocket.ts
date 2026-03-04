@@ -164,12 +164,12 @@ export function useSocket() {
     });
 
     // ─── Yazıyor göstergesi ─────────────────────────────────────────────
-    socket.on('user:typing', ({ groupId, userId, username, display_name, isTyping }: {
-      groupId: number; userId: number; username: string; display_name: string | null; isTyping: boolean;
+    socket.on('user:typing', ({ groupId, userId, username, displayName, isTyping }: {
+      groupId: number; userId: number; username: string; displayName?: string; isTyping: boolean;
     }) => {
-      setTypingUser(groupId, { userId, username, display_name }, isTyping);
+      setTypingUser(groupId, { userId, username, displayName }, isTyping);
       if (isTyping) {
-        setTimeout(() => setTypingUser(groupId, { userId, username, display_name }, false), 3500);
+        setTimeout(() => setTypingUser(groupId, { userId, username, displayName }, false), 3500);
       }
     });
 
