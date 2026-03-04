@@ -59,7 +59,7 @@ export async function updateUser(id, data, requesterId, requesterRole) {
 
   const allowed = ['display_name', 'avatar_url', 'timezone'];
   if (requesterRole === 'admin') {
-    allowed.push('email', 'username');
+    allowed.push('email', 'username', 'role');
   }
 
   const updates = {};
