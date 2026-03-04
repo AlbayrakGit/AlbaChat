@@ -1,0 +1,31 @@
+{
+  "name": "albachat",
+  "version": "1.0.0",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "concurrently \"npm run dev -w apps/api\" \"npm run dev -w apps/web\"",
+    "build": "npm run build -w packages/shared-types && npm run build -w apps/api && npm run build -w apps/web",
+    "test": "npm run test -w apps/api",
+    "lint": "eslint apps packages --ext .ts,.js",
+    "loadtest": "node scripts/loadtest.js",
+    "migrate": "npm run migrate -w apps/api",
+    "migrate:rollback": "npm run migrate:rollback -w apps/api",
+    "docker:up": "docker-compose -f infra/docker-compose.yml up -d",
+    "docker:down": "docker-compose -f infra/docker-compose.yml down",
+    "docker:rebuild": "docker-compose -f infra/docker-compose.yml up -d --build",
+    "prepare": "husky"
+  },
+  "devDependencies": {
+    "autocannon": "^7.15.0",
+    "concurrently": "^8.2.2",
+    "husky": "^9.1.7",
+    "lint-staged": "^16.3.1"
+  },
+  "lint-staged": {
+    "**/*.{js,ts,tsx}": "eslint --fix"
+  }
+}

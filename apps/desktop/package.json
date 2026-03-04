@@ -1,0 +1,22 @@
+﻿{
+  "name": "albachat-desktop",
+  "version": "1.0.0",
+  "description": "AlbaChat â€” Kurumsal AnlÄ±k MesajlaÅŸma",
+  "main": "electron/main.js",
+  "private": true,
+  "scripts": {
+    "start": "electron .",
+    "build": "electron-builder --win",
+    "build:linux": "electron-builder --linux",
+    "pack": "electron-builder --dir"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.1.7"
+  },
+  "devDependencies": {
+    "electron": "^28.3.3",
+    "electron-builder": "^24.13.3"
+  }
+}
+

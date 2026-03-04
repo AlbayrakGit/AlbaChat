@@ -1,0 +1,84 @@
+# Bağımlılıklar
+node_modules/
+.pnp
+.pnp.js
+
+# Build çıktıları
+dist/
+build/
+out/
+.output/
+
+# Ortam değişkenleri — GİZLİ, asla commit'leme
+.env
+.env.local
+.env.*.local
+
+# Loglar
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Çalışma zamanı
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Kapsam raporları
+coverage/
+.nyc_output/
+lcov.info
+
+# TypeScript
+*.tsbuildinfo
+
+# Vite / Rollup
+.vite/
+
+# Playwright
+playwright-report/
+test-results/
+apps/web/e2e/.tmp/
+
+# Electron
+apps/desktop/dist/
+
+# MinIO yerel
+.minio/
+
+# Sertifikalar — GİZLİ, asla commit'leme
+infra/nginx/certs/*.key
+infra/nginx/certs/*.crt
+infra/nginx/certs/*.csr
+infra/nginx/certs/*.srl
+infra/nginx/certs/*.ext
+# ca.crt paylaşılabilir (public trust anchor)
+!infra/nginx/certs/ca.crt
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+desktop.ini
+
+# Editör
+.vscode/settings.json
+.idea/
+*.swp
+*.swo
+*~
+
+# Yedek dosyalar
+*.bak
+*.backup
+
+# Docker yerel override
+docker-compose.override.yml
