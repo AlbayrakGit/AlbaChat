@@ -41,7 +41,7 @@ export default defineConfig({
       workbox: {
         // API ve socket Ã§aÄŸrÄ±larÄ± cache'lenmez
         navigateFallback: '/index.html',
-        navigateFallbackDenylist: [/^\/api/, /^\/socket\.io/],
+        navigateFallbackDenylist: [/^\/api/, /^\/socket\.io/, /^\/storage/],
         runtimeCaching: [
           {
             // Statik varlÄ±klar: Cache First
@@ -56,8 +56,11 @@ export default defineConfig({
             },
           },
           {
-            // Resimler: Cache First
-            urlPattern: /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i,
+            // Resimler: Cache First (MinIO /storage/ hariç — presigned URL cache'lenmez)
+            urlPattern: ({ url }) => {
+              if (url.pathname.startsWith('/storage/')) return false;
+              return /\.(?:png|jpg|jpeg|svg|gif|webp|ico)$/i.test(url.pathname);
+            },
             handler: 'CacheFirst',
             options: {
               cacheName: 'images',
