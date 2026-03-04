@@ -422,8 +422,8 @@ export default function ChatWindow({ group, onBack }: Props) {
 
       <div className="relative">
         {typing.length > 0 && (
-          <div className="absolute bottom-full left-0 right-0 px-6 py-2 z-10 pointer-events-none">
-            <div className="flex items-center gap-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm w-fit px-4 py-2 rounded-2xl rounded-bl-sm shadow-lg border border-gray-200 dark:border-gray-600 animate-in fade-in slide-in-from-bottom-2 duration-300">
+          <div className="absolute bottom-full left-0 right-0 px-6 pb-6 z-20 pointer-events-none">
+            <div className="flex items-center gap-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm w-fit px-4 py-2 rounded-2xl rounded-bl-sm shadow-xl border border-blue-200 dark:border-blue-900 animate-in fade-in slide-in-from-bottom-4 duration-300">
               <div className="flex gap-1">
                 <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
                 <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
