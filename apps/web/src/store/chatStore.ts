@@ -94,7 +94,10 @@ export const useChatStore = create<ChatState>((set) => ({
   setGroups: (groups) => {
     const favsStr = localStorage.getItem('kc-favorites');
     const favIds = favsStr ? JSON.parse(favsStr) as number[] : [];
-    const merged = groups.map(g => ({ ...g, is_favorite: favIds.includes(g.id) }));
+    const hiddenStr = localStorage.getItem('kc-hidden-groups');
+    const hiddenIds = hiddenStr ? JSON.parse(hiddenStr) as number[] : [];
+    const visible = groups.filter(g => !hiddenIds.includes(g.id));
+    const merged = visible.map(g => ({ ...g, is_favorite: favIds.includes(g.id) }));
     set({ groups: merged });
   },
 
@@ -102,6 +105,14 @@ export const useChatStore = create<ChatState>((set) => ({
 
   addGroupToList: (group) =>
     set((s) => {
+      // Gizleme listesinden çıkar (DM açıldığında veya favori eklendiğinde)
+      const hiddenStr = localStorage.getItem('kc-hidden-groups');
+      const hiddenIds = hiddenStr ? JSON.parse(hiddenStr) as number[] : [];
+      const idx = hiddenIds.indexOf(group.id);
+      if (idx !== -1) {
+        hiddenIds.splice(idx, 1);
+        localStorage.setItem('kc-hidden-groups', JSON.stringify(hiddenIds));
+      }
       if (s.groups.some((g) => g.id === group.id)) return s;
       return { groups: [group, ...s.groups] };
     }),
@@ -112,10 +123,19 @@ export const useChatStore = create<ChatState>((set) => ({
     })),
 
   removeGroupFromList: (groupId) =>
-    set((s) => ({
-      groups: s.groups.filter((g) => g.id !== groupId),
-      activeGroupId: s.activeGroupId === groupId ? null : s.activeGroupId,
-    })),
+    set((s) => {
+      // Gizlenen grubu localStorage'a kaydet (F5'te geri gelmesin)
+      const hiddenStr = localStorage.getItem('kc-hidden-groups');
+      const hiddenIds = hiddenStr ? JSON.parse(hiddenStr) as number[] : [];
+      if (!hiddenIds.includes(groupId)) {
+        hiddenIds.push(groupId);
+        localStorage.setItem('kc-hidden-groups', JSON.stringify(hiddenIds));
+      }
+      return {
+        groups: s.groups.filter((g) => g.id !== groupId),
+        activeGroupId: s.activeGroupId === groupId ? null : s.activeGroupId,
+      };
+    }),
 
   setMessages: (groupId, messages) =>
     set((s) => ({ messages: { ...s.messages, [groupId]: messages } })),
@@ -134,6 +154,16 @@ export const useChatStore = create<ChatState>((set) => ({
     set((s) => {
       const groupMessages = s.messages[message.group_id] || [];
       if (groupMessages.some((m) => m.id === message.id)) return s;
+
+      // Mesaj gelen grup gizlenmişse, gizleme listesinden çıkar
+      const hiddenStr = localStorage.getItem('kc-hidden-groups');
+      const hiddenIds = hiddenStr ? JSON.parse(hiddenStr) as number[] : [];
+      const idx = hiddenIds.indexOf(message.group_id);
+      if (idx !== -1) {
+        hiddenIds.splice(idx, 1);
+        localStorage.setItem('kc-hidden-groups', JSON.stringify(hiddenIds));
+      }
+
       // Grubun last_message önizlemesini güncelle
       const groups = s.groups.map((g) =>
         g.id === message.group_id ? { ...g, last_message: message } : g,
