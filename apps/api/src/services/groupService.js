@@ -59,7 +59,30 @@ export async function listUserGroups(userId) {
           )
           ELSE g.name
         END as resolved_name
-      `, [userId, userId])
+      `, [userId, userId]),
+      knex.raw(`
+        CASE 
+          WHEN g.type = 'direct' THEN (
+            SELECT m2.user_id
+            FROM group_members m2
+            WHERE m2.group_id = g.id AND m2.user_id != ?
+            LIMIT 1
+          )
+          ELSE NULL
+        END as other_user_id
+      `, [userId]),
+      knex.raw(`
+        CASE 
+          WHEN g.type = 'direct' THEN (
+            SELECT u.is_online
+            FROM group_members m2
+            JOIN users u ON m2.user_id = u.id
+            WHERE m2.group_id = g.id AND m2.user_id != ?
+            LIMIT 1
+          )
+          ELSE NULL
+        END as other_user_online
+      `, [userId])
     );
 
   const groups = rows.map(r => {

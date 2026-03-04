@@ -50,6 +50,8 @@ export interface Group {
   unread_count?: number;
   last_message?: Message | null;
   is_favorite?: boolean;
+  other_user_id?: number | null;
+  other_user_online?: boolean | null;
 }
 
 export interface TypingUser {
@@ -65,6 +67,7 @@ interface ChatState {
   messages: Record<number, Message[]>;
   typingUsers: Record<number, TypingUser[]>;
   isLoadingMessages: boolean;
+  onlineUsers: Record<number, boolean>;
 
   setGroups: (groups: Group[]) => void;
   setActiveGroup: (groupId: number | null) => void;
@@ -82,6 +85,7 @@ interface ChatState {
   clearUnread: (groupId: number) => void;
   markMessagesRead: (groupId: number, lastMessageId: number) => void;
   toggleFavorite: (groupId: number) => void;
+  setUserOnlineStatus: (userId: number, isOnline: boolean) => void;
 }
 
 export const useChatStore = create<ChatState>((set) => ({
@@ -90,6 +94,7 @@ export const useChatStore = create<ChatState>((set) => ({
   messages: {},
   typingUsers: {},
   isLoadingMessages: false,
+  onlineUsers: {},
 
   setGroups: (groups) => {
     const favsStr = localStorage.getItem('kc-favorites');
@@ -98,7 +103,14 @@ export const useChatStore = create<ChatState>((set) => ({
     const hiddenIds = hiddenStr ? JSON.parse(hiddenStr) as number[] : [];
     const visible = groups.filter(g => !hiddenIds.includes(g.id));
     const merged = visible.map(g => ({ ...g, is_favorite: favIds.includes(g.id) }));
-    set({ groups: merged });
+    // DM gruplarından ilk online durum haritasını oluştur
+    const onlineMap: Record<number, boolean> = {};
+    for (const g of groups) {
+      if (g.type === 'direct' && g.other_user_id != null) {
+        onlineMap[g.other_user_id] = !!g.other_user_online;
+      }
+    }
+    set((s) => ({ groups: merged, onlineUsers: { ...s.onlineUsers, ...onlineMap } }));
   },
 
   setActiveGroup: (groupId) => set({ activeGroupId: groupId }),
@@ -238,4 +250,9 @@ export const useChatStore = create<ChatState>((set) => ({
       localStorage.setItem('kc-favorites', JSON.stringify(favs));
       return { groups };
     }),
+
+  setUserOnlineStatus: (userId, isOnline) =>
+    set((s) => ({
+      onlineUsers: { ...s.onlineUsers, [userId]: isOnline },
+    })),
 }));

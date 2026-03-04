@@ -1,4 +1,5 @@
 import { useEffect, useRef } from 'react';
+import { useQueryClient } from '@tanstack/react-query';
 import { initSocket, disconnectSocket, getSocket } from '@/socket/socketClient';
 import { useAuthStore } from '@/store/authStore';
 import { useChatStore, type Message } from '@/store/chatStore';
@@ -17,7 +18,8 @@ import { playMessageSound } from '@/utils/sound';
 export function useSocket() {
   const { accessToken, isAuthenticated, user: currentUser } = useAuthStore();
   const { addMessage, updateMessage, removeMessage, setTypingUser, incrementUnread, activeGroupId,
-    markMessagesRead, updateGroupInList, addGroupToList, removeGroupFromList } = useChatStore();
+    markMessagesRead, updateGroupInList, addGroupToList, removeGroupFromList, setUserOnlineStatus } = useChatStore();
+  const queryClient = useQueryClient();
   const { setConnectionStatus, showToast } = useUIStore();
   const { addToQueue } = useAnnouncementStore();
   const { logout } = useAuthStore();
@@ -186,6 +188,16 @@ export function useSocket() {
       addToQueue(announcements);
     });
 
+    // ─── Online/Offline durum güncellemesi ────────────────────────────────
+    socket.on('user:online', ({ userId, isOnline }: { userId: number; username: string; isOnline: boolean }) => {
+      setUserOnlineStatus(userId, isOnline);
+      // KİŞİLER listesini de güncelle
+      queryClient.setQueryData(['users-list'], (old: any) => {
+        if (!Array.isArray(old)) return old;
+        return old.map((u: any) => u.id === userId ? { ...u, is_online: isOnline } : u);
+      });
+    });
+
     // ─── Hesap devre dışı bırakıldı ─────────────────────────────────────
     socket.on('account:disabled', () => {
       disconnectSocket();
@@ -222,6 +234,7 @@ export function useSocket() {
       socket.off('message:read');
       socket.off('announcement:new');
       socket.off('announcement:pending');
+      socket.off('user:online');
       socket.off('account:disabled');
       socket.off('group:updated');
       socket.off('group:joined');

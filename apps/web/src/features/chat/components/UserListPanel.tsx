@@ -18,7 +18,7 @@ interface UserItem {
 export default function UserListPanel() {
   const [search, setSearch] = useState('');
   const { user: me } = useAuthStore();
-  const { addGroupToList, setActiveGroup, toggleFavorite } = useChatStore();
+  const { addGroupToList, setActiveGroup, toggleFavorite, onlineUsers } = useChatStore();
 
   const { data: users = [], isLoading } = useQuery<UserItem[]>({
     queryKey: ['users-list'],
@@ -36,7 +36,7 @@ export default function UserListPanel() {
     onSuccess: (group) => {
       addGroupToList(group);
       setActiveGroup(group.id);
-      try { getSocket().emit('group:join', { groupId: group.id }); } catch {}
+      try { getSocket().emit('group:join', { groupId: group.id }); } catch { }
     },
   });
 
@@ -52,10 +52,11 @@ export default function UserListPanel() {
       if (!existing?.is_favorite) {
         toggleFavorite(group.id);
       }
-      try { getSocket().emit('group:join', { groupId: group.id }); } catch {}
+      try { getSocket().emit('group:join', { groupId: group.id }); } catch { }
     },
   });
 
+  // Socket'ten gelen anlık online durumunu API verisinin üzerine yaz
   const filtered = users.filter((u) => {
     if (u.id === me?.id) return false;
     if (!search) return true;
@@ -64,7 +65,11 @@ export default function UserListPanel() {
       u.username.toLowerCase().includes(q) ||
       (u.display_name || '').toLowerCase().includes(q)
     );
-  });
+  }).map(u => ({
+    ...u,
+    // onlineUsers map'inde varsa onun değerini kullan (anlık), yoksa API'den geleni kullan
+    is_online: onlineUsers[u.id] !== undefined ? onlineUsers[u.id] : u.is_online,
+  }));
 
   const online = filtered.filter(u => u.is_online);
   const offline = filtered.filter(u => !u.is_online);
@@ -88,7 +93,7 @@ export default function UserListPanel() {
           </div>
         )}
         <span
-          className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white
+          className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white transition-colors duration-300
             ${u.is_online ? 'bg-green-500' : 'bg-gray-300'}`}
         />
       </div>

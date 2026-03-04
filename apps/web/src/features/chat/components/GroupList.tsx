@@ -34,8 +34,13 @@ function GroupItem({ group, isActive, onSelect }: {
   isActive: boolean;
   onSelect: () => void;
 }) {
-  const { toggleFavorite, removeGroupFromList } = useChatStore();
+  const { toggleFavorite, removeGroupFromList, onlineUsers } = useChatStore();
   const [confirmDelete, setConfirmDelete] = useState(false);
+
+  // DM gruplarında karşı kullanıcının online durumu
+  const isOtherUserOnline = group.type === 'direct' && group.other_user_id != null
+    ? !!onlineUsers[group.other_user_id]
+    : false;
 
   useEffect(() => {
     if (confirmDelete) {
@@ -63,13 +68,23 @@ function GroupItem({ group, isActive, onSelect }: {
           : 'text-gray-700 hover:bg-gray-100'
           }`}
       >
-        {/* Avatar */}
-        <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white flex-shrink-0 transition-transform group-hover:scale-105 shadow-md border-2 border-white
-          ${isActive ? 'bg-white/20' : getGroupColor(group)}`}>
-          {group.type === 'direct' ? (
-            <User className="w-5 h-5 drop-shadow-sm" />
-          ) : (
-            <Users className="w-5 h-5 drop-shadow-sm" />
+        {/* Avatar + Online Gösterge */}
+        <div className="relative flex-shrink-0">
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white transition-transform group-hover:scale-105 shadow-md border-2 border-white
+            ${isActive ? 'bg-white/20' : getGroupColor(group)}`}>
+            {group.type === 'direct' ? (
+              <User className="w-5 h-5 drop-shadow-sm" />
+            ) : (
+              <Users className="w-5 h-5 drop-shadow-sm" />
+            )}
+          </div>
+          {/* Online durum göstergesi — sadece DM gruplarında */}
+          {group.type === 'direct' && (
+            <span
+              className={`absolute -bottom-0.5 -right-0.5 w-3 h-3 rounded-full border-2 transition-colors duration-300
+                ${isActive ? 'border-blue-600' : 'border-white'}
+                ${isOtherUserOnline ? 'bg-green-500' : 'bg-gray-300'}`}
+            />
           )}
         </div>
 
@@ -132,17 +147,21 @@ function GroupItem({ group, isActive, onSelect }: {
 }
 
 export default function GroupList({ groups, activeGroupId, onSelect }: Props) {
-  if (groups.length === 0) {
+  // ZORUNLU KURAL: Sadece daha önce mesaj atılmış VEYA favoriye eklenmiş sohbetler listelenir
+  const visibleGroups = groups.filter(g => g.is_favorite || g.last_message);
+
+  if (visibleGroups.length === 0) {
     return (
       <div className="px-3 py-10 text-center text-gray-400">
         <MessageCircle className="w-8 h-8 mx-auto mb-3 opacity-20" />
         <p className="text-xs font-medium tracking-wide">Henüz bir sohbetiniz yok.</p>
+        <p className="text-[10px] mt-1 text-gray-300">Kişiler sekmesinden birini seçerek sohbet başlatın.</p>
       </div>
     );
   }
 
   // Sort: Favorites first, then unread, then latest message
-  const sorted = [...groups].sort((a, b) => {
+  const sorted = [...visibleGroups].sort((a, b) => {
     if (a.is_favorite !== b.is_favorite) return a.is_favorite ? -1 : 1;
     const unreadA = a.unread_count || 0;
     const unreadB = b.unread_count || 0;

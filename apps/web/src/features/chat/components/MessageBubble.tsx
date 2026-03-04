@@ -4,7 +4,7 @@ import { type Message } from '@/store/chatStore';
 import { useAuthStore } from '@/store/authStore';
 import { getSocket } from '@/socket/socketClient';
 import { apiClient } from '@/api/client';
-import { Check, CheckCheck, Trash2, FileIcon, Download, Eye, Reply, Forward, Smile, ChevronDown, Heart, ThumbsUp, ThumbsDown, Star as StarIcon, PartyPopper } from 'lucide-react';
+import { Check, CheckCheck, Trash2, FileIcon, Download, Reply, Forward, Smile, ChevronDown, Heart, ThumbsUp, ThumbsDown, Star as StarIcon, PartyPopper } from 'lucide-react';
 
 interface Props {
   message: Message;
@@ -60,26 +60,18 @@ function FileAttachment({
       <div className="mt-1 group/image relative" draggable={!!url} onDragStart={handleDragStart}>
         {url ? (
           <div className="relative overflow-hidden rounded-xl">
-            <img
-              src={url}
-              alt={file.original_name}
-              className="max-w-[280px] sm:max-w-xs max-h-64 min-h-[80px] object-cover block rounded-xl"
-              loading="lazy"
-              onError={() => setImgError(true)}
-            />
-            {/* Hover overlay — pointer-events-none: tıklamalar butonlara geçsin */}
+            <a href={url} target="_blank" rel="noopener noreferrer" onClick={stopProp} title="Ön izleme için tıklayın">
+              <img
+                src={url}
+                alt={file.original_name}
+                className="max-w-[280px] sm:max-w-xs max-h-64 min-h-[80px] object-cover block rounded-xl cursor-pointer"
+                loading="lazy"
+                onError={() => setImgError(true)}
+              />
+            </a>
+            {/* Hover overlay */}
             <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/30 transition-colors pointer-events-none" />
             <div className="absolute bottom-2 right-2 flex items-center gap-1 opacity-0 group-hover/image:opacity-100 transition-opacity">
-              <a
-                href={url}
-                target="_blank"
-                rel="noopener noreferrer"
-                onClick={stopProp}
-                className="p-1.5 rounded-lg bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm transition-all active:scale-95"
-                title="Görüntüle"
-              >
-                <Eye className="w-4 h-4" />
-              </a>
               <a
                 href={downloadUrl}
                 download={file.original_name}
@@ -113,23 +105,26 @@ function FileAttachment({
         <FileIcon className={`w-5 h-5 ${isOwn ? 'text-white' : 'text-blue-600'}`} />
       </div>
       <div className="flex-1 min-w-0">
-        <p className={`text-sm font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>{file.original_name}</p>
+        {url ? (
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={stopProp}
+            className={`text-sm font-medium truncate block cursor-pointer hover:underline ${isOwn ? 'text-white' : 'text-gray-900'}`}
+            title="Ön izleme için tıklayın"
+          >
+            {file.original_name}
+          </a>
+        ) : (
+          <p className={`text-sm font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>{file.original_name}</p>
+        )}
         <p className={`text-[11px] mt-0.5 ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>
           {formatSize(file.size_bytes)}
         </p>
       </div>
       {url ? (
         <div className="flex items-center gap-1 flex-shrink-0">
-          <a
-            href={url}
-            target="_blank"
-            rel="noopener noreferrer"
-            onClick={stopProp}
-            className={`p-1.5 rounded-lg transition-colors ${isOwn ? 'hover:bg-white/20 text-white' : 'hover:bg-gray-100 text-gray-500'}`}
-            title="Görüntüle"
-          >
-            <Eye className="w-4 h-4" />
-          </a>
           <a
             href={downloadUrl}
             download={file.original_name}
