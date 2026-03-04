@@ -47,31 +47,11 @@ function FileAttachment({
   const url = data?.url;
   const downloadUrl = data?.downloadUrl;
 
+  const stopProp = (e: React.MouseEvent) => e.stopPropagation();
+
   const handleDragStart = (e: React.DragEvent<HTMLDivElement>) => {
     if (url) {
       e.dataTransfer.setData('DownloadURL', `application/octet-stream:${file.original_name}:${url}`);
-    }
-  };
-
-  const openBlobUrl = async (download: boolean = false) => {
-    if (download && downloadUrl) {
-      try {
-        const response = await fetch(downloadUrl);
-        const blob = await response.blob();
-        const blobUrl = URL.createObjectURL(blob);
-        const a = document.createElement('a');
-        a.href = blobUrl;
-        a.download = file.original_name;
-        document.body.appendChild(a);
-        a.click();
-        document.body.removeChild(a);
-        setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-      } catch {
-        // Fallback: tarayıcıya bırak
-        window.open(downloadUrl, '_blank');
-      }
-    } else if (url) {
-      window.open(url, '_blank');
     }
   };
 
@@ -87,23 +67,28 @@ function FileAttachment({
               loading="lazy"
               onError={() => setImgError(true)}
             />
-            {/* Hover overlay + butonlar */}
-            <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/30 transition-colors" />
+            {/* Hover overlay — pointer-events-none: tıklamalar butonlara geçsin */}
+            <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/30 transition-colors pointer-events-none" />
             <div className="absolute bottom-2 right-2 flex items-center gap-1 opacity-0 group-hover/image:opacity-100 transition-opacity">
-              <button
-                onClick={() => openBlobUrl(false)}
+              <a
+                href={url}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={stopProp}
                 className="p-1.5 rounded-lg bg-black/50 hover:bg-black/70 text-white backdrop-blur-sm transition-all active:scale-95"
                 title="Görüntüle"
               >
                 <Eye className="w-4 h-4" />
-              </button>
-              <button
-                onClick={() => openBlobUrl(true)}
+              </a>
+              <a
+                href={downloadUrl}
+                download={file.original_name}
+                onClick={stopProp}
                 className="p-1.5 rounded-lg bg-blue-600/90 hover:bg-blue-600 text-white backdrop-blur-sm transition-all active:scale-95"
                 title="Kaydet"
               >
                 <Download className="w-4 h-4" />
-              </button>
+              </a>
             </div>
           </div>
         ) : (
@@ -135,20 +120,25 @@ function FileAttachment({
       </div>
       {url ? (
         <div className="flex items-center gap-1 flex-shrink-0">
-          <button
-            onClick={() => openBlobUrl(false)}
+          <a
+            href={url}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={stopProp}
             className={`p-1.5 rounded-lg transition-colors ${isOwn ? 'hover:bg-white/20 text-white' : 'hover:bg-gray-100 text-gray-500'}`}
             title="Görüntüle"
           >
             <Eye className="w-4 h-4" />
-          </button>
-          <button
-            onClick={() => openBlobUrl(true)}
+          </a>
+          <a
+            href={downloadUrl}
+            download={file.original_name}
+            onClick={stopProp}
             className={`p-1.5 rounded-lg transition-colors ${isOwn ? 'hover:bg-white/20 text-white' : 'hover:bg-blue-50 text-blue-600'}`}
             title="Kaydet"
           >
             <Download className="w-4 h-4" />
-          </button>
+          </a>
         </div>
       ) : (
         <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin flex-shrink-0 opacity-50" />
