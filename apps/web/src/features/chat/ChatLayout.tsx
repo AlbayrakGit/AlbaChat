@@ -62,9 +62,6 @@ export default function ChatLayout() {
       const res = await apiClient.get('/groups');
       const data: Group[] = res.data.data;
       setGroups(data);
-      if (data.length > 0 && !activeGroupId) {
-        setActiveGroup(data[0].id);
-      }
       return data;
     },
     refetchOnWindowFocus: false,
