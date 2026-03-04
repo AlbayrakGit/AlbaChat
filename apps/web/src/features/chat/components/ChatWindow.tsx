@@ -146,8 +146,8 @@ export default function ChatWindow({ group, onBack }: Props) {
 
   useEffect(() => {
     if (isLoading) return;
-    bottomRef.current?.scrollIntoView({ behavior: 'auto' });
-  }, [groupedMessages.length, isLoading]);
+    bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [groupedMessages.length, isLoading, typing.length]);
 
   useEffect(() => {
     clearUnread(group.id);
@@ -415,35 +415,39 @@ export default function ChatWindow({ group, onBack }: Props) {
           </div>
         )}
 
+
+
+        <div ref={bottomRef} className="h-1" />
+      </div>
+
+      <div className="relative">
         {typing.length > 0 && (
-          <div className="px-6 pt-1 pb-1">
-            <div className="flex items-center gap-3 bg-white dark:bg-gray-700 w-fit px-4 py-2 rounded-2xl rounded-bl-sm shadow-sm border border-gray-200 dark:border-gray-600 animate-fade-in">
+          <div className="absolute bottom-full left-0 right-0 px-6 py-2 z-10 pointer-events-none">
+            <div className="flex items-center gap-3 bg-white/95 dark:bg-gray-800/95 backdrop-blur-sm w-fit px-4 py-2 rounded-2xl rounded-bl-sm shadow-lg border border-gray-200 dark:border-gray-600 animate-in fade-in slide-in-from-bottom-2 duration-300">
               <div className="flex gap-1">
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
-                <span className="w-1.5 h-1.5 bg-gray-400 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
+                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '0ms' }} />
+                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '150ms' }} />
+                <span className="w-1.5 h-1.5 bg-blue-500 rounded-full animate-bounce" style={{ animationDelay: '300ms' }} />
               </div>
-              <span className="text-xs text-gray-500">
+              <span className="text-xs font-medium text-gray-600 dark:text-gray-300">
                 {typing.map((u) => u.displayName || u.username).join(', ')} yazıyor...
               </span>
             </div>
           </div>
         )}
 
-        <div ref={bottomRef} className="h-1" />
+        {/* Mesaj Giriş Alanı */}
+        <MessageInput
+          groupId={group.id}
+          disabled={group.is_archived}
+          uploads={uploads}
+          onFilesAdded={addFiles}
+          onCancelUpload={cancelUpload}
+          onRemoveUpload={removeUpload}
+          replyTo={replyTo}
+          onCancelReply={() => setReplyTo(null)}
+        />
       </div>
-
-      {/* Mesaj Giriş Alanı */}
-      <MessageInput
-        groupId={group.id}
-        disabled={group.is_archived}
-        uploads={uploads}
-        onFilesAdded={addFiles}
-        onCancelUpload={cancelUpload}
-        onRemoveUpload={removeUpload}
-        replyTo={replyTo}
-        onCancelReply={() => setReplyTo(null)}
-      />
 
       {/* Forward Modal */}
       {forwardMessage && (
