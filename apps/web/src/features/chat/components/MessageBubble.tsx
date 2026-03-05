@@ -96,34 +96,43 @@ function FileAttachment({
   };
 
   return (
-    <div
-      draggable="true"
-      onDragStart={handleDragStart}
-      onClick={handleBalloonClick}
-      className={`mt-1 flex items-center gap-2.5 rounded-2xl px-3 py-2 border transition-all
-        ${url ? 'cursor-pointer hover:opacity-90 active:scale-[0.98]' : 'cursor-default'}
-        ${isOwn
-          ? 'bg-blue-600 border-blue-700 text-white'
-          : 'bg-white border-gray-200 text-gray-900'
-        }`}
-      style={{ minWidth: 200, maxWidth: 320 }}
-      title={url ? 'Önizleme için tıklayın' : ''}
-    >
-      <div className={`flex items-center justify-center p-2 rounded-xl flex-shrink-0 ${isOwn ? 'bg-white/20' : 'bg-blue-50'}`}>
-        <FileIcon className={`w-5 h-5 ${isOwn ? 'text-white' : 'text-blue-600'}`} />
-      </div>
-      <div className="flex-1 min-w-0">
-        <p className={`text-[13px] font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>
-          {file.original_name}
-        </p>
-        <p className={`text-[10px] mt-0.5 ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>
-          {formatSize(file.size_bytes)}
-        </p>
-      </div>
-      {url && (
-        <div className="flex items-center gap-1 flex-shrink-0">
-          <Download className={`w-4 h-4 ${isOwn ? 'text-white/70' : 'text-blue-600'}`} />
+    <div className="flex items-center gap-2">
+      <div
+        draggable="true"
+        onDragStart={handleDragStart}
+        onClick={handleBalloonClick}
+        className={`mt-1 flex items-center gap-2.5 rounded-2xl px-3 py-2 border transition-all
+          ${url ? 'cursor-pointer hover:opacity-90 active:scale-[0.98]' : 'cursor-default'}
+          ${isOwn
+            ? 'bg-blue-600 border-blue-700 text-white'
+            : 'bg-white border-gray-200 text-gray-900'
+          }`}
+        style={{ minWidth: 200, maxWidth: 320 }}
+        title={url ? 'Önizleme için tıklayın' : ''}
+      >
+        <div className={`flex items-center justify-center p-2 rounded-xl flex-shrink-0 ${isOwn ? 'bg-white/20' : 'bg-blue-50'}`}>
+          <FileIcon className={`w-5 h-5 ${isOwn ? 'text-white' : 'text-blue-600'}`} />
         </div>
+        <div className="flex-1 min-w-0">
+          <p className={`text-[13px] font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>
+            {file.original_name}
+          </p>
+          <p className={`text-[10px] mt-0.5 ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>
+            {formatSize(file.size_bytes)}
+          </p>
+        </div>
+      </div>
+
+      {url && (
+        <a
+          href={downloadUrl}
+          download={file.original_name}
+          onClick={stopProp}
+          className="p-2 rounded-full bg-white shadow-sm border border-gray-100 text-blue-600 hover:bg-blue-50 transition-all flex-shrink-0 active:scale-90"
+          title="İndir"
+        >
+          <Download className="w-5 h-5" />
+        </a>
       )}
     </div>
   );
