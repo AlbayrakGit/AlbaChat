@@ -117,23 +117,25 @@ function FileAttachment({
           <p className={`text-[13px] font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>
             {file.original_name}
           </p>
-          <p className={`text-[10px] mt-0.5 ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>
-            {formatSize(file.size_bytes)}
-          </p>
         </div>
       </div>
 
-      {url && (
-        <a
-          href={downloadUrl}
-          download={file.original_name}
-          onClick={stopProp}
-          className="p-2 rounded-full bg-white shadow-sm border border-gray-100 text-blue-600 hover:bg-blue-50 transition-all flex-shrink-0 active:scale-90"
-          title="İndir"
-        >
-          <Download className="w-5 h-5" />
-        </a>
-      )}
+      <div className="flex flex-col items-center gap-1">
+        {url && (
+          <a
+            href={downloadUrl}
+            download={file.original_name}
+            onClick={stopProp}
+            className="p-2 rounded-full bg-white shadow-sm border border-gray-100 text-blue-600 hover:bg-blue-50 transition-all flex-shrink-0 active:scale-90"
+            title="İndir"
+          >
+            <Download className="w-5 h-5" />
+          </a>
+        )}
+        <span className="text-[9px] font-bold text-muted-foreground whitespace-nowrap bg-white/50 px-1 rounded-sm">
+          {formatSize(file.size_bytes)}
+        </span>
+      </div>
     </div>
   );
 }
