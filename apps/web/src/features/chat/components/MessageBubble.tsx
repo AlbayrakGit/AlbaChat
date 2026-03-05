@@ -175,8 +175,29 @@ function MessageMenu({
       ref={menuRef}
       style={{ top: coords.top, left: coords.left }}
       className="fixed min-w-[140px] bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100 py-1.5 z-[9999] animate-in fade-in zoom-in-95 duration-200"
-      onClick={(e) => e.stopPropagation()}
     >
+      {/* Quick Reactions Bar */}
+      <div className="flex items-center justify-between px-2 py-2 border-b border-gray-50 mb-1">
+        {['❤️', '👍', '👎', '⭐', '🎉', '😊'].map((emoji) => (
+          <button
+            key={emoji}
+            onClick={(e) => {
+              e.stopPropagation();
+              onClose();
+              try {
+                getSocket().emit('message:react', { messageId: message.id, emoji });
+              } catch (err) {
+                console.error('Reaction error:', err);
+              }
+            }}
+            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-lg leading-none active:scale-125 duration-200"
+            title={emoji}
+          >
+            {emoji}
+          </button>
+        ))}
+      </div>
+
       <button onClick={(e) => { e.stopPropagation(); onClose(); onReply?.(message); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
         <Reply className="w-3.5 h-3.5 text-blue-500" />
         <span>Yanıtla</span>
