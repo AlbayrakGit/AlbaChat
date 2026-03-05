@@ -288,10 +288,18 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             <p className="text-[10px] font-bold text-blue-500 mb-0.5 text-right mr-1 opacity-80">{user?.display_name || user?.username}</p>
           )}
 
-          <div className="flex items-end gap-2 flex-row-reverse">
+          <div className="flex items-end gap-2 flex-row-reverse relative">
             <div className={`relative px-3.5 py-1.5 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
               ${isSelected ? 'ring-primary/40' : ''}
               ${message.file ? 'bg-transparent shadow-none p-0 ring-0' : 'bg-primary text-primary-foreground rounded-2xl'}`}>
+
+              <button
+                id={`msg-btn-${message.id}`}
+                onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
+                className={`absolute -top-1 -right-6 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+              >
+                <ChevronDown className="w-3.5 h-3.5" />
+              </button>
 
               {message.is_forwarded && (
                 <div className="flex items-center justify-end gap-1 mb-1 opacity-70">
@@ -312,42 +320,33 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
               {message.file ? (
                 <FileAttachment file={message.file} isOwn />
               ) : (
-                <p className="text-[14px] leading-[20px] relative z-10 whitespace-pre-wrap">{message.content}</p>
+                <div className="relative flex flex-wrap items-end justify-end gap-2">
+                  <p className="text-[14px] leading-[20px] relative z-10 whitespace-pre-wrap flex-1">{message.content}</p>
+                  <div className="flex items-center gap-1 opacity-70 mb-0.5 flex-shrink-0">
+                    <span className="text-[9px] font-medium tracking-tight whitespace-nowrap">{formatTime(message.created_at)}</span>
+                    <ReadTick isRead={message.isRead ?? false} />
+                  </div>
+                </div>
               )}
               {message.reactions && <ReactionsList reactions={message.reactions} isOwn={true} />}
             </div>
 
-            <div className="relative opacity-0 group-hover/msg:opacity-100 transition-opacity self-start mt-1">
-              <button
-                id={`msg-btn-${message.id}`}
-                onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                className={`p-1 rounded-full bg-white/90 shadow-sm border border-gray-100 text-gray-400 hover:text-blue-600 transition-all ${showMenu ? 'rotate-180 text-blue-600' : ''}`}
-              >
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
-
-              {showMenu && createPortal(
-                <>
-                  <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
-                  <MessageMenu
-                    message={message}
-                    anchorId={`msg-btn-${message.id}`}
-                    isOwn={true}
-                    onClose={() => setShowMenu(false)}
-                    onReply={onReply}
-                    onForward={onForward}
-                    onDelete={handleDeleteClick}
-                    confirmDelete={confirmDelete}
-                  />
-                </>,
-                document.body
-              )}
-            </div>
-          </div>
-
-          <div className="flex items-center justify-end gap-1 mt-0.5 opacity-70">
-            <span className="text-[9px] font-medium tracking-tight text-muted-foreground">{formatTime(message.created_at)}</span>
-            <ReadTick isRead={message.isRead ?? false} />
+            {showMenu && createPortal(
+              <>
+                <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
+                <MessageMenu
+                  message={message}
+                  anchorId={`msg-btn-${message.id}`}
+                  isOwn={true}
+                  onClose={() => setShowMenu(false)}
+                  onReply={onReply}
+                  onForward={onForward}
+                  onDelete={handleDeleteClick}
+                  confirmDelete={confirmDelete}
+                />
+              </>,
+              document.body
+            )}
           </div>
         </div>
       </div>
@@ -378,10 +377,18 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
         {showSender && !message.is_forwarded && (
           <p className="text-[10px] font-bold tracking-wide text-blue-600 mb-0.5 ml-1 opacity-80">{displayName}</p>
         )}
-        <div className="flex items-end gap-2">
+        <div className="flex items-end gap-2 relative">
           <div className={`relative px-3.5 py-1.5 break-words shadow-sm border transition-all duration-300 ring-2 ring-transparent
             ${isSelected ? 'ring-primary/40' : ''}
             ${message.file ? 'bg-transparent shadow-none border-none p-0 ring-0' : 'bg-white border-gray-100 rounded-2xl'}`}>
+
+            <button
+              id={`msg-btn-${message.id}`}
+              onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
+              className={`absolute -top-1 -right-6 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+            >
+              <ChevronDown className="w-3.5 h-3.5" />
+            </button>
 
             {message.is_forwarded && (
               <div className="flex items-center gap-1 mb-1 opacity-60">
@@ -400,40 +407,32 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             {message.file ? (
               <FileAttachment file={message.file} isOwn={false} />
             ) : (
-              <p className="text-[14px] leading-[20px] text-foreground whitespace-pre-wrap">{message.content}</p>
+              <div className="relative flex flex-wrap items-end justify-start gap-2">
+                <p className="text-[14px] leading-[20px] text-foreground whitespace-pre-wrap flex-1">{message.content}</p>
+                <div className="opacity-70 mb-0.5 flex-shrink-0">
+                  <span className="text-[9px] font-medium tracking-tight text-muted-foreground whitespace-nowrap">{formatTime(message.created_at)}</span>
+                </div>
+              </div>
             )}
             {message.reactions && <ReactionsList reactions={message.reactions} isOwn={false} />}
           </div>
 
-          <div className="relative opacity-0 group-hover/msg:opacity-100 transition-opacity self-start mt-1">
-            <button
-              id={`msg-btn-${message.id}`}
-              onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-              className={`p-1 rounded-full bg-white/90 shadow-sm border border-gray-100 text-gray-400 hover:text-blue-600 transition-all ${showMenu ? 'rotate-180 text-blue-600' : ''}`}
-            >
-              <ChevronDown className="w-3.5 h-3.5" />
-            </button>
-
-            {showMenu && createPortal(
-              <>
-                <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
-                <MessageMenu
-                  message={message}
-                  anchorId={`msg-btn-${message.id}`}
-                  isOwn={false}
-                  onClose={() => setShowMenu(false)}
-                  onReply={onReply}
-                  onForward={onForward}
-                  onDelete={handleDeleteClick}
-                  confirmDelete={confirmDelete}
-                />
-              </>,
-              document.body
-            )}
-          </div>
-        </div>
-        <div className="mt-1 ml-1 opacity-70 text-left">
-          <span className="text-[9px] font-medium tracking-tight text-muted-foreground">{formatTime(message.created_at)}</span>
+          {showMenu && createPortal(
+            <>
+              <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
+              <MessageMenu
+                message={message}
+                anchorId={`msg-btn-${message.id}`}
+                isOwn={false}
+                onClose={() => setShowMenu(false)}
+                onReply={onReply}
+                onForward={onForward}
+                onDelete={handleDeleteClick}
+                confirmDelete={confirmDelete}
+              />
+            </>,
+            document.body
+          )}
         </div>
       </div>
     </div>
