@@ -122,14 +122,14 @@ export default function AdminAnnouncementsPage() {
 
   return (
     <div className="max-w-6xl mx-auto pb-12">
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 mb-8">
         <div>
           <h1 className="text-2xl font-bold tracking-tight text-gray-900">Duyuru Yönetimi</h1>
-          <p className="text-gray-500 mt-1">Sistem geneline veya belirli gruplara duyuru gönderin ve okuma oranlarını takip edin.</p>
+          <p className="text-gray-500 mt-1 text-sm">Sistem geneline veya belirli gruplara duyuru gönderin.</p>
         </div>
         <button
           onClick={() => setShowModal(true)}
-          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm transition-all active:scale-95 flex items-center gap-2"
+          className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2.5 rounded-lg font-semibold shadow-sm transition-all active:scale-95 flex items-center justify-center gap-2 w-full md:w-auto"
         >
           <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 4v16m8-8H4" />
@@ -145,20 +145,19 @@ export default function AdminAnnouncementsPage() {
         ) : isErrorAnnouncements ? (
           <div className="p-12 text-center">
             <p className="text-red-500 font-medium">Duyurular yüklenirken bir hata oluştu.</p>
-            <p className="text-gray-400 text-sm mt-1">Lütfen sayfayı yenileyin veya yöneticiye bildirin.</p>
           </div>
         ) : announcementsData?.length === 0 ? (
           <div className="p-12 text-center text-gray-400">Henüz hiç duyuru oluşturulmadı.</div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left border-collapse">
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-left border-collapse min-w-[700px]">
               <thead>
                 <tr className="bg-gray-50 text-gray-500 text-xs uppercase tracking-wider">
                   <th className="px-6 py-4 font-medium">Başlık & İçerik</th>
-                  <th className="px-6 py-4 font-medium">Kapsam</th>
-                  <th className="px-6 py-4 font-medium">Öncelik</th>
-                  <th className="px-6 py-4 font-medium">Tarih</th>
-                  <th className="px-6 py-4 font-medium text-right">İşlemler</th>
+                  <th className="px-6 py-4 font-medium w-32">Kapsam</th>
+                  <th className="px-6 py-4 font-medium w-24">Öncelik</th>
+                  <th className="px-6 py-4 font-medium w-24">Tarih</th>
+                  <th className="px-6 py-4 font-medium text-right w-44">İşlemler</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">

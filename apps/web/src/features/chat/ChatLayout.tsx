@@ -149,7 +149,7 @@ export default function ChatLayout() {
         ${activeGroupId ? 'hidden md:flex' : 'flex'}`}
       >
         {/* Workspace Brand - Header */}
-        <div className="h-16 flex items-center px-4 border-b border-gray-100 gap-3 flex-shrink-0 bg-white sticky top-0 z-10 pt-[env(safe-area-inset-top)] box-content">
+        <div className="h-16 flex items-center px-4 border-b border-gray-100 gap-3 flex-shrink-0 bg-white pt-[env(safe-area-inset-top)] box-content">
           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -163,7 +163,7 @@ export default function ChatLayout() {
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex p-1.5 bg-gray-50/50 border-b border-gray-100 flex-shrink-0 gap-1 sticky top-16 z-10">
+        <div className="flex p-1.5 bg-gray-50/50 border-b border-gray-100 flex-shrink-0 gap-1 bg-white">
           <button
             onClick={() => setSidebarTab('groups')}
             className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-md transition-all
