@@ -381,7 +381,7 @@ export default function ChatWindow({ group, onBack }: Props) {
             {groupedMessages.map((msg, idx) => {
               const prev = groupedMessages[idx - 1];
               const showDate = !prev || !isSameDay(prev.created_at, msg.created_at);
-              const showSender = !prev || prev.sender_id !== msg.sender_id || showDate;
+              const showSender = true; // Her mesaj için isim/avatar gösterilsin (Kullanıcı talebi)
 
               return (
                 <div key={msg.id}>
