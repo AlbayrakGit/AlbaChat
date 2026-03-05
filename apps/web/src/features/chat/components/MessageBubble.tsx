@@ -100,42 +100,30 @@ function FileAttachment({
       draggable="true"
       onDragStart={handleDragStart}
       onClick={handleBalloonClick}
-      className={`mt-1 flex items-center gap-2.5 rounded-xl px-3 py-2 border transition-all
+      className={`mt-1 flex items-center gap-2.5 rounded-xl px-2 py-1.5 border transition-all
         ${url ? 'cursor-pointer hover:opacity-90 active:scale-[0.98]' : 'cursor-default'}
         ${isOwn
           ? 'bg-blue-600 border-blue-700 text-white'
           : 'bg-white border-gray-200 text-gray-900'
         }`}
-      style={{ minWidth: 220, maxWidth: 320 }}
+      style={{ minWidth: 200, maxWidth: 320 }}
       title={url ? 'Önizleme için tıklayın' : ''}
     >
-      <div className={`flex items-center justify-center p-2 rounded-lg flex-shrink-0 ${isOwn ? 'bg-white/20' : 'bg-blue-50'}`}>
-        <FileIcon className={`w-5 h-5 ${isOwn ? 'text-white' : 'text-blue-600'}`} />
+      <div className={`flex items-center justify-center p-1.5 rounded-lg flex-shrink-0 ${isOwn ? 'bg-white/20' : 'bg-blue-50'}`}>
+        <FileIcon className={`w-4 h-4 ${isOwn ? 'text-white' : 'text-blue-600'}`} />
       </div>
       <div className="flex-1 min-w-0">
-        {/* Dosya adı — tüm balon tıklanabilir olduğu için saf metin */}
-        <p className={`text-sm font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>
+        <p className={`text-xs font-medium truncate ${isOwn ? 'text-white' : 'text-gray-900'}`}>
           {file.original_name}
         </p>
-        <p className={`text-[11px] mt-0.5 ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>
+        <p className={`text-[10px] ${isOwn ? 'text-blue-200' : 'text-gray-500'}`}>
           {formatSize(file.size_bytes)}
         </p>
       </div>
-      {/* Sadece download butonu — eye simgesi kaldırıldı */}
-      {url ? (
+      {url && (
         <div className="flex items-center gap-1 flex-shrink-0">
-          <a
-            href={downloadUrl}
-            download={file.original_name}
-            onClick={stopProp}
-            className={`p-1.5 rounded-lg transition-colors ${isOwn ? 'hover:bg-white/20 text-white' : 'hover:bg-blue-50 text-blue-600'}`}
-            title="İndir"
-          >
-            <Download className="w-4 h-4" />
-          </a>
+          <Download className={`w-3.5 h-3.5 ${isOwn ? 'text-white/70' : 'text-blue-600'}`} />
         </div>
-      ) : (
-        <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin flex-shrink-0 opacity-50" />
       )}
     </div>
   );
@@ -244,19 +232,19 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             {/* Dropdown Toggle */}
             <div className="relative order-first opacity-0 group-hover/msg:opacity-100 transition-opacity self-start mt-1">
               <button
-                onClick={() => setShowMenu(!showMenu)}
-                className={`p-1 rounded-full bg-white/90 shadow-sm border border-gray-100 text-gray-400 hover:text-blue-600 transition-all ${showMenu ? 'rotate-180 text-blue-600' : ''}`}
+                onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
+                className={`p-0.5 rounded-full bg-white/90 shadow-sm border border-gray-100 text-gray-400 hover:text-blue-600 transition-all ${showMenu ? 'rotate-180 text-blue-600' : ''}`}
               >
-                <ChevronDown className="w-4 h-4" />
+                <ChevronDown className="w-3.5 h-3.5" />
               </button>
 
               {/* WhatsApp Style Dropdown Menu */}
               {showMenu && (
                 <>
-                  <div className="fixed inset-0 z-[100]" onClick={() => setShowMenu(false)} />
-                  <div className="absolute top-7 right-0 min-w-[140px] bg-white rounded-xl shadow-2xl border border-gray-100 py-1.5 z-[110] animate-in fade-in slide-in-from-top-2 duration-200">
-                    <button onClick={() => { setShowMenu(false); onReply?.(message); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                      <Reply className="w-3.5 h-3.5 text-blue-500" />
+                  <div className="fixed inset-0 z-[1000]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
+                  <div className="absolute top-6 right-0 min-w-[120px] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 py-1 z-[1001] animate-in fade-in slide-in-from-top-1 duration-200">
+                    <button onClick={(e) => { e.stopPropagation(); setShowMenu(false); onReply?.(message); }} className="w-full flex items-center gap-2.5 px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                      <Reply className="w-3 h-3 text-blue-500" />
                       <span>Yanıtla</span>
                     </button>
                     <div className="relative">
@@ -294,17 +282,23 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
               )}
             </div>
 
-            <div className={`relative px-4 py-1.5 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
+            <div className={`relative px-3 py-1 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
               ${isSelected ? 'ring-primary/40' : ''}
               ${message.file ? 'bg-transparent shadow-none p-0 ring-0' : 'bg-primary text-primary-foreground rounded-2xl rounded-tr-none'}`}>
-              {/* Refined clean layout */}
+
+              {message.is_forwarded && (
+                <div className="flex items-center gap-1 mb-0.5 opacity-70">
+                  <Forward className="w-3 h-3 italic" />
+                  <span className="text-[10px] font-medium italic">İletildi</span>
+                </div>
+              )}
 
               {message.reply_to && (
-                <div className="mb-3 pl-3 pr-2 py-1.5 bg-black/10 border-l-2 border-primary-foreground/40 rounded-lg backdrop-blur-sm">
-                  <p className="text-[11px] font-bold tracking-wide uppercase text-primary-foreground/90 mb-0.5 opacity-50">
-                    Yanıtlanan Mesaj
+                <div className="mb-1.5 pl-2 pr-2 py-1 bg-black/10 border-l-2 border-white/40 rounded-md backdrop-blur-sm">
+                  <p className="text-[10px] font-bold text-white/90 truncate">
+                    {message.reply_to.sender?.username || 'Kullanıcı'}
                   </p>
-                  <p className="text-sm text-primary-foreground/80 line-clamp-2 truncate">
+                  <p className="text-[11px] text-white/80 line-clamp-1 truncate leading-tight">
                     {message.reply_to.content}
                   </p>
                 </div>
@@ -312,14 +306,14 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
               {message.file ? (
                 <FileAttachment file={message.file} isOwn />
               ) : (
-                <p className="text-[15px] leading-relaxed relative z-10 whitespace-pre-wrap">{message.content}</p>
+                <p className="text-[14px] leading-[20px] relative z-10 whitespace-pre-wrap">{message.content}</p>
               )}
               {message.reactions && <ReactionsList reactions={message.reactions} isOwn={true} />}
             </div>
           </div>
 
-          <div className="flex items-center justify-end gap-1.5 mt-1 opacity-80">
-            <span className="text-[10px] font-semibold tracking-tight text-muted-foreground/80 uppercase">{formatTime(message.created_at)}</span>
+          <div className="flex items-center justify-end gap-1 mt-0.5 opacity-70">
+            <span className="text-[9px] font-medium tracking-tight text-muted-foreground/80">{formatTime(message.created_at)}</span>
             <ReadTick isRead={message.isRead ?? false} />
           </div>
         </div>
@@ -353,27 +347,34 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
       </div>
 
       <div className="max-w-[80%] sm:max-w-[70%]">
-        {showSender && (
-          <p className="text-[11px] font-bold tracking-wide uppercase text-muted-foreground mb-1.5 ml-1">{displayName}</p>
+        {showSender && !message.is_forwarded && (
+          <p className="text-[10px] font-bold tracking-wide text-blue-600 mb-0.5 ml-1">{displayName}</p>
         )}
         <div className="flex items-end gap-2">
 
-          <div className={`relative px-4 py-1.5 break-words shadow-sm border transition-all duration-300 ring-2 ring-transparent
+          <div className={`relative px-3 py-1 break-words shadow-sm border transition-all duration-300 ring-2 ring-transparent
             ${isSelected ? 'ring-primary/40' : ''}
             ${message.file ? 'bg-transparent shadow-none border-none p-0 ring-0' : 'bg-white border-gray-100 rounded-2xl rounded-tl-none'}`}>
 
+            {message.is_forwarded && (
+              <div className="flex items-center gap-1 mb-0.5 opacity-60">
+                <Forward className="w-3 h-3 italic" />
+                <span className="text-[10px] font-medium italic">İletildi</span>
+              </div>
+            )}
+
             {message.reply_to && (
-              <div className="mb-3 pl-3 pr-2 py-1.5 bg-black/5 dark:bg-white/5 border-l-2 border-primary/40 rounded-lg">
-                <p className="text-[11px] font-bold tracking-wide uppercase text-primary mb-0.5 opacity-60">
-                  Yanıtlanan Mesaj
+              <div className="mb-1.5 pl-2 pr-2 py-1 bg-gray-50 dark:bg-white/5 border-l-2 border-primary/40 rounded-md">
+                <p className="text-[10px] font-bold text-primary truncate leading-tight">
+                  {message.reply_to.sender?.username || 'Kullanıcı'}
                 </p>
-                <p className="text-sm text-foreground/80 line-clamp-2 truncate">{message.reply_to.content}</p>
+                <p className="text-[11px] text-foreground/80 line-clamp-1 truncate leading-tight">{message.reply_to.content}</p>
               </div>
             )}
             {message.file ? (
               <FileAttachment file={message.file} isOwn={false} />
             ) : (
-              <p className="text-[15px] leading-relaxed text-foreground whitespace-pre-wrap">{message.content}</p>
+              <p className="text-[14px] leading-[20px] text-foreground whitespace-pre-wrap">{message.content}</p>
             )}
             {message.reactions && <ReactionsList reactions={message.reactions} isOwn={false} />}
           </div>
@@ -390,10 +391,10 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             {/* Menu for Incoming */}
             {showMenu && (
               <>
-                <div className="fixed inset-0 z-[100]" onClick={() => setShowMenu(false)} />
-                <div className="absolute top-7 left-0 min-w-[140px] bg-white rounded-xl shadow-2xl border border-gray-100 py-1.5 z-[110] animate-in fade-in slide-in-from-top-2 duration-200">
-                  <button onClick={() => { setShowMenu(false); onReply?.(message); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
-                    <Reply className="w-3.5 h-3.5 text-blue-500" />
+                <div className="fixed inset-0 z-[1000]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
+                <div className="absolute top-6 left-0 min-w-[120px] bg-white rounded-xl shadow-[0_8px_30px_rgb(0,0,0,0.12)] border border-gray-100 py-1 z-[1001] animate-in fade-in slide-in-from-top-1 duration-200">
+                  <button onClick={(e) => { e.stopPropagation(); setShowMenu(false); onReply?.(message); }} className="w-full flex items-center gap-2.5 px-3 py-1.5 text-[11px] font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+                    <Reply className="w-3 h-3 text-blue-500" />
                     <span>Yanıtla</span>
                   </button>
                   <div className="relative">

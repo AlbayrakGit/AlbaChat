@@ -104,24 +104,7 @@ export default function ChatWindow({ group, onBack }: Props) {
     ? groupMessages.filter(m => m.content.toLowerCase().includes(searchQuery.toLowerCase()))
     : groupMessages;
 
-  const groupedMessages = (() => {
-    const result: Message[] = [];
-    filteredMessages.forEach((msg) => {
-      const prev = result[result.length - 1];
-      const isSoon = prev && (new Date(msg.created_at).getTime() - new Date(prev.created_at).getTime() < 10000);
-      const isSameSender = prev && prev.sender_id === msg.sender_id;
-      const bothText = prev && prev.type === 'text' && msg.type === 'text';
-
-      if (isSoon && isSameSender && bothText && !msg.reply_to_id && !searchQuery) {
-        // Birleştir: ID en sonuncununkini alabilir veya ilkini koruyabiliriz. 
-        // Genelde ilk mesajın ID'si referans için iyidir.
-        prev.content = prev.content + '\n' + msg.content;
-      } else {
-        result.push({ ...msg });
-      }
-    });
-    return result;
-  })();
+  const groupedMessages = filteredMessages;
 
   // ─── Klavye Kısayolları (Delete tuşu) ──────────────────────────────────────
   useEffect(() => {
@@ -224,11 +207,13 @@ export default function ChatWindow({ group, onBack }: Props) {
           fileId: item.uploadedFile!.id,
           idempotencyKey,
         });
+        // Gönderildikten sonra listeden hemen kaldır (Kullanıcı talebi 1)
+        setTimeout(() => removeUpload(item.id), 500);
       } catch {
         // ...
       }
     }
-  }, [uploads, group.id]);
+  }, [uploads, group.id, removeUpload]);
 
   const handleDragOver = useCallback(
     (e: React.DragEvent) => {
@@ -392,7 +377,7 @@ export default function ChatWindow({ group, onBack }: Props) {
             <p className="text-sm text-gray-400 mt-1">İlk mesajı göndererek sohbeti başlatın.</p>
           </div>
         ) : (
-          <div className="space-y-4 max-w-5xl mx-auto w-full">
+          <div className="space-y-1 max-w-5xl mx-auto w-full">
             {groupedMessages.map((msg, idx) => {
               const prev = groupedMessages[idx - 1];
               const showDate = !prev || !isSameDay(prev.created_at, msg.created_at);
