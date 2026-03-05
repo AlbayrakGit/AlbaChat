@@ -147,6 +147,7 @@ services:
     depends_on:
       - api
     networks:
+      - backend
       - frontend
     logging:
       driver: "json-file"
