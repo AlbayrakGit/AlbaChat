@@ -288,7 +288,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             <p className="text-[10px] font-bold text-blue-500 mb-0.5 text-right mr-1 opacity-80">{user?.display_name || user?.username}</p>
           )}
 
-          <div className="flex items-end gap-2 flex-row-reverse relative">
+          <div className="flex items-end gap-2 relative">
             <div className={`relative px-3.5 py-1.5 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
               ${isSelected ? 'ring-primary/40' : ''}
               ${message.file ? 'bg-transparent shadow-none p-0 ring-0' : 'bg-primary text-primary-foreground rounded-2xl'}`}>
@@ -296,7 +296,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
               <button
                 id={`msg-btn-${message.id}`}
                 onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                className={`absolute -top-1 -right-6 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+                className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
@@ -320,15 +320,14 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
               {message.file ? (
                 <FileAttachment file={message.file} isOwn />
               ) : (
-                <div className="relative flex flex-wrap items-end justify-end gap-2">
-                  <p className="text-[14px] leading-[20px] relative z-10 whitespace-pre-wrap flex-1">{message.content}</p>
-                  <div className="flex items-center gap-1 opacity-70 mb-0.5 flex-shrink-0">
-                    <span className="text-[9px] font-medium tracking-tight whitespace-nowrap">{formatTime(message.created_at)}</span>
-                    <ReadTick isRead={message.isRead ?? false} />
-                  </div>
-                </div>
+                <p className="text-[14px] leading-[20px] relative z-10 whitespace-pre-wrap">{message.content}</p>
               )}
               {message.reactions && <ReactionsList reactions={message.reactions} isOwn={true} />}
+            </div>
+
+            <div className="flex items-center gap-1 opacity-70 mb-1 flex-shrink-0 min-w-[40px]">
+              <span className="text-[9px] font-medium tracking-tight text-muted-foreground whitespace-nowrap">{formatTime(message.created_at)}</span>
+              <ReadTick isRead={message.isRead ?? false} />
             </div>
 
             {showMenu && createPortal(
@@ -385,7 +384,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             <button
               id={`msg-btn-${message.id}`}
               onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-              className={`absolute -top-1 -right-6 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+              className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
             >
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
@@ -407,14 +406,13 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             {message.file ? (
               <FileAttachment file={message.file} isOwn={false} />
             ) : (
-              <div className="relative flex flex-wrap items-end justify-start gap-2">
-                <p className="text-[14px] leading-[20px] text-foreground whitespace-pre-wrap flex-1">{message.content}</p>
-                <div className="opacity-70 mb-0.5 flex-shrink-0">
-                  <span className="text-[9px] font-medium tracking-tight text-muted-foreground whitespace-nowrap">{formatTime(message.created_at)}</span>
-                </div>
-              </div>
+              <p className="text-[14px] leading-[20px] text-foreground whitespace-pre-wrap">{message.content}</p>
             )}
             {message.reactions && <ReactionsList reactions={message.reactions} isOwn={false} />}
+          </div>
+
+          <div className="opacity-70 mb-1 flex-shrink-0 min-w-[30px]">
+            <span className="text-[9px] font-medium tracking-tight text-muted-foreground whitespace-nowrap">{formatTime(message.created_at)}</span>
           </div>
 
           {showMenu && createPortal(
