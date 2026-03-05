@@ -25,6 +25,7 @@ export function setupMessageHandler(io, socket) {
         idempotencyKey,
         replyToId = null,
         fileId = null,
+        is_forwarded = false,
       } = data || {};
 
       if (!groupId || (!content?.trim() && !fileId)) {
@@ -39,6 +40,7 @@ export function setupMessageHandler(io, socket) {
         idempotencyKey: idempotencyKey || null,
         replyToId,
         fileId,
+        isForwarded: is_forwarded,
       });
 
       // Redis Pub/Sub üzerinden tüm instance'lara yayınla

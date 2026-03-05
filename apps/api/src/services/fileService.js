@@ -92,10 +92,18 @@ export async function getFileUrl(fileId, requesterId) {
   const file = await knex('files').where({ id: fileId, is_deleted: false }).first();
   if (!file) throw new FileNotFoundError();
 
-  // Grup üyeliği kontrolü
+  // Grup üyeliği kontrolü: Orijinal grupta mı yoksa dosyanın iletildiği/paylaşıldığı bir grupta mı?
+  const sharedInGroups = await knex('messages')
+    .where({ file_id: fileId })
+    .select('group_id');
+
+  const groupIds = [file.group_id, ...sharedInGroups.map(m => m.group_id)];
+
   const member = await knex('group_members')
-    .where({ group_id: file.group_id, user_id: requesterId })
+    .whereIn('group_id', groupIds)
+    .where({ user_id: requesterId })
     .first();
+
   if (!member) throw new FileForbiddenError();
 
   const url = transformUrl(await getSignedUrl(

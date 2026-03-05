@@ -254,8 +254,9 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
           ${isSelected ? 'bg-blue-500/5' : ''}`}
       >
         <div className="max-w-[80%] sm:max-w-[70%]">
-          {/* Own name for separation */}
-          <p className="text-[10px] font-bold text-blue-500 mb-0.5 text-right mr-1 opacity-80">{user?.display_name || user?.username}</p>
+          {!message.is_forwarded && (
+            <p className="text-[10px] font-bold text-blue-500 mb-0.5 text-right mr-1 opacity-80">{user?.display_name || user?.username}</p>
+          )}
 
           <div className="flex items-end gap-2 flex-row-reverse">
             <div className={`relative px-3.5 py-1.5 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
@@ -271,7 +272,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
 
               {message.reply_to && (
                 <div className="mb-2 pl-2 pr-2 py-1.5 bg-black/10 border-l-2 border-white/40 rounded-lg backdrop-blur-sm">
-                  <p className="text-[9px] font-bold text-white/70 uppercase mb-0.5">iletildi</p>
+                  <p className="text-[9px] font-bold text-white/70 mb-0.5">iletildi</p>
                   <p className="text-[11px] text-white/90 line-clamp-1 truncate leading-tight">
                     {message.reply_to.content}
                   </p>
@@ -361,7 +362,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
 
             {message.reply_to && (
               <div className="mb-2 pl-2 pr-2 py-1.5 bg-gray-50 dark:bg-white/5 border-l-2 border-primary/40 rounded-lg">
-                <p className="text-[9px] font-bold text-primary uppercase mb-0.5">iletildi</p>
+                <p className="text-[9px] font-bold text-primary mb-0.5">iletildi</p>
                 <p className="text-[11px] text-foreground/80 line-clamp-1 truncate leading-tight">{message.reply_to.content}</p>
               </div>
             )}
