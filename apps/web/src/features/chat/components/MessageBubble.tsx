@@ -183,7 +183,7 @@ function MessageMenu({
     <div
       ref={menuRef}
       style={{ top: coords.top, left: coords.left }}
-      className="fixed min-w-[140px] bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100 py-1.5 z-[9999] animate-in fade-in zoom-in-95 duration-200"
+      className="fixed min-w-[140px] bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100 py-1.5 z-[9999]"
     >
       {/* Quick Reactions Bar */}
       <div className="flex items-center justify-between px-2 py-2 border-b border-gray-50 mb-1">
