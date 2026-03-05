@@ -1,0 +1,57 @@
+﻿  ÔÇó electron-builder  version=24.13.3 os=10.0.26200
+  ÔÇó loaded configuration  file=E:\YatayZeka_Projeler\AlbaChat\apps\desktop\electron-builder.yml
+  ÔÇó effective config  config=directories:
+  output: dist
+  buildResources: assets
+appId: com.AlbaChat.app
+productName: AlbaChat
+copyright: ┬® 2024 AlbaChat
+files:
+  - filter:
+      - electron/**
+      - setup/**
+      - assets/**
+      - package.json
+      - node_modules/**
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: assets/icon.ico
+  requestedExecutionLevel: asInvoker
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: assets/installer.ico
+  uninstallerIcon: assets/installer.ico
+  installerHeaderIcon: assets/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: AlbaChat
+  artifactName: AlbaChat-Setup-${version}.exe
+publish:
+  provider: generic
+  url: http://your-intranet-server/updates
+  channel: latest
+electronVersion: 28.3.3
+
+  ÔÇó spawning        command=E:\YatayZeka_Projeler\AlbaChat\apps\desktop\node_modules\app-builder-bin\win\x64\app-builder.exe node-dep-tree --dir E:\YatayZeka_Projeler\AlbaChat\apps\desktop
+  Ô¿» readObjectStart: expect { or n, but found ´, error found in #1 byte of ...|´╗┐{
+  "nam|..., bigger context ...|´╗┐{
+  "name": "albachat-desktop",
+  "version": "1.|...
+Error reading package.json: E:\YatayZeka_Projeler\AlbaChat\apps\desktop\package.json  
+  ÔÇó exited          command=app-builder.exe code=1 pid=149428
+  Ô¿» E:\YatayZeka_Projeler\AlbaChat\apps\desktop\node_modules\app-builder-bin\win\x64\app-builder.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Exit code:
+1  failedTask=build stackTrace=Error: E:\YatayZeka_Projeler\AlbaChat\apps\desktop\node_modules\app-builder-bin\win\x64\app-builder.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Exit code:
+1
+    at ChildProcess.<anonymous> (E:\YatayZeka_Projeler\AlbaChat\apps\desktop\node_modules\builder-util\src\util.ts:252:14)
+    at Object.onceWrapper (node:events:623:26)
+    at ChildProcess.emit (node:events:508:28)
+    at ChildProcess.cp.emit (E:\YatayZeka_Projeler\AlbaChat\apps\desktop\node_modules\cross-spawn\lib\enoent.js:34:29)
+    at maybeClose (node:internal/child_process:1101:16)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:305:5)

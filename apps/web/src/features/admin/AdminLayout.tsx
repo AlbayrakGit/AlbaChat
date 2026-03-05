@@ -1,3 +1,4 @@
+import { useEffect } from 'react';
 import { NavLink, Outlet, useNavigate } from 'react-router-dom';
 import { useAuthStore } from '@/store/authStore';
 
@@ -54,6 +55,19 @@ export default function AdminLayout() {
   const { user, logout } = useAuthStore();
   const navigate = useNavigate();
 
+  // Electron pencere boyutunu yönet (Yönetim paneli için genişlet)
+  useEffect(() => {
+    if (window.electronAPI?.resizeWindow) {
+      window.electronAPI.resizeWindow(1200, 825);
+    }
+    // Komponentten çıkarken (Chat'e dönerken) boyutu eski haline getir
+    return () => {
+      if (window.electronAPI?.resizeWindow) {
+        window.electronAPI.resizeWindow(800, 825);
+      }
+    };
+  }, []);
+
   async function handleLogout() {
     try {
       await fetch('/api/auth/logout', { method: 'POST', credentials: 'include' });
@@ -90,10 +104,9 @@ export default function AdminLayout() {
               key={tab.to}
               to={tab.to}
               className={({ isActive }) =>
-                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                  isActive
-                    ? 'bg-blue-600 text-white'
-                    : 'text-gray-300 hover:bg-gray-800 hover:text-white'
+                `flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${isActive
+                  ? 'bg-blue-600 text-white'
+                  : 'text-gray-300 hover:bg-gray-800 hover:text-white'
                 }`
               }
             >

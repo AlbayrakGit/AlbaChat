@@ -1,0 +1,14 @@
+node.exe : Packaging app for platform win32
+ x64 using electron v28.3.3
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\
+Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified 
+   : (Packaging app f...lectron v28.3.3:S  
+  tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeComman 
+   dError
+ 
+Wrote new app to: dist\AlbaChat-win32-x64

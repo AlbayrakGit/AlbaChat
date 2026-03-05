@@ -37,4 +37,8 @@ contextBridge.exposeInMainWorld('electronAPI', {
   // ─── Store (kalıcı ayarlar) ────────────────────────────────────────────────
   getStoreValue: (key) => ipcRenderer.invoke('store:get', key),
   setStoreValue: (key, value) => ipcRenderer.send('store:set', key, value),
+
+  // ─── Pencere Yönetimi ──────────────────────────────────────────────────────
+  /** Pencere boyutunu dinamik olarak güncelle (örn. Admin sayfaları için) */
+  resizeWindow: (width, height) => ipcRenderer.send('window:resize', { width, height }),
 });

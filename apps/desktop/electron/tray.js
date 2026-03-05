@@ -5,7 +5,7 @@ let trayInstance = null;
 let unreadCount = 0;
 
 /**
- * Sistem tepsisi ikonunu oluÅŸtur ve yÃ¶net.
+ * Sistem tepsisi ikonunu oluştur ve yönet.
  * @param {import('electron').BrowserWindow} mainWindow
  * @param {import('electron-store').default} store
  */
@@ -18,7 +18,7 @@ function createTray(mainWindow, store) {
 
   _updateMenu(mainWindow, store);
 
-  // Sol tÄ±k â†’ pencereyi gÃ¶ster / odakla
+  // Sol tık → pencereyi göster / odakla
   trayInstance.on('click', () => {
     if (!mainWindow) return;
     if (mainWindow.isMinimized()) mainWindow.restore();
@@ -26,10 +26,10 @@ function createTray(mainWindow, store) {
   });
 
   return {
-    /** OkunmamÄ±ÅŸ sayacÄ±nÄ± gÃ¼ncelle ve tray tooltip'i yenile */
+    /** Okunmamış sayacını güncelle ve tray tooltip'i yenile */
     setUnreadCount(count) {
       unreadCount = count;
-      const label = count > 0 ? `AlbaChat (${count} okunmamÄ±ÅŸ)` : 'AlbaChat';
+      const label = count > 0 ? `AlbaChat (${count} okunmam\u0131\u015f)` : 'AlbaChat';
       trayInstance.setToolTip(label);
       _updateMenu(mainWindow, store);
     },
@@ -45,7 +45,7 @@ function createTray(mainWindow, store) {
 
 function _updateMenu(mainWindow, store) {
   const unreadItem = unreadCount > 0
-    ? { label: `${unreadCount} okunmamÄ±ÅŸ mesaj`, enabled: false }
+    ? { label: `${unreadCount} okunmam\u0131\u015f mesaj`, enabled: false }
     : { label: 'Yeni mesaj yok', enabled: false };
 
   const menu = Menu.buildFromTemplate([
@@ -54,7 +54,7 @@ function _updateMenu(mainWindow, store) {
     unreadItem,
     { type: 'separator' },
     {
-      label: 'AÃ§ / Ã–n Plana Getir',
+      label: 'A\u00e7 / \u00d6n Plana Getir',
       click() {
         if (!mainWindow) return;
         if (mainWindow.isMinimized()) mainWindow.restore();
@@ -63,7 +63,7 @@ function _updateMenu(mainWindow, store) {
       },
     },
     {
-      label: 'Sunucu DeÄŸiÅŸtir',
+      label: 'Sunucu De\u011fi\u015ftir',
       click() {
         store.delete('serverUrl');
         app.relaunch();
@@ -72,7 +72,7 @@ function _updateMenu(mainWindow, store) {
     },
     { type: 'separator' },
     {
-      label: 'Ã‡Ä±kÄ±ÅŸ',
+      label: '\u00c7\u0131k\u0131\u015f',
       click() {
         app.isQuitting = true;
         app.quit();
@@ -96,4 +96,3 @@ function _smallIcon() {
 }
 
 module.exports = { createTray };
-
