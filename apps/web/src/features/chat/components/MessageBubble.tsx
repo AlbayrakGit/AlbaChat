@@ -5,7 +5,7 @@ import { type Message } from '@/store/chatStore';
 import { useAuthStore } from '@/store/authStore';
 import { getSocket } from '@/socket/socketClient';
 import { apiClient } from '@/api/client';
-import { Check, CheckCheck, Trash2, FileIcon, Download, Reply, Forward, Smile, ChevronDown, Heart, ThumbsUp, ThumbsDown, Star as StarIcon, PartyPopper } from 'lucide-react';
+import { Check, CheckCheck, Trash2, FileIcon, Download, Reply, Forward, ChevronDown } from 'lucide-react';
 
 interface Props {
   message: Message;
@@ -254,7 +254,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
           ${isSelected ? 'bg-blue-500/5' : ''}`}
       >
         <div className="max-w-[80%] sm:max-w-[70%]">
-          {!message.is_forwarded && (
+          {showSender && !message.is_forwarded && (
             <p className="text-[10px] font-bold text-blue-500 mb-0.5 text-right mr-1 opacity-80">{user?.display_name || user?.username}</p>
           )}
 
@@ -345,7 +345,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
       </div>
 
       <div className="max-w-[80%] sm:max-w-[70%]">
-        {!message.is_forwarded && (
+        {showSender && !message.is_forwarded && (
           <p className="text-[10px] font-bold tracking-wide text-blue-600 mb-0.5 ml-1 opacity-80">{displayName}</p>
         )}
         <div className="flex items-end gap-2">
