@@ -294,7 +294,7 @@ export default function ChatWindow({ group, onBack }: Props) {
       )}
 
       {/* Header */}
-      <div className="relative z-10 px-4 py-3 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center gap-4 flex-shrink-0 shadow-sm">
+      <div className="relative z-10 px-4 py-3 pt-[calc(0.75rem+env(safe-area-inset-top))] bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center gap-4 flex-shrink-0 shadow-sm box-content">
 
         {onBack && (
           <button

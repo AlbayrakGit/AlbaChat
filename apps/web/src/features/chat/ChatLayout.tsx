@@ -108,14 +108,14 @@ export default function ChatLayout() {
   }, []);
 
   return (
-    <div className="flex h-screen bg-gray-50 overflow-hidden">
+    <div className="flex h-screen h-[100dvh] bg-gray-50 overflow-hidden safe-area-top">
       {/* ─── PWA "Ana Ekrana Ekle" Banner ────────────────────────────────── */}
       {!isElectron && <InstallPromptBanner />}
 
       {/* ─── Güncelleme Banner (Electron + PWA) ─────────────────────────── */}
       {showUpdateBanner && (
-        <div className="fixed top-0 left-0 right-0 z-[9998] bg-blue-600 text-white text-sm px-4 py-2 flex items-center justify-between">
-          <span>Yeni bir sürüm mevcut. Uygulamayı güncellemek için yeniden başlatın.</span>
+        <div className="fixed top-0 left-0 right-0 z-[100] bg-blue-600 text-white text-sm px-4 py-2 flex items-center justify-between">
+          <span>Yeni bir sürüm mevcut. Uygulamayı yeniden başlatın.</span>
           <div className="flex gap-2">
             <button
               onClick={() => {
@@ -125,11 +125,11 @@ export default function ChatLayout() {
                   window.location.reload();
                 }
               }}
-              className="bg-white text-blue-600 px-3 py-1 rounded-lg font-medium hover:bg-blue-50 transition-colors"
+              className="bg-white text-blue-600 px-3 py-1 rounded-lg font-medium"
             >
-              Şimdi Güncelle
+              Şimdi
             </button>
-            <button onClick={() => setShowUpdateBanner(false)} className="text-blue-200 hover:text-white">✕</button>
+            <button onClick={() => setShowUpdateBanner(false)}>✕</button>
           </div>
         </div>
       )}
@@ -143,17 +143,13 @@ export default function ChatLayout() {
       {/* ─── Duyuru Arşivi ───────────────────────────────────────────────── */}
       {showArchive && <AnnouncementArchive onClose={() => setShowArchive(false)} />}
 
-
-
       {/* ─── Sol Sidebar ─────────────────────────────────────────────────── */}
-      {/* Mobil: grup seçilmemişse tam genişlik, seçilmişse gizle */}
-      {/* Desktop (md+): her zaman sabit genişlik */}
-      <div className={`flex-col bg-white border-r border-gray-200 flex-shrink-0
-        w-full md:w-80 shadow-sm z-20
+      <div className={`flex flex-col bg-white border-r border-gray-200 flex-shrink-0
+        w-full md:w-80 shadow-sm z-20 h-full
         ${activeGroupId ? 'hidden md:flex' : 'flex'}`}
       >
-        {/* Workspace Brand */}
-        <div className="h-16 flex items-center px-4 border-b border-gray-100 gap-3 flex-shrink-0 bg-white">
+        {/* Workspace Brand - Header */}
+        <div className="h-16 flex items-center px-4 border-b border-gray-100 gap-3 flex-shrink-0 bg-white sticky top-0 z-10 pt-[env(safe-area-inset-top)] box-content">
           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
@@ -166,8 +162,8 @@ export default function ChatLayout() {
           <AnnouncementBadge onClick={() => setShowArchive(true)} />
         </div>
 
-        {/* Professional Navigation Tabs */}
-        <div className="flex p-1.5 bg-gray-50/50 border-b border-gray-100 flex-shrink-0 gap-1">
+        {/* Navigation Tabs */}
+        <div className="flex p-1.5 bg-gray-50/50 border-b border-gray-100 flex-shrink-0 gap-1 sticky top-16 z-10">
           <button
             onClick={() => setSidebarTab('groups')}
             className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-md transition-all
@@ -188,33 +184,35 @@ export default function ChatLayout() {
           </button>
         </div>
 
-        {/* Content Area */}
-        {sidebarTab === 'groups' ? (
-          <div className="flex-1 overflow-y-auto custom-scrollbar">
-            {loadingGroups ? (
-              <div className="px-4 py-8 text-center text-gray-400 space-y-2">
-                <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
-                <span className="text-sm">Yükleniyor...</span>
-              </div>
-            ) : (
-              <GroupList
-                groups={groups}
-                activeGroupId={activeGroupId}
-                onSelect={(g) => setActiveGroup(g.id)}
-              />
-            )}
-          </div>
-        ) : (
-          <div className="flex flex-col flex-1 overflow-hidden pt-3">
-            <UserListPanel />
-          </div>
-        )}
+        {/* Content Area - Scrollable */}
+        <div className="flex-1 overflow-hidden flex flex-col min-h-0 bg-white">
+          {sidebarTab === 'groups' ? (
+            <div className="flex-1 overflow-y-auto custom-scrollbar">
+              {loadingGroups ? (
+                <div className="px-4 py-8 text-center text-gray-400 space-y-2">
+                  <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
+                  <span className="text-sm">Yükleniyor...</span>
+                </div>
+              ) : (
+                <GroupList
+                  groups={groups}
+                  activeGroupId={activeGroupId}
+                  onSelect={(g) => setActiveGroup(g.id)}
+                />
+              )}
+            </div>
+          ) : (
+            <div className="flex flex-col flex-1 overflow-hidden pt-3">
+              <UserListPanel />
+            </div>
+          )}
+        </div>
 
-        {/* Connection Status & Profile */}
-        <div className="mt-auto flex flex-col flex-shrink-0">
+        {/* Connection Status & Profile - Footer */}
+        <div className="mt-auto flex flex-col flex-shrink-0 bg-white border-t border-gray-100">
           <ConnectionStatusBar />
 
-          <div className="border-t border-gray-100 p-4 bg-gray-50/30 flex items-center gap-3 flex-shrink-0">
+          <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-gray-50/30 flex items-center gap-3 flex-shrink-0">
             <div className="relative">
               <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
                 {(user?.display_name || user?.username || 'U').slice(0, 2).toUpperCase()}
@@ -233,23 +231,21 @@ export default function ChatLayout() {
               {user?.role === 'admin' && (
                 <Link
                   to="/admin"
-                  className="p-2 text-gray-400 hover:text-blue-600 hover:bg-white rounded-lg transition-all shadow-none hover:shadow-sm"
-                  title="Admin Panel"
+                  className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                  title="Admin"
                 >
                   <Settings className="w-4 h-4" />
                 </Link>
               )}
               <button
                 onClick={() => setShowPasswordModal(true)}
-                className="p-2 text-gray-400 hover:text-blue-600 hover:bg-blue-50 rounded-lg transition-all"
-                title="Şifre Değiştir"
+                className="p-2 text-gray-400 hover:text-blue-600"
               >
                 <Lock className="w-4 h-4" />
               </button>
               <button
                 onClick={handleLogout}
-                className="p-2 text-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
-                title="Çıkış Yap"
+                className="p-2 text-gray-400 hover:text-red-600"
               >
                 <LogOut className="w-4 h-4" />
               </button>
