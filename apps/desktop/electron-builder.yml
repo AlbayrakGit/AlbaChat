@@ -1,43 +1,34 @@
-﻿appId: com.AlbaChat.app
+appId: com.albachat.desktop
 productName: AlbaChat
-copyright: "Â© 2024 AlbaChat"
-
 directories:
   output: dist
   buildResources: assets
-
 files:
-  - electron/**
-  - setup/**
-  - assets/**
-  - package.json
-  - node_modules/**
-
+  - "**/*"
+  - "!dist/**/*"
+  - "electron/**/*"
+  - "setup/**/*"
+  - "assets/**/*"
 win:
   target:
-    - target: nsis
-      arch: [x64]
-  icon: assets/icon.ico
-  requestedExecutionLevel: asInvoker
-
+    - nsis
+  icon: assets/icon.png
+  publisherName: "Erna Holding Bilgi Teknolojileri"
 nsis:
-  oneClick: false
-  perMachine: false
-  allowToChangeInstallationDirectory: true
-  installerIcon: assets/installer.ico
-  uninstallerIcon: assets/installer.ico
-  installerHeaderIcon: assets/icon.ico
+  oneClick: true
+  perMachine: true
+  allowToChangeInstallationDirectory: false
   createDesktopShortcut: true
   createStartMenuShortcut: true
-  shortcutName: AlbaChat
-  artifactName: "AlbaChat-Setup-${version}.exe"
-
+  shortcutName: "AlbaChat"
+  artifactName: "AlbaChat-Setup-${version}.${ext}"
+  uninstallDisplayName: "AlbaChat"
+  deleteAppDataOnUninstall: true
 publish:
-  # Ä°ntranet dosya paylaÅŸÄ±mÄ± iÃ§in â€” yolu .env'den veya doÄŸrudan belirt
   provider: generic
-  url: "http://your-intranet-server/updates"
-  channel: latest
-
-# Auto-update config
-electronVersion: "28.3.3"
-
+  url: https://albachat.ernaholding.com/download
+extraResources:
+  - from: assets
+    to: assets
+    filter:
+      - "**/*"

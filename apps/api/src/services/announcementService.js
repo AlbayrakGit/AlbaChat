@@ -65,9 +65,9 @@ export async function createAnnouncement({
 
   const groups = scope === 'group'
     ? await knex('announcement_groups as ag')
-        .join('groups as g', 'g.id', 'ag.group_id')
-        .where('ag.announcement_id', announcement.id)
-        .select('g.id', 'g.name')
+      .join('groups as g', 'g.id', 'ag.group_id')
+      .where('ag.announcement_id', announcement.id)
+      .select('g.id', 'g.name')
     : [];
 
   return formatAnnouncement(full, groups);
@@ -174,9 +174,9 @@ export async function getAnnouncementById(id) {
 
   const groups = row.scope === 'group'
     ? await knex('announcement_groups as ag')
-        .join('groups as g', 'g.id', 'ag.group_id')
-        .where('ag.announcement_id', id)
-        .select('g.id', 'g.name')
+      .join('groups as g', 'g.id', 'ag.group_id')
+      .where('ag.announcement_id', id)
+      .select('g.id', 'g.name')
     : [];
 
   const [{ cnt }] = await knex('announcement_reads')
@@ -244,4 +244,24 @@ export async function getAnnouncementStats(announcementId) {
     unreadCount: unreadUsers.length,
     unreadUsers,
   };
+}
+
+/**
+ * Duyuruyu sil (Admin)
+ * announcement_groups ve announcement_reads tabloları CASCADE ile otomatik silinir.
+ * Bildirimler (notifications) polimorfik olduğu için manuel silinmesi gerekir.
+ */
+export async function deleteAnnouncement(id) {
+  return await knex.transaction(async (trx) => {
+    // 1. İlişkili bildirimleri temizle
+    await trx('notifications')
+      .where({ reference_id: id, reference_type: 'announcement' })
+      .delete();
+
+    // 2. Duyuruyu sil (CASCADE sayesinde announcement_groups ve announcement_reads otomatik silinir)
+    const count = await trx('announcements').where({ id }).delete();
+
+    if (!count) throw new AnnouncementNotFoundError();
+    return { id };
+  });
 }

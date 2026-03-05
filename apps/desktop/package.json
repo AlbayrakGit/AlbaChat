@@ -1,22 +1,24 @@
-﻿{
+{
   "name": "albachat-desktop",
   "version": "1.0.0",
-  "description": "AlbaChat â€” Kurumsal AnlÄ±k MesajlaÅŸma",
+  "description": "AlbaChat - Kurumsal Anlik Mesajlasma",
+  "author": "Erna Holding Bilgi Teknolojileri",
   "main": "electron/main.js",
   "private": true,
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --win",
     "build:linux": "electron-builder --linux",
-    "pack": "electron-builder --dir"
+    "pack": "electron-builder --dir",
+    "pack-portable": "electron-packager . AlbaChat --platform=win32 --arch=x64 --out=dist --overwrite --prune=true --icon=assets/icon.ico"
   },
   "dependencies": {
     "electron-store": "^8.2.0",
-    "electron-updater": "^6.1.7"
+    "electron-updater": "^6.8.3"
   },
   "devDependencies": {
     "electron": "^28.3.3",
-    "electron-builder": "^24.13.3"
+    "electron-builder": "^24.13.3",
+    "electron-packager": "^17.1.2"
   }
 }
-

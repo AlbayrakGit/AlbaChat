@@ -117,19 +117,21 @@ export default function LoginPage() {
             AlbaChat v2.0
           </p>
 
-          <div className="pt-2 border-t border-gray-100 flex justify-center">
-            <a
-              href="/download/AlbaChat-Setup.exe"
-              className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-xs font-semibold transition-all active:scale-95"
-            >
-              <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white">
-                <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
-                </svg>
-              </div>
-              Desktop Uygulamasını İndir
-            </a>
-          </div>
+          {!window.electronAPI && (
+            <div className="pt-2 border-t border-gray-100 flex justify-center">
+              <a
+                href="/download/AlbaChat-Setup.exe"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-xs font-semibold transition-all active:scale-95"
+              >
+                <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                </div>
+                Desktop Uygulamasını İndir
+              </a>
+            </div>
+          )}
         </div>
 
       </div>

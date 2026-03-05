@@ -1,0 +1,120 @@
+﻿  ÔÇó electron-builder  version=24.13.3 os=10.0.26200
+  ÔÇó loaded configuration  file=E:\YatayZeka_Projeler\AlbaChat\apps\desktop\electron-builder.yml
+  ÔÇó effective config  config=directories:
+  output: dist
+  buildResources: assets
+appId: com.AlbaChat.app
+productName: AlbaChat
+copyright: ├é┬® 2024 AlbaChat
+files:
+  - filter:
+      - electron/**
+      - setup/**
+      - assets/**
+      - package.json
+      - node_modules/**
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: assets/icon.ico
+  requestedExecutionLevel: asInvoker
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  installerIcon: assets/installer.ico
+  uninstallerIcon: assets/installer.ico
+  installerHeaderIcon: assets/icon.ico
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: AlbaChat
+  artifactName: AlbaChat-Setup-${version}.exe
+publish:
+  provider: generic
+  url: http://your-intranet-server/updates
+  channel: latest
+electronVersion: 28.3.3
+
+  ÔÇó author is missed in the package.json  appPackageFile=E:\YatayZeka_Projeler\AlbaChat\apps\desktop\package.json
+  ÔÇó installing production dependencies  platform=win32 arch=x64 appDir=E:\YatayZeka_Projeler\AlbaChat\apps\desktop
+  ÔÇó spawning        command=C:\Program Files\nodejs\node.exe C:\Program Files\nodejs\node_modules\npm\bin\npm-cli.js install --production --prefer-offline cwd=E:\YatayZeka_Projeler\AlbaChat\apps\desktop
+node.exe : npm warn config production Use `
+--omit=dev` instead.
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\
+Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified 
+   : (npm warn config...t=dev` instead.:S  
+  tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeComman 
+   dError
+ 
+npm warn Unknown env config "arch". This wi
+ll stop working in the next major version o
+f npm.
+npm warn Unknown env config "build-from-sou
+rce". This will stop working in the next ma
+jor version of npm.
+npm warn Unknown env config "devdir". This 
+will stop working in the next major version
+ of npm.
+npm warn Unknown env config "disturl". This
+ will stop working in the next major versio
+n of npm.
+npm warn Unknown env config "fallback-to-bu
+ild". This will stop working in the next ma
+jor version of npm.
+npm warn Unknown env config "platform". Thi
+s will stop working in the next major versi
+on of npm.
+npm warn Unknown env config "runtime". This
+ will stop working in the next major versio
+n of npm.
+npm warn Unknown env config "target". This 
+will stop working in the next major version
+ of npm.
+npm warn Unknown env config "target-arch". 
+This will stop working in the next major ve
+rsion of npm.
+npm warn Unknown env config "target-libc". 
+This will stop working in the next major ve
+rsion of npm.
+npm warn Unknown env config "target-platfor
+m". This will stop working in the next majo
+r version of npm.
+npm warn Unknown env config "update-binary"
+. This will stop working in the next major 
+version of npm.
+
+> albachat@1.0.0 prepare
+> husky
+
+'husky' is not recognized as an internal or
+ external command,
+operable program or batch file.
+npm error code 1
+npm error path E:\YatayZeka_Projeler\AlbaCh
+at
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.e
+xe /d /s /c husky
+npm error A complete log of this run can be
+ found in: C:\Users\Yal├ğ─▒n\AppData\Local\
+npm-cache\_logs\2026-03-04T20_28_31_088Z-de
+bug-0.log
+  ÔÇó exited          command=node.exe code=1 pid=88756
+  Ô¿» C:\Program Files\nodejs\node.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Exit code:
+1  failedTask=build stackTrace=Error: C:\Program Files\nodejs\node.exe process failed ERR_ELECTRON_BUILDER_CANNOT_EXECUTE
+Exit code:
+1
+    at ChildProcess.<anonymous> (E:\YatayZeka_Projeler\AlbaChat\node_modules\builder-util\out\util.js:238:20)
+    at Object.onceWrapper (node:events:623:26)
+    at ChildProcess.emit (node:events:508:28)
+    at ChildProcess.cp.emit (E:\YatayZeka_Projeler\AlbaChat\node_modules\cross-spawn\lib\enoent.js:34:29)
+    at maybeClose (node:internal/child_process:1101:16)
+    at Process.ChildProcess._handle.onexit (node:internal/child_process:305:5)

@@ -1,0 +1,29 @@
+﻿
+> albachat-desktop@1.0.0 build
+> electron-builder --win
+
+node.exe : 'electron-builder' is not recogn
+ized as an internal or external command,
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\
+Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified 
+   : ('electron-build...ternal command,:S  
+  tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeComman 
+   dError
+ 
+operable program or batch file.
+npm error Lifecycle script `build` failed w
+ith error:
+npm error code 1
+npm error path E:\YatayZeka_Projeler\AlbaCh
+at\apps\desktop
+npm error workspace albachat-desktop@1.0.0
+npm error location E:\YatayZeka_Projeler\Al
+baChat\apps\desktop
+npm error command failed
+npm error command C:\WINDOWS\system32\cmd.e
+xe /d /s /c electron-builder --win

@@ -1,0 +1,31 @@
+node.exe : Packaging app for platform win32
+ x64 using electron v28.3.3
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\
+Program Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified 
+   : (Packaging app f...lectron v28.3.3:S  
+  tring) [], RemoteException
+    + FullyQualifiedErrorId : NativeComman 
+   dError
+ 
+Command failed with a non-zero return code 
+(1):
+E:\YatayZeka_Projeler\AlbaChat\node_modules
+\rcedit\bin\rcedit-x64.exe C:\Users\YALN~1\
+AppData\Local\Temp\electron-packager\win32-
+x64\AlbaChat-win32-x64-FBxa0t\AlbaChat.exe 
+--set-version-string FileDescription AlbaCh
+at --set-version-string InternalName AlbaCh
+at --set-version-string OriginalFilename Al
+baChat.exe --set-version-string ProductName
+ AlbaChat --set-version-string CompanyName 
+AlbaChat --set-file-version 1.0.0 --set-pro
+duct-version 1.0.0 --set-icon assets/icon.i
+co
+
+Reserved header is not 0 or image type is n
+ot icon for 'assets/icon.ico'
+Fatal error: Unable to set icon

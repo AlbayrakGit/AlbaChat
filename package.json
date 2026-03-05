@@ -16,8 +16,7 @@
     "migrate:rollback": "npm run migrate:rollback -w apps/api",
     "docker:up": "docker-compose -f infra/docker-compose.yml up -d",
     "docker:down": "docker-compose -f infra/docker-compose.yml down",
-    "docker:rebuild": "docker-compose -f infra/docker-compose.yml up -d --build",
-    "prepare": "husky"
+    "docker:rebuild": "docker-compose -f infra/docker-compose.yml up -d --build"
   },
   "devDependencies": {
     "autocannon": "^7.15.0",
