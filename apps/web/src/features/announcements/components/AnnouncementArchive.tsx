@@ -20,7 +20,7 @@ function AnnouncementCard({ ann }: { ann: Announcement }) {
   return (
     <div
       className={`border rounded-2xl overflow-hidden transition-shadow hover:shadow-md
-        ${isUrgent ? 'border-red-200' : 'border-gray-200'}`}
+        ${isUrgent ? 'border-red-200 dark:border-red-800' : 'border-gray-200 dark:border-gray-700'}`}
     >
       {/* Başlık */}
       <button
@@ -29,7 +29,7 @@ function AnnouncementCard({ ann }: { ann: Announcement }) {
       >
         <span className="text-xl flex-shrink-0">{isUrgent ? '🚨' : '📢'}</span>
         <div className="flex-1 min-w-0">
-          <p className="font-semibold text-gray-900 text-sm truncate">{ann.title}</p>
+          <p className="font-semibold text-gray-900 dark:text-gray-100 text-sm truncate">{ann.title}</p>
           <p className="text-xs text-gray-400">{formatDate(ann.created_at)}</p>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
@@ -54,8 +54,8 @@ function AnnouncementCard({ ann }: { ann: Announcement }) {
 
       {/* İçerik */}
       {expanded && (
-        <div className="border-t border-gray-100 px-4 py-3 bg-gray-50">
-          <p className="text-sm text-gray-700 whitespace-pre-wrap leading-relaxed">
+        <div className="border-t border-gray-100 dark:border-gray-700 px-4 py-3 bg-gray-50 dark:bg-gray-700/50">
+          <p className="text-sm text-gray-700 dark:text-gray-300 whitespace-pre-wrap leading-relaxed">
             {ann.content}
           </p>
           <div className="mt-2 flex items-center justify-between text-xs text-gray-400">
@@ -100,14 +100,14 @@ export default function AnnouncementArchive({ onClose }: Props) {
     <div className="fixed inset-0 z-[9998] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gray-900/60 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+      <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
         {/* Başlık */}
-        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <span className="text-2xl">📋</span>
-          <h2 className="text-lg font-bold text-gray-900 flex-1">Duyuru Arşivi</h2>
+          <h2 className="text-lg font-bold text-gray-900 dark:text-gray-100 flex-1">Duyuru Arşivi</h2>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -116,18 +116,18 @@ export default function AnnouncementArchive({ onClose }: Props) {
         </div>
 
         {/* Filtreler */}
-        <div className="px-6 py-3 border-b border-gray-100 flex gap-2">
+        <div className="px-6 py-3 border-b border-gray-100 dark:border-gray-700 flex gap-2">
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Duyurularda ara..."
-            className="flex-1 text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            className="flex-1 text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 bg-white dark:bg-gray-700 dark:text-gray-200 focus:outline-none focus:ring-2 focus:ring-blue-500"
           />
           <select
             value={filterPriority}
             onChange={(e) => setFilterPriority(e.target.value as typeof filterPriority)}
-            className="text-sm border border-gray-200 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white"
+            className="text-sm border border-gray-200 dark:border-gray-600 rounded-xl px-3 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white dark:bg-gray-700 dark:text-gray-200"
           >
             <option value="all">Tümü</option>
             <option value="urgent">Acil</option>
@@ -155,23 +155,23 @@ export default function AnnouncementArchive({ onClose }: Props) {
 
         {/* Sayfalama */}
         {totalPages > 1 && (
-          <div className="px-6 py-3 border-t border-gray-200 flex items-center justify-between">
+          <div className="px-6 py-3 border-t border-gray-200 dark:border-gray-700 flex items-center justify-between">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40
-                hover:bg-gray-50 transition-colors"
+              className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 dark:text-gray-300 disabled:opacity-40
+                hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               ← Önceki
             </button>
-            <span className="text-sm text-gray-500">
+            <span className="text-sm text-gray-500 dark:text-gray-400">
               Sayfa {page} / {totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 disabled:opacity-40
-                hover:bg-gray-50 transition-colors"
+              className="text-sm px-3 py-1.5 rounded-lg border border-gray-200 dark:border-gray-600 dark:text-gray-300 disabled:opacity-40
+                hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors"
             >
               Sonraki →
             </button>

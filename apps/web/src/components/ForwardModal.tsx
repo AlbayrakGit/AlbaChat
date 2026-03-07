@@ -86,26 +86,26 @@ export default function ForwardModal({ message, onClose }: Props) {
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
             <div
-                className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-full max-w-sm mx-4 max-h-[70vh] flex flex-col animate-in fade-in zoom-in-95 duration-200"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full max-w-sm mx-4 max-h-[70vh] flex flex-col animate-in fade-in zoom-in-95 duration-200"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 flex-shrink-0">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                     <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-green-600 flex items-center justify-center">
                             <Send className="w-4 h-4 text-white" />
                         </div>
-                        <h2 className="text-base font-bold text-gray-900">Mesajı İlet</h2>
+                        <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">Mesajı İlet</h2>
                     </div>
-                    <button onClick={onClose} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all">
+                    <button onClick={onClose} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
                         <X className="w-4 h-4" />
                     </button>
                 </div>
 
                 {/* Forwarded Message Preview */}
-                <div className="px-5 py-2.5 bg-gray-50 border-b border-gray-100 flex-shrink-0">
+                <div className="px-5 py-2.5 bg-gray-50 dark:bg-gray-700/50 border-b border-gray-100 dark:border-gray-700 flex-shrink-0">
                     <p className="text-xs text-gray-400 font-semibold uppercase tracking-wider mb-1">İletilecek Mesaj</p>
-                    <p className="text-sm text-gray-700 line-clamp-2">{message.content || `📎 ${message.file?.original_name || 'Dosya'}`}</p>
+                    <p className="text-sm text-gray-700 dark:text-gray-300 line-clamp-2">{message.content || `📎 ${message.file?.original_name || 'Dosya'}`}</p>
                 </div>
 
                 {/* Search */}
@@ -136,13 +136,13 @@ export default function ForwardModal({ message, onClose }: Props) {
                                 key={u.id}
                                 onClick={() => forwardTo(u.id)}
                                 disabled={sending !== null}
-                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-50 transition-colors disabled:opacity-50"
+                                className="w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors disabled:opacity-50"
                             >
                                 <div className="w-9 h-9 rounded-full bg-gradient-to-tr from-blue-500 to-cyan-400 flex items-center justify-center text-white text-xs font-bold flex-shrink-0">
                                     <User className="w-4 h-4" />
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <p className="text-sm font-semibold text-gray-800 truncate">{u.display_name || u.username}</p>
+                                    <p className="text-sm font-semibold text-gray-800 dark:text-gray-200 truncate">{u.display_name || u.username}</p>
                                     <p className="text-[10px] text-gray-400">@{u.username}</p>
                                 </div>
                                 {sending === u.id ? (

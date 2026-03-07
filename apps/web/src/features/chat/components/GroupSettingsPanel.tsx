@@ -84,22 +84,22 @@ export default function GroupSettingsPanel({ group, onClose }: Props) {
     <div className="fixed inset-0 z-[9990] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-gray-900/50 backdrop-blur-sm" onClick={onClose} />
 
-      <div className="relative bg-white rounded-3xl shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col">
+      <div className="relative bg-white dark:bg-gray-800 rounded-3xl shadow-2xl w-full max-w-md max-h-[85vh] flex flex-col">
         {/* Başlık */}
-        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200">
+        <div className="flex items-center gap-3 px-6 py-4 border-b border-gray-200 dark:border-gray-700">
           <div className="w-9 h-9 rounded-xl bg-gradient-to-br from-blue-500 to-indigo-600 flex items-center justify-center text-white font-semibold text-sm flex-shrink-0">
             {group.name.slice(0, 2).toUpperCase()}
           </div>
           <div className="flex-1 min-w-0">
-            <h2 className="font-bold text-gray-900 text-sm truncate">{group.name}</h2>
-            <p className="text-xs text-gray-500">
+            <h2 className="font-bold text-gray-900 dark:text-gray-100 text-sm truncate">{group.name}</h2>
+            <p className="text-xs text-gray-500 dark:text-gray-400">
               {group.type === 'direct' ? 'Özel mesaj' : group.type === 'department' ? 'Departman' : 'Özel grup'}
               {group.is_archived && ' · Arşivlendi'}
             </p>
           </div>
           <button
             onClick={onClose}
-            className="p-2 rounded-xl text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+            className="p-2 rounded-xl text-gray-400 hover:text-gray-600 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors"
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -110,7 +110,7 @@ export default function GroupSettingsPanel({ group, onClose }: Props) {
         {/* Üye listesi */}
         <div className="flex-1 overflow-y-auto">
           <div className="px-6 pt-4 pb-1">
-            <h3 className="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+            <h3 className="text-xs font-semibold text-gray-500 dark:text-gray-400 uppercase tracking-wider">
               Üyeler ({members.length})
             </h3>
           </div>
@@ -130,7 +130,7 @@ export default function GroupSettingsPanel({ group, onClose }: Props) {
                 const canChangeRole = me?.role === 'admin' && !isMe && member.member_role !== 'owner';
 
                 return (
-                  <div key={member.id} className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50">
+                  <div key={member.id} className="flex items-center gap-3 px-3 py-2 rounded-xl hover:bg-gray-50 dark:hover:bg-gray-700">
                     {/* Avatar */}
                     <div className="relative flex-shrink-0">
                       {member.avatar_url ? (
@@ -141,13 +141,13 @@ export default function GroupSettingsPanel({ group, onClose }: Props) {
                           {getInitials(member.display_name, member.username)}
                         </div>
                       )}
-                      <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white
+                      <span className={`absolute -bottom-0.5 -right-0.5 w-2.5 h-2.5 rounded-full border-2 border-white dark:border-gray-800
                         ${member.is_online ? 'bg-green-500' : 'bg-gray-300'}`} />
                     </div>
 
                     {/* İsim */}
                     <div className="flex-1 min-w-0">
-                      <p className="text-sm font-medium text-gray-900 truncate">
+                      <p className="text-sm font-medium text-gray-900 dark:text-gray-100 truncate">
                         {member.display_name || member.username}
                         {isMe && <span className="ml-1 text-xs text-gray-400">(Sen)</span>}
                       </p>
@@ -159,7 +159,7 @@ export default function GroupSettingsPanel({ group, onClose }: Props) {
                       <select
                         value={member.member_role}
                         onChange={(e) => updateRole({ userId: member.id, role: e.target.value })}
-                        className="text-xs border border-gray-200 rounded-lg px-2 py-1 bg-white focus:outline-none"
+                        className="text-xs border border-gray-200 dark:border-gray-600 rounded-lg px-2 py-1 bg-white dark:bg-gray-700 dark:text-gray-200 focus:outline-none"
                       >
                         <option value="member">Üye</option>
                         <option value="admin">Yönetici</option>
@@ -189,14 +189,14 @@ export default function GroupSettingsPanel({ group, onClose }: Props) {
 
         {/* Alt aksiyonlar */}
         {canManage && !group.is_archived && group.type !== 'direct' && (
-          <div className="border-t border-gray-100 p-4">
+          <div className="border-t border-gray-100 dark:border-gray-700 p-4">
             <button
               onClick={handleArchiveClick}
               disabled={archivePending}
               className={`w-full py-2.5 rounded-xl text-sm font-medium transition-colors
                 ${confirmArchive
                   ? 'bg-red-500 text-white hover:bg-red-600'
-                  : 'bg-gray-100 text-gray-600 hover:bg-gray-200'
+                  : 'bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-300 hover:bg-gray-200 dark:hover:bg-gray-600'
                 }`}
             >
               {confirmArchive ? 'Arşivlemek istediğine emin misin?' : 'Grubu Arşivle'}

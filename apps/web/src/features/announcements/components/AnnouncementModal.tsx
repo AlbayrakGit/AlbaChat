@@ -95,16 +95,16 @@ export default function AnnouncementModal({ announcement }: Props) {
         </div>
 
         {/* İçerik */}
-        <div className="bg-white px-8 py-6 max-h-[50vh] overflow-y-auto">
-          <p className="text-gray-700 leading-relaxed whitespace-pre-wrap text-base">
+        <div className="bg-white dark:bg-gray-800 px-8 py-6 max-h-[50vh] overflow-y-auto">
+          <p className="text-gray-700 dark:text-gray-300 leading-relaxed whitespace-pre-wrap text-base">
             {sanitizeText(announcement.content)}
           </p>
         </div>
 
         {/* Alt bilgi + Okundu butonu */}
-        <div className="bg-gray-50 border-t border-gray-200 px-8 py-5 flex items-center justify-between gap-4">
-          <div className="text-sm text-gray-500 min-w-0">
-            <p className="font-medium text-gray-700 truncate">
+        <div className="bg-gray-50 dark:bg-gray-900 border-t border-gray-200 dark:border-gray-700 px-8 py-5 flex items-center justify-between gap-4">
+          <div className="text-sm text-gray-500 dark:text-gray-400 min-w-0">
+            <p className="font-medium text-gray-700 dark:text-gray-300 truncate">
               {announcement.creator_display_name || announcement.creator_username}
             </p>
             <p>{formatDate(announcement.created_at)}</p>

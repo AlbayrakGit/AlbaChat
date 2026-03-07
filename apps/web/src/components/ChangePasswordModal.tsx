@@ -49,18 +49,18 @@ export default function ChangePasswordModal({ onClose }: Props) {
     return (
         <div className="fixed inset-0 z-[9999] flex items-center justify-center bg-black/40 backdrop-blur-sm" onClick={onClose}>
             <div
-                className="bg-white rounded-2xl shadow-2xl border border-gray-100 w-full max-w-sm mx-4 animate-in fade-in zoom-in-95 duration-200"
+                className="bg-white dark:bg-gray-800 rounded-2xl shadow-2xl border border-gray-100 dark:border-gray-700 w-full max-w-sm mx-4 animate-in fade-in zoom-in-95 duration-200"
                 onClick={(e) => e.stopPropagation()}
             >
                 {/* Header */}
-                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100">
+                <div className="flex items-center justify-between px-5 py-4 border-b border-gray-100 dark:border-gray-700">
                     <div className="flex items-center gap-2.5">
                         <div className="w-8 h-8 rounded-lg bg-blue-600 flex items-center justify-center">
                             <Lock className="w-4 h-4 text-white" />
                         </div>
-                        <h2 className="text-base font-bold text-gray-900">Şifre Değiştir</h2>
+                        <h2 className="text-base font-bold text-gray-900 dark:text-gray-100">Şifre Değiştir</h2>
                     </div>
-                    <button onClick={onClose} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all">
+                    <button onClick={onClose} className="p-1.5 rounded-lg text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700 transition-all">
                         <X className="w-4 h-4" />
                     </button>
                 </div>
@@ -68,16 +68,16 @@ export default function ChangePasswordModal({ onClose }: Props) {
                 {/* Success State */}
                 {success ? (
                     <div className="p-8 text-center">
-                        <div className="w-14 h-14 rounded-full bg-green-100 flex items-center justify-center mx-auto mb-4">
+                        <div className="w-14 h-14 rounded-full bg-green-100 dark:bg-green-900/30 flex items-center justify-center mx-auto mb-4">
                             <Check className="w-7 h-7 text-green-600" />
                         </div>
-                        <p className="text-sm font-semibold text-gray-700">Şifreniz başarıyla değiştirildi.</p>
+                        <p className="text-sm font-semibold text-gray-700 dark:text-gray-300">Şifreniz başarıyla değiştirildi.</p>
                     </div>
                 ) : (
                     <form onSubmit={handleSubmit} className="p-5 space-y-4">
                         {/* Current Password */}
                         <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Mevcut Şifre</label>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Mevcut Şifre</label>
                             <div className="relative">
                                 <input
                                     type={showCurrent ? 'text' : 'password'}
@@ -100,7 +100,7 @@ export default function ChangePasswordModal({ onClose }: Props) {
 
                         {/* New Password */}
                         <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Yeni Şifre</label>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Yeni Şifre</label>
                             <div className="relative">
                                 <input
                                     type={showNew ? 'text' : 'password'}
@@ -122,7 +122,7 @@ export default function ChangePasswordModal({ onClose }: Props) {
 
                         {/* Confirm Password */}
                         <div>
-                            <label className="block text-xs font-semibold text-gray-500 mb-1.5 uppercase tracking-wider">Yeni Şifre (Tekrar)</label>
+                            <label className="block text-xs font-semibold text-gray-500 dark:text-gray-400 mb-1.5 uppercase tracking-wider">Yeni Şifre (Tekrar)</label>
                             <input
                                 type="password"
                                 value={confirmPassword}
@@ -135,7 +135,7 @@ export default function ChangePasswordModal({ onClose }: Props) {
 
                         {/* Error */}
                         {error && (
-                            <div className="flex items-start gap-2 p-2.5 bg-red-50 text-red-600 border border-red-100 rounded-xl">
+                            <div className="flex items-start gap-2 p-2.5 bg-red-50 dark:bg-red-900/20 text-red-600 border border-red-100 dark:border-red-800 rounded-xl">
                                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                                 <span className="text-xs font-medium">{error}</span>
                             </div>
