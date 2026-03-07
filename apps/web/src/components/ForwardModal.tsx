@@ -41,22 +41,34 @@ export default function ForwardModal({ message, onClose }: Props) {
         },
         onSuccess: (group) => {
             addGroupToList(group);
-            try {
-                getSocket().emit('group:join', { groupId: group.id });
-                getSocket().emit('message:send', {
+            const socket = getSocket();
+
+            // Önce odaya katıl, sonra mesajı gönder (callback ile bekle)
+            socket.emit('group:join', { groupId: group.id });
+
+            // Kısa gecikme ile odaya katılımın tamamlanmasını bekle
+            let done = false;
+            const finish = () => {
+                if (done) return;
+                done = true;
+                setActiveGroup(group.id);
+                setSending(null);
+                onClose();
+            };
+
+            setTimeout(() => {
+                socket.emit('message:send', {
                     groupId: group.id,
                     content: message.content || '',
                     type: message.type,
-                    fileId: message.file?.id || null,
+                    fileId: message.file_id ?? message.file?.id ?? null,
                     is_forwarded: true,
                     idempotencyKey: uuidv4(),
-                });
-            } catch (e) {
-                console.error('[Forward] Gönderim hatası:', e);
-            }
-            setActiveGroup(group.id);
-            setSending(null);
-            onClose();
+                }, () => finish());
+
+                // Fallback: callback gelmezse 3 saniyede kapat
+                setTimeout(finish, 3000);
+            }, 150);
         },
         onError: () => setSending(null),
     });
