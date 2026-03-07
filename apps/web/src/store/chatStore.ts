@@ -36,6 +36,7 @@ export interface Message {
   created_at: string;
   sender: MessageSender;
   isRead?: boolean;
+  is_forwarded?: boolean;
   reactions?: Record<string, number[]>;
 }
 

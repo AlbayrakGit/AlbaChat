@@ -161,7 +161,7 @@ export default function MessageInput({
 
   return (
     <div
-      className={`relative border-t border-gray-200 bg-white flex-shrink-0 transition-colors ${isDraggingOver ? 'bg-blue-50' : ''}`}
+      className={`relative border-t border-gray-200 bg-white flex-shrink-0 transition-colors pb-[env(safe-area-inset-bottom)] ${isDraggingOver ? 'bg-blue-50' : ''}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}

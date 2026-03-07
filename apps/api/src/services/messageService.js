@@ -18,7 +18,7 @@ export class GroupArchivedError extends Error {
 
 const MESSAGE_COLS = [
   'm.id', 'm.group_id', 'm.sender_id', 'm.content', 'm.type',
-  'm.file_id', 'm.reply_to_id', 'm.idempotency_key', 'm.is_deleted', 'm.created_at', 'm.reactions',
+  'm.file_id', 'm.reply_to_id', 'm.idempotency_key', 'm.is_deleted', 'm.created_at', 'm.reactions', 'm.is_forwarded',
   'u.username as sender_username',
   'u.display_name as sender_display_name',
   'u.avatar_url as sender_avatar_url',
@@ -73,6 +73,7 @@ function formatMessage(row) {
     is_deleted: row.is_deleted,
     created_at: row.created_at,
     reactions: row.reactions || {},
+    is_forwarded: !!row.is_forwarded,
     sender: {
       id: row.sender_id,
       username: row.sender_username,
@@ -89,7 +90,7 @@ function formatMessage(row) {
  */
 export async function createMessage({
   groupId, senderId, content, type = 'text',
-  fileId = null, replyToId = null, idempotencyKey = null,
+  fileId = null, replyToId = null, idempotencyKey = null, isForwarded = false,
 }) {
   // İdempotency kontrolü — aynı key ile tekrar gönderim olursa mevcut mesajı döndür
   if (idempotencyKey) {
@@ -121,6 +122,7 @@ export async function createMessage({
       file_id: fileId,
       reply_to_id: replyToId || null,
       idempotency_key: idempotencyKey,
+      is_forwarded: isForwarded,
     })
     .returning('*');
 

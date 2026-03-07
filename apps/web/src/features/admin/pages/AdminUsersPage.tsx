@@ -379,11 +379,10 @@ function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => v
               <button
                 onClick={() => toggleStatus(!data.is_active)}
                 disabled={isToggling}
-                className={`text-sm flex-1 rounded-xl px-4 py-2 font-medium transition-colors ${
-                  data.is_active
+                className={`text-sm flex-1 rounded-xl px-4 py-2 font-medium transition-colors ${data.is_active
                     ? 'bg-red-100 text-red-700 hover:bg-red-200'
                     : 'bg-green-100 text-green-700 hover:bg-green-200'
-                }`}
+                  }`}
               >
                 {isToggling ? '...' : data.is_active ? 'Devre Dışı Bırak' : 'Aktifleştir'}
               </button>
@@ -563,78 +562,80 @@ export default function AdminUsersPage() {
         ) : users.length === 0 ? (
           <div className="p-8 text-center text-gray-400">Kullanıcı bulunamadı.</div>
         ) : (
-          <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
-              <tr>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Kullanıcı</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">E-posta</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Rol</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Durum</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Kayıt</th>
-                <th className="text-right px-4 py-3 font-medium text-gray-600">İşlemler</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {users.map((user) => (
-                <tr key={user.id} className={`hover:bg-gray-50 transition-colors ${!user.is_active ? 'opacity-60' : ''}`}>
-                  <td className="px-4 py-3">
-                    <div className="font-medium text-gray-900">{user.display_name}</div>
-                    <div className="text-gray-400 text-xs">@{user.username}</div>
-                  </td>
-                  <td className="px-4 py-3 text-gray-600">{user.email}</td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
-                      {user.role === 'admin' ? 'Admin' : 'Kullanıcı'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3">
-                    <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                      <span className={`w-1.5 h-1.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
-                      {user.is_active ? 'Aktif' : 'Pasif'}
-                    </span>
-                  </td>
-                  <td className="px-4 py-3 text-gray-400 text-xs">
-                    {new Date(user.created_at).toLocaleDateString('tr-TR')}
-                  </td>
-                  <td className="px-4 py-3">
-                    <div className="flex items-center justify-end gap-1">
-                      <button
-                        onClick={() => setSelectedUserId(user.id)}
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                        title="Detay"
-                      >
-                        <Eye className="w-4 h-4" />
-                      </button>
-                      <button
-                        onClick={() => setEditingUser(user)}
-                        className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                        title="Düzenle"
-                      >
-                        <Pencil className="w-4 h-4" />
-                      </button>
-                      {user.is_active ? (
-                        <button
-                          onClick={() => setStatusConfirm({ id: user.id, activate: false })}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                          title="Devre Dışı Bırak"
-                        >
-                          <UserX className="w-4 h-4" />
-                        </button>
-                      ) : (
-                        <button
-                          onClick={() => setStatusConfirm({ id: user.id, activate: true })}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors"
-                          title="Aktifleştir"
-                        >
-                          <UserCheck className="w-4 h-4" />
-                        </button>
-                      )}
-                    </div>
-                  </td>
+          <div className="overflow-x-auto custom-scrollbar">
+            <table className="w-full text-sm min-w-[600px]">
+              <thead className="bg-gray-50 border-b border-gray-200">
+                <tr>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Kullanıcı</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">E-posta</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Rol</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Durum</th>
+                  <th className="text-left px-4 py-3 font-medium text-gray-600">Kayıt</th>
+                  <th className="text-right px-4 py-3 font-medium text-gray-600">İşlemler</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100">
+                {users.map((user) => (
+                  <tr key={user.id} className={`hover:bg-gray-50 transition-colors ${!user.is_active ? 'opacity-60' : ''}`}>
+                    <td className="px-4 py-3">
+                      <div className="font-medium text-gray-900">{user.display_name}</div>
+                      <div className="text-gray-400 text-xs">@{user.username}</div>
+                    </td>
+                    <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
+                        {user.role === 'admin' ? 'Admin' : 'Kullanıcı'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3">
+                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        <span className={`w-1.5 h-1.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
+                        {user.is_active ? 'Aktif' : 'Pasif'}
+                      </span>
+                    </td>
+                    <td className="px-4 py-3 text-gray-400 text-xs">
+                      {new Date(user.created_at).toLocaleDateString('tr-TR')}
+                    </td>
+                    <td className="px-4 py-3">
+                      <div className="flex items-center justify-end gap-1">
+                        <button
+                          onClick={() => setSelectedUserId(user.id)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                          title="Detay"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => setEditingUser(user)}
+                          className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                          title="Düzenle"
+                        >
+                          <Pencil className="w-4 h-4" />
+                        </button>
+                        {user.is_active ? (
+                          <button
+                            onClick={() => setStatusConfirm({ id: user.id, activate: false })}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                            title="Devre Dışı Bırak"
+                          >
+                            <UserX className="w-4 h-4" />
+                          </button>
+                        ) : (
+                          <button
+                            onClick={() => setStatusConfirm({ id: user.id, activate: true })}
+                            className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors"
+                            title="Aktifleştir"
+                          >
+                            <UserCheck className="w-4 h-4" />
+                          </button>
+                        )}
+                      </div>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         )}
       </div>
 
@@ -657,11 +658,10 @@ export default function AdminUsersPage() {
               <button
                 onClick={() => toggleUserStatus({ userId: statusConfirm.id, is_active: statusConfirm.activate })}
                 disabled={isTogglingStatus}
-                className={`flex-1 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${
-                  statusConfirm.activate
+                className={`flex-1 rounded-xl px-4 py-2 text-sm font-medium transition-colors ${statusConfirm.activate
                     ? 'bg-green-600 text-white hover:bg-green-700'
                     : 'bg-red-600 text-white hover:bg-red-700'
-                } disabled:opacity-50`}
+                  } disabled:opacity-50`}
               >
                 {isTogglingStatus ? '...' : statusConfirm.activate ? 'Aktifleştir' : 'Devre Dışı Bırak'}
               </button>

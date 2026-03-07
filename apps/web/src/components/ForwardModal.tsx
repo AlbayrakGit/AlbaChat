@@ -48,6 +48,7 @@ export default function ForwardModal({ message, onClose }: Props) {
                     content: message.content || '',
                     type: message.type,
                     fileId: message.file?.id || null,
+                    is_forwarded: true,
                     idempotencyKey: uuidv4(),
                 });
             } catch (e) {
