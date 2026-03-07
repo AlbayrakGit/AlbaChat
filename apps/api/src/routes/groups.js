@@ -10,6 +10,7 @@ import {
   removeGroupMember,
   updateMemberRole,
   getOrCreateDirectGroup,
+  toggleGroupFavorite,
   GroupNotFoundError,
   GroupForbiddenError,
   GroupArchivedError,
@@ -170,6 +171,14 @@ export default async function groupRoutes(fastify) {
     try {
       await clearGroupMessages(parseInt(req.params.id, 10), req.user.id);
       return reply.send({ success: true, data: { message: 'Sohbet temizlendi.' } });
+    } catch (err) { return handleGroupError(err, reply); }
+  });
+
+  // POST /api/groups/:id/favorite — Favori toggle
+  fastify.post('/:id/favorite', { preHandler: [authenticate] }, async (req, reply) => {
+    try {
+      const result = await toggleGroupFavorite(parseInt(req.params.id, 10), req.user.id);
+      return reply.send({ success: true, data: result });
     } catch (err) { return handleGroupError(err, reply); }
   });
 }

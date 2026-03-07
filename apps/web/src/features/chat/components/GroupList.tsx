@@ -65,12 +65,12 @@ function GroupItem({ group, isActive, onSelect }: {
         onClick={onSelect}
         className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-left transition-all ${isActive
           ? 'bg-blue-600 text-white shadow-md'
-          : 'text-gray-700 hover:bg-gray-100'
+          : 'text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'
           }`}
       >
         {/* Avatar + Online Gösterge */}
         <div className="relative flex-shrink-0">
-          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white transition-transform group-hover:scale-105 shadow-md border-2 border-white
+          <div className={`w-10 h-10 rounded-full flex items-center justify-center text-white transition-transform group-hover:scale-105 shadow-md border-2 border-white dark:border-gray-600
             ${isActive ? 'bg-white/20' : getGroupColor(group)}`}>
             {group.type === 'direct' ? (
               <User className="w-5 h-5 drop-shadow-sm" />
@@ -91,7 +91,7 @@ function GroupItem({ group, isActive, onSelect }: {
         {/* İsim + son mesaj */}
         <div className="flex-1 min-w-0">
           <div className="flex items-center justify-between">
-            <span className={`text-sm font-bold truncate tracking-tight ${isActive ? 'text-white' : 'text-gray-900 group-hover:text-blue-600'}`}>
+            <span className={`text-sm font-bold truncate tracking-tight ${isActive ? 'text-white' : 'text-gray-900 dark:text-gray-100 group-hover:text-blue-600'}`}>
               {group.name}
             </span>
             {/* Okunmamış badge */}
@@ -127,7 +127,7 @@ function GroupItem({ group, isActive, onSelect }: {
         <button
           onClick={(e) => { e.stopPropagation(); toggleFavorite(group.id); }}
           className={`p-1.5 rounded-lg backdrop-blur-md transition-all active:scale-90
-            ${group.is_favorite ? 'bg-amber-50 text-amber-500' : 'bg-white/80 text-gray-400 hover:text-amber-500'}`}
+            ${group.is_favorite ? 'bg-amber-50 dark:bg-amber-900/30 text-amber-500' : 'bg-white/80 dark:bg-gray-700/80 text-gray-400 hover:text-amber-500'}`}
           title={group.is_favorite ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
         >
           <Star className={`w-3.5 h-3.5 ${group.is_favorite ? 'fill-amber-500' : ''}`} />
@@ -135,7 +135,7 @@ function GroupItem({ group, isActive, onSelect }: {
         <button
           onClick={handleDelete}
           className={`flex items-center justify-center gap-1 px-2 py-1.5 rounded-lg backdrop-blur-md transition-all active:scale-95
-            ${confirmDelete ? 'bg-red-500 text-white shadow-lg shadow-red-200 w-auto' : 'bg-white/80 text-gray-400 hover:text-gray-700 w-8'}`}
+            ${confirmDelete ? 'bg-red-500 text-white shadow-lg shadow-red-200 w-auto' : 'bg-white/80 dark:bg-gray-700/80 text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 w-8'}`}
           title={confirmDelete ? 'Sohbeti Kapatmayı Onayla' : 'Sohbeti Kapat'}
         >
           <Trash2 className="w-3.5 h-3.5" />
@@ -191,8 +191,8 @@ export default function GroupList({ groups, activeGroupId, onSelect }: Props) {
             />
           ))}
           {others.length > 0 && (
-            <div className="my-4 mx-3 border-t border-gray-100 flex items-center justify-center">
-              <span className="bg-white px-2 -mt-2.5 text-[10px] font-bold text-gray-300 uppercase tracking-widest">Diğerleri</span>
+            <div className="my-4 mx-3 border-t border-gray-100 dark:border-gray-600 flex items-center justify-center">
+              <span className="bg-white dark:bg-gray-800 px-2 -mt-2.5 text-[10px] font-bold text-gray-300 dark:text-gray-500 uppercase tracking-widest">Diğerleri</span>
             </div>
           )}
         </>

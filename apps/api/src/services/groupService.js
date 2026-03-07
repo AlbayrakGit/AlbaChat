@@ -42,6 +42,7 @@ export async function listUserGroups(userId) {
     .select(
       'g.*',
       'gm.role as my_role',
+      'gm.is_favorite',
       knex.raw(`
         CASE 
           WHEN g.type = 'direct' THEN COALESCE(
@@ -298,4 +299,19 @@ export async function getOrCreateDirectGroup(userA, userB) {
   }
 
   return group;
+}
+
+/**
+ * Favori toggle — kullanıcının belirli gruptaki is_favorite durumunu değiştirir
+ */
+export async function toggleGroupFavorite(groupId, userId) {
+  const member = await knex('group_members').where({ group_id: groupId, user_id: userId }).first();
+  if (!member) throw new MemberNotFoundError();
+
+  const newValue = !member.is_favorite;
+  await knex('group_members')
+    .where({ group_id: groupId, user_id: userId })
+    .update({ is_favorite: newValue });
+
+  return { is_favorite: newValue };
 }

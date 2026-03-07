@@ -11,9 +11,11 @@ interface Props {
   message: Message;
   showSender: boolean;
   isSelected?: boolean;
+  highlightId?: number | null;
   onClick?: () => void;
   onReply?: (message: Message) => void;
   onForward?: (message: Message) => void;
+  onScrollToMessage?: (messageId: number) => void;
 }
 
 function formatTime(iso: string) {
@@ -185,7 +187,7 @@ function MessageMenu({
     <div
       ref={menuRef}
       style={{ top: coords.top, left: coords.left }}
-      className="fixed min-w-[140px] bg-white rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100 py-1.5 z-[9999]"
+      className="fixed min-w-[140px] bg-white dark:bg-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100 dark:border-gray-700 py-1.5 z-[9999]"
     >
       {/* Quick Reactions Bar */}
       <div className="flex items-center justify-between px-2 py-2 border-b border-gray-50 mb-1">
@@ -201,7 +203,7 @@ function MessageMenu({
                 console.error('Reaction error:', err);
               }
             }}
-            className="p-1.5 hover:bg-gray-100 rounded-lg transition-colors text-lg leading-none active:scale-125 duration-200"
+            className="p-1.5 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors text-lg leading-none active:scale-125 duration-200"
             title={emoji}
           >
             {emoji}
@@ -209,11 +211,11 @@ function MessageMenu({
         ))}
       </div>
 
-      <button onClick={(e) => { e.stopPropagation(); onClose(); onReply?.(message); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+      <button onClick={(e) => { e.stopPropagation(); onClose(); onReply?.(message); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
         <Reply className="w-3.5 h-3.5 text-blue-500" />
         <span>Yanıtla</span>
       </button>
-      <button onClick={(e) => { e.stopPropagation(); onClose(); onForward?.(message); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 hover:bg-gray-50 transition-colors">
+      <button onClick={(e) => { e.stopPropagation(); onClose(); onForward?.(message); }} className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-700 transition-colors">
         <Forward className="w-3.5 h-3.5 text-green-500" />
         <span>İlet</span>
       </button>
@@ -250,7 +252,7 @@ export function ReactionsList({ reactions, isOwn }: { reactions: Record<string, 
   );
 }
 
-export default function MessageBubble({ message, showSender, isSelected, onClick, onReply, onForward }: Props) {
+export default function MessageBubble({ message, showSender, isSelected, highlightId, onClick, onReply, onForward, onScrollToMessage }: Props) {
   const { user } = useAuthStore();
   const isOwn = message.sender_id === user?.id;
   const { sender } = message;
@@ -278,12 +280,15 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
     }
   }, [confirmDelete, deleteTimer, message.id]);
 
+  const isHighlighted = highlightId === message.id;
+
   if (isOwn) {
     return (
       <div
+        id={`message-${message.id}`}
         onClick={onClick}
         className={`flex justify-end mb-1 px-4 group/msg animate-slide-up transition-all cursor-pointer
-          ${isSelected ? 'bg-blue-500/5' : ''}`}
+          ${isHighlighted ? 'bg-amber-100 dark:bg-amber-900/30 animate-pulse' : isSelected ? 'bg-blue-500/5' : ''}`}
       >
         <div className="max-w-[80%] sm:max-w-[70%]">
           {showSender && !message.is_forwarded && (
@@ -291,7 +296,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
           )}
 
           <div className="flex items-end gap-2 relative">
-            <div className={`relative px-3.5 py-1.5 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
+            <div className={`relative px-3 py-0.5 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
               ${isSelected ? 'ring-primary/40' : ''}
               ${message.file ? 'bg-transparent shadow-none p-0 ring-0' : 'bg-primary text-primary-foreground rounded-2xl'}`}>
 
@@ -311,8 +316,11 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
               )}
 
               {message.reply_to && (
-                <div className="mb-2 pl-2 pr-2 py-1.5 bg-black/10 border-l-2 border-white/40 rounded-lg backdrop-blur-sm">
-                  <p className="text-[9px] font-bold text-white/70 mb-0.5">iletildi</p>
+                <div
+                  onClick={(e) => { e.stopPropagation(); onScrollToMessage?.(message.reply_to!.id); }}
+                  className="mb-2 pl-2 pr-2 py-1.5 bg-black/10 border-l-2 border-white/40 rounded-lg backdrop-blur-sm cursor-pointer hover:bg-black/20 transition-colors"
+                >
+                  <p className="text-[9px] font-bold text-white/70 mb-0.5">{message.reply_to.sender.username}</p>
                   <p className="text-[11px] text-white/90 line-clamp-1 truncate leading-tight">
                     {message.reply_to.content}
                   </p>
@@ -322,7 +330,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
               {message.file ? (
                 <FileAttachment file={message.file} isOwn />
               ) : (
-                <p className="text-[14px] leading-[20px] relative z-10 whitespace-pre-wrap">{message.content}</p>
+                <p className="text-[15px] leading-snug relative z-10 whitespace-pre-wrap">{message.content}</p>
               )}
               {message.reactions && <ReactionsList reactions={message.reactions} isOwn={true} />}
             </div>
@@ -356,9 +364,10 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
 
   return (
     <div
+      id={`message-${message.id}`}
       onClick={onClick}
       className={`flex items-end gap-2.5 mb-1 px-4 group/msg animate-slide-up transition-all cursor-pointer
-        ${isSelected ? 'bg-blue-500/5' : ''}`}
+        ${isHighlighted ? 'bg-amber-100 dark:bg-amber-900/30 animate-pulse' : isSelected ? 'bg-blue-500/5' : ''}`}
     >
       <div className="w-9 h-9 flex-shrink-0">
         {sender.avatar_url ? (
@@ -379,9 +388,9 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
           <p className="text-[10px] font-bold tracking-wide text-blue-600 mb-0.5 ml-1 opacity-80">{displayName}</p>
         )}
         <div className="flex items-end gap-2 relative">
-          <div className={`relative px-3.5 py-1.5 break-words shadow-sm border transition-all duration-300 ring-2 ring-transparent
+          <div className={`relative px-3 py-0.5 break-words shadow-sm border transition-all duration-300 ring-2 ring-transparent
             ${isSelected ? 'ring-primary/40' : ''}
-            ${message.file ? 'bg-transparent shadow-none border-none p-0 ring-0' : 'bg-white border-gray-100 rounded-2xl'}`}>
+            ${message.file ? 'bg-transparent shadow-none border-none p-0 ring-0' : 'bg-white dark:bg-gray-700 border-gray-100 dark:border-gray-600 rounded-2xl'}`}>
 
             <button
               id={`msg-btn-${message.id}`}
@@ -399,8 +408,11 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             )}
 
             {message.reply_to && (
-              <div className="mb-2 pl-2 pr-2 py-1.5 bg-gray-50 dark:bg-white/5 border-l-2 border-primary/40 rounded-lg">
-                <p className="text-[9px] font-bold text-primary mb-0.5">iletildi</p>
+              <div
+                onClick={(e) => { e.stopPropagation(); onScrollToMessage?.(message.reply_to!.id); }}
+                className="mb-2 pl-2 pr-2 py-1.5 bg-gray-50 dark:bg-white/5 border-l-2 border-primary/40 rounded-lg cursor-pointer hover:bg-gray-100 dark:hover:bg-white/10 transition-colors"
+              >
+                <p className="text-[9px] font-bold text-primary mb-0.5">{message.reply_to.sender.username}</p>
                 <p className="text-[11px] text-foreground/80 line-clamp-1 truncate leading-tight">{message.reply_to.content}</p>
               </div>
             )}
@@ -408,7 +420,7 @@ export default function MessageBubble({ message, showSender, isSelected, onClick
             {message.file ? (
               <FileAttachment file={message.file} isOwn={false} />
             ) : (
-              <p className="text-[14px] leading-[20px] text-foreground whitespace-pre-wrap">{message.content}</p>
+              <p className="text-[15px] leading-snug text-foreground whitespace-pre-wrap">{message.content}</p>
             )}
             {message.reactions && <ReactionsList reactions={message.reactions} isOwn={false} />}
           </div>

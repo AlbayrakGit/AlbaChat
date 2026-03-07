@@ -10,7 +10,7 @@ import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
 import GroupSettingsPanel from './GroupSettingsPanel';
 import ForwardModal from '@/components/ForwardModal';
-import { Settings, ChevronLeft, ArrowDownToLine, User, Users, Eraser, Search, X } from 'lucide-react';
+import { Settings, ChevronLeft, ArrowDownToLine, User, Users, Eraser, Search, X, Star } from 'lucide-react';
 const COLORS = [
   'bg-red-500', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500',
   'bg-violet-500', 'bg-pink-500', 'bg-cyan-500', 'bg-orange-500',
@@ -55,8 +55,9 @@ function DateSeparator({ date }: { date: string }) {
 }
 
 export default function ChatWindow({ group, onBack }: Props) {
-  const { messages, setMessages, prependMessages, setLoadingMessages, typingUsers, clearUnread } =
+  const { messages, setMessages, prependMessages, setLoadingMessages, typingUsers, clearUnread, toggleFavorite, groups } =
     useChatStore();
+  const isFavorite = groups.find(g => g.id === group.id)?.is_favorite ?? false;
   const { mutate: clearChat } = useMutation({
     mutationFn: () => apiClient.post(`/groups/${group.id}/clear`),
     onSuccess: () => {
@@ -75,6 +76,7 @@ export default function ChatWindow({ group, onBack }: Props) {
   const [showSearch, setShowSearch] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedMessageId, setSelectedMessageId] = useState<number | null>(null);
+  const [highlightMessageId, setHighlightMessageId] = useState<number | null>(null);
   const sentUploadsRef = useRef<Set<string>>(new Set());
 
   const [olderPage, setOlderPage] = useState(2);
@@ -145,6 +147,15 @@ export default function ChatWindow({ group, onBack }: Props) {
       // ...
     }
   }, [group.id, groupMessages.length]);
+
+  const scrollToMessage = useCallback((messageId: number) => {
+    const el = document.getElementById(`message-${messageId}`);
+    if (el) {
+      el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+      setHighlightMessageId(messageId);
+      setTimeout(() => setHighlightMessageId(null), 2000);
+    }
+  }, []);
 
   const loadOlderMessages = useCallback(async () => {
     if (isLoadingOlder || !hasMore) return;
@@ -328,6 +339,15 @@ export default function ChatWindow({ group, onBack }: Props) {
           )}
 
           <button
+            onClick={() => toggleFavorite(group.id)}
+            className={`flex-shrink-0 p-3 rounded-full transition-all duration-300 active:scale-95
+              ${isFavorite ? 'text-amber-500 hover:bg-amber-50' : 'text-muted-foreground hover:text-amber-500 hover:bg-amber-50'}`}
+            title={isFavorite ? 'Favorilerden Çıkar' : 'Favorilere Ekle'}
+          >
+            <Star className={`w-5 h-5 stroke-[2px] ${isFavorite ? 'fill-amber-500' : ''}`} />
+          </button>
+
+          <button
             onClick={() => {
               if (window.confirm('Tüm sohbet geçmişini temizlemek istediğinize emin misiniz?')) {
                 clearChat();
@@ -392,9 +412,11 @@ export default function ChatWindow({ group, onBack }: Props) {
                     message={msg}
                     showSender={showSender}
                     isSelected={selectedMessageId === msg.id}
+                    highlightId={highlightMessageId}
                     onClick={() => setSelectedMessageId(msg.id)}
                     onReply={(m) => setReplyTo(m)}
                     onForward={(m) => setForwardMessage(m)}
+                    onScrollToMessage={scrollToMessage}
                   />
                 </div>
               );

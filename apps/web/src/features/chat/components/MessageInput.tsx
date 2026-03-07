@@ -161,7 +161,7 @@ export default function MessageInput({
 
   return (
     <div
-      className={`relative border-t border-gray-200 bg-white flex-shrink-0 transition-colors pb-[env(safe-area-inset-bottom)] ${isDraggingOver ? 'bg-blue-50' : ''}`}
+      className={`relative border-t border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 flex-shrink-0 transition-colors pb-[env(safe-area-inset-bottom)] ${isDraggingOver ? 'bg-blue-50 dark:bg-blue-900/20' : ''}`}
       onDragOver={handleDragOver}
       onDragLeave={handleDragLeave}
       onDrop={handleDrop}
@@ -185,7 +185,7 @@ export default function MessageInput({
 
       {/* Reply Preview */}
       {replyTo && (
-        <div className="px-4 pt-2 pb-1 flex items-center gap-3 bg-blue-50/80 border-t border-blue-100">
+        <div className="px-4 pt-2 pb-1 flex items-center gap-3 bg-blue-50/80 dark:bg-blue-900/20 border-t border-blue-100 dark:border-blue-800">
           <Reply className="w-4 h-4 text-blue-500 flex-shrink-0" />
           <div className="flex-1 min-w-0 border-l-2 border-blue-400 pl-3">
             <p className="text-xs text-gray-700 italic truncate opacity-80">Yanıtlanıyor:</p>
@@ -205,7 +205,7 @@ export default function MessageInput({
         {showEmoji && (
           <div
             ref={emojiPickerRef}
-            className="absolute bottom-[70px] left-4 w-72 bg-white border border-gray-200 shadow-xl rounded-xl p-3 z-30 animate-slide-up"
+            className="absolute bottom-[70px] left-4 w-72 bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 shadow-xl rounded-xl p-3 z-30 animate-slide-up"
           >
             <div className="grid grid-cols-6 gap-2">
               {EMOJIS.map((emoji) => (
@@ -222,7 +222,7 @@ export default function MessageInput({
           </div>
         )}
 
-        <div className="flex items-end gap-2 bg-gray-50 border border-gray-200 rounded-xl p-1.5 focus-within:border-blue-400 transition-all">
+        <div className="flex items-end gap-2 bg-gray-50 dark:bg-gray-700 border border-gray-200 dark:border-gray-600 rounded-xl p-1.5 focus-within:border-blue-400 transition-all">
 
           <input
             ref={fileRef}
@@ -255,8 +255,8 @@ export default function MessageInput({
             disabled={disabled}
             placeholder={disabled ? 'Kanal kilitli.' : 'Mesajınızı yazın...'}
             rows={1}
-            className="flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900
-              focus:outline-none placeholder:text-gray-400
+            className="flex-1 resize-none bg-transparent px-2 py-2 text-sm text-gray-900 dark:text-gray-100
+              focus:outline-none placeholder:text-gray-400 dark:placeholder:text-gray-500
               disabled:text-gray-400 transition-colors
               max-h-40 overflow-y-auto"
             style={{ lineHeight: '1.5' }}

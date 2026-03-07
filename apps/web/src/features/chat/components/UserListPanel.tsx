@@ -77,7 +77,8 @@ export default function UserListPanel() {
   const renderUser = (u: UserItem) => (
     <div
       key={u.id}
-      className="group flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 transition-all border-b border-gray-50 last:border-0"
+      onClick={() => startDM(u.id)}
+      className="group flex items-center gap-3 px-3 py-2.5 hover:bg-gray-50 dark:hover:bg-gray-700 transition-all border-b border-gray-50 dark:border-gray-700 last:border-0 cursor-pointer"
     >
       {/* Avatar */}
       <div className="relative flex-shrink-0">
@@ -100,7 +101,7 @@ export default function UserListPanel() {
 
       {/* Sadece Ad Soyad */}
       <div className="flex-1 min-w-0">
-        <p className="text-sm font-bold text-gray-900 truncate tracking-tight">
+        <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate tracking-tight">
           {u.display_name || u.username}
         </p>
       </div>
@@ -134,8 +135,8 @@ export default function UserListPanel() {
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Kişi ara..."
-          className="w-full text-sm border border-gray-200 rounded-lg px-3 py-2
-            focus:outline-none focus:border-blue-500 bg-white"
+          className="w-full text-sm border border-gray-200 dark:border-gray-600 rounded-lg px-3 py-2
+            focus:outline-none focus:border-blue-500 bg-white dark:bg-gray-700 dark:text-gray-100 dark:placeholder-gray-400"
         />
       </div>
 
@@ -166,7 +167,7 @@ export default function UserListPanel() {
             {offline.length > 0 && (
               <>
                 {online.length > 0 && (
-                  <div className="my-2 mx-3 border-t border-gray-100" />
+                  <div className="my-2 mx-3 border-t border-gray-100 dark:border-gray-600" />
                 )}
                 <div className="px-3 py-2 flex items-center gap-2">
                   <WifiOff className="w-3.5 h-3.5 text-gray-400" />

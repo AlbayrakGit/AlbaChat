@@ -1,4 +1,5 @@
 import { create } from 'zustand';
+import { apiClient } from '@/api/client';
 
 // ─── Tipler ───────────────────────────────────────────────────────────────────
 
@@ -99,12 +100,11 @@ export const useChatStore = create<ChatState>((set) => ({
   onlineUsers: {},
 
   setGroups: (groups) => {
-    const favsStr = localStorage.getItem('kc-favorites');
-    const favIds = favsStr ? JSON.parse(favsStr) as number[] : [];
     const hiddenStr = localStorage.getItem('kc-hidden-groups');
     const hiddenIds = hiddenStr ? JSON.parse(hiddenStr) as number[] : [];
     const visible = groups.filter(g => !hiddenIds.includes(g.id));
-    const merged = visible.map(g => ({ ...g, is_favorite: favIds.includes(g.id) }));
+    // is_favorite artık sunucudan geliyor — localStorage fallback gereksiz
+    const merged = visible.map(g => ({ ...g, is_favorite: !!g.is_favorite }));
     // DM gruplarından ilk online durum haritasını oluştur
     const onlineMap: Record<number, boolean> = {};
     for (const g of groups) {
@@ -242,16 +242,22 @@ export const useChatStore = create<ChatState>((set) => ({
       return { messages: { ...s.messages, [groupId]: msgs } };
     }),
 
-  toggleFavorite: (groupId) =>
-    set((s) => {
-      const groups = s.groups.map((g) =>
+  toggleFavorite: (groupId) => {
+    // Optimistic update — hemen UI'ı güncelle
+    set((s) => ({
+      groups: s.groups.map((g) =>
         g.id === groupId ? { ...g, is_favorite: !g.is_favorite } : g,
-      );
-      // Yerel favorileri kaydet (opsiyonel: backend desteği eklenene kadar)
-      const favs = groups.filter((g) => g.is_favorite).map((g) => g.id);
-      localStorage.setItem('kc-favorites', JSON.stringify(favs));
-      return { groups };
-    }),
+      ),
+    }));
+    // Sunucuya bildir (hata olursa geri al)
+    apiClient.post(`/groups/${groupId}/favorite`).catch(() => {
+      set((s) => ({
+        groups: s.groups.map((g) =>
+          g.id === groupId ? { ...g, is_favorite: !g.is_favorite } : g,
+        ),
+      }));
+    });
+  },
 
   setUserOnlineStatus: (userId, isOnline) =>
     set((s) => ({

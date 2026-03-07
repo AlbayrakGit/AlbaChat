@@ -18,8 +18,9 @@ import GroupList from './components/GroupList';
 import ChatWindow from './components/ChatWindow';
 import UserListPanel from './components/UserListPanel';
 import MessageToast from '@/components/MessageToast';
-import { Settings, LogOut, Lock } from 'lucide-react';
+import { Settings, LogOut, Lock, Moon, Sun } from 'lucide-react';
 import ChangePasswordModal from '@/components/ChangePasswordModal';
+import { useThemeStore } from '@/store/themeStore';
 
 export default function ChatLayout() {
   const { user, logout: storeLogout } = useAuthStore();
@@ -29,6 +30,7 @@ export default function ChatLayout() {
   const [sidebarTab, setSidebarTab] = useState<'groups' | 'people'>('groups');
   const [showUpdateBanner, setShowUpdateBanner] = useState(false);
   const [showPasswordModal, setShowPasswordModal] = useState(false);
+  const { theme, toggleTheme } = useThemeStore();
 
   const { updateBadge, isElectron } = useElectron();
   useElectronUpdate(() => setShowUpdateBanner(true));
@@ -108,7 +110,7 @@ export default function ChatLayout() {
   }, []);
 
   return (
-    <div className="flex h-[100dvh] bg-gray-50 overflow-hidden safe-area-top">
+    <div className="flex h-[100dvh] bg-gray-50 dark:bg-gray-900 overflow-hidden safe-area-top">
       {/* ─── PWA "Ana Ekrana Ekle" Banner ────────────────────────────────── */}
       {!isElectron && <InstallPromptBanner />}
 
@@ -144,32 +146,32 @@ export default function ChatLayout() {
       {showArchive && <AnnouncementArchive onClose={() => setShowArchive(false)} />}
 
       {/* ─── Sol Sidebar ─────────────────────────────────────────────────── */}
-      <div className={`flex flex-col bg-white border-r border-gray-200 flex-shrink-0
+      <div className={`flex flex-col bg-white dark:bg-gray-800 border-r border-gray-200 dark:border-gray-700 flex-shrink-0
         w-full md:w-80 shadow-sm z-20 h-full
         ${activeGroupId ? 'hidden md:flex' : 'flex'}`}
       >
         {/* Workspace Brand - Header */}
-        <div className="h-16 flex items-center px-4 border-b border-gray-100 gap-3 flex-shrink-0 bg-white pt-[env(safe-area-inset-top)] box-content">
+        <div className="h-16 flex items-center px-4 border-b border-gray-100 dark:border-gray-700 gap-3 flex-shrink-0 bg-white dark:bg-gray-800 pt-[env(safe-area-inset-top)] box-content">
           <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white">
             <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
             </svg>
           </div>
           <div className="flex-1 min-w-0">
-            <h1 className="font-extrabold text-gray-900 text-lg tracking-tight truncate">AlbaChat</h1>
+            <h1 className="font-extrabold text-gray-900 dark:text-gray-100 text-lg tracking-tight truncate">AlbaChat</h1>
             <p className="text-[10px] text-blue-600 font-semibold -mt-0.5">Kurumsal Mesajlaşma</p>
           </div>
           <AnnouncementBadge onClick={() => setShowArchive(true)} />
         </div>
 
         {/* Navigation Tabs */}
-        <div className="flex p-1.5 bg-gray-50/50 border-b border-gray-100 flex-shrink-0 gap-1 bg-white">
+        <div className="flex p-1.5 bg-gray-50/50 dark:bg-gray-800 border-b border-gray-100 dark:border-gray-700 flex-shrink-0 gap-1">
           <button
             onClick={() => setSidebarTab('groups')}
             className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-md transition-all
               ${sidebarTab === 'groups'
-                ? 'bg-white text-blue-600 shadow-sm border border-gray-100'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}
+                ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm border border-gray-100 dark:border-gray-600'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
           >
             SOHBETLER
           </button>
@@ -177,15 +179,15 @@ export default function ChatLayout() {
             onClick={() => setSidebarTab('people')}
             className={`flex-1 py-1.5 px-3 text-xs font-bold rounded-md transition-all
               ${sidebarTab === 'people'
-                ? 'bg-white text-blue-600 shadow-sm border border-gray-100'
-                : 'text-gray-500 hover:text-gray-700 hover:bg-gray-100'}`}
+                ? 'bg-white dark:bg-gray-700 text-blue-600 shadow-sm border border-gray-100 dark:border-gray-600'
+                : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700'}`}
           >
             KİŞİLER
           </button>
         </div>
 
         {/* Content Area - Scrollable — sadece bu alan scroll edilir */}
-        <div className="flex-1 overflow-hidden flex flex-col min-h-0 bg-white">
+        <div className="flex-1 overflow-hidden flex flex-col min-h-0 bg-white dark:bg-gray-800">
           {sidebarTab === 'groups' ? (
             <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ overscrollBehavior: 'contain' }}>
               {loadingGroups ? (
@@ -209,10 +211,10 @@ export default function ChatLayout() {
         </div>
 
         {/* Connection Status & Profile - Footer */}
-        <div className="mt-auto flex flex-col flex-shrink-0 bg-white border-t border-gray-100">
+        <div className="mt-auto flex flex-col flex-shrink-0 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
           <ConnectionStatusBar />
 
-          <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-gray-50/30 flex items-center gap-3 flex-shrink-0">
+          <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-gray-50/30 dark:bg-gray-800 flex items-center gap-3 flex-shrink-0">
             <div className="relative">
               <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
                 {(user?.display_name || user?.username || 'U').slice(0, 2).toUpperCase()}
@@ -220,10 +222,10 @@ export default function ChatLayout() {
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-gray-900 truncate tracking-tight">
+              <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate tracking-tight">
                 {user?.display_name || user?.username}
               </p>
-              <p className="text-[10px] text-gray-500 font-semibold truncate uppercase opacity-70">
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold truncate uppercase opacity-70">
                 {user?.role === 'admin' ? 'Sistem Yöneticisi' : 'Kullanıcı'}
               </p>
             </div>
@@ -237,6 +239,13 @@ export default function ChatLayout() {
                   <Settings className="w-4 h-4" />
                 </Link>
               )}
+              <button
+                onClick={toggleTheme}
+                className="p-2 text-gray-400 hover:text-blue-600"
+                title={theme === 'light' ? 'Koyu Mod' : 'Açık Mod'}
+              >
+                {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+              </button>
               <button
                 onClick={() => setShowPasswordModal(true)}
                 className="p-2 text-gray-400 hover:text-blue-600"
@@ -270,7 +279,7 @@ export default function ChatLayout() {
             onBack={() => setActiveGroup(null)}
           />
         ) : (
-          <div className="flex-1 flex items-center justify-center text-center text-gray-400">
+          <div className="flex-1 flex items-center justify-center text-center text-gray-400 dark:text-gray-500">
             <div>
               <svg className="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5}
