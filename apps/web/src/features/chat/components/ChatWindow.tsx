@@ -355,6 +355,7 @@ export default function ChatWindow({ group, onBack }: Props) {
       <div
         ref={scrollContainerRef}
         className="flex-1 overflow-y-auto overflow-x-hidden p-4 relative z-0"
+        style={{ overscrollBehavior: 'contain' }}
       >
         <div ref={topRef} className="h-1" />
 

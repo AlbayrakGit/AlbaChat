@@ -517,42 +517,41 @@ export default function AdminUsersPage() {
   return (
     <div>
       {/* Başlık */}
-      <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Kullanıcı Yönetimi</h1>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900">Kullanıcı Yönetimi</h1>
         <div className="flex gap-2">
           <button
             onClick={() => setShowCsvImport(true)}
-            className="btn-secondary flex items-center gap-1.5"
+            className="btn-secondary flex items-center gap-1.5 text-xs sm:text-sm"
           >
-            <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M9 19l3 3m0 0l3-3m-3 3V10" />
-            </svg>
-            CSV Import
+            CSV
           </button>
-          <button onClick={() => setShowCreate(true)} className="btn-primary">
-            + Yeni Kullanıcı
+          <button onClick={() => setShowCreate(true)} className="btn-primary text-xs sm:text-sm">
+            + Yeni
           </button>
         </div>
       </div>
 
       {/* Filtreler */}
-      <div className="flex gap-3 mb-4">
+      <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 mb-4">
         <input
           type="text" value={search} placeholder="İsim veya e-posta ara..."
           onChange={(e) => setSearch(e.target.value)}
-          className="input-field max-w-xs"
+          className="input-field sm:max-w-xs"
         />
-        <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
-          <input
-            type="checkbox" checked={includeInactive}
-            onChange={(e) => setIncludeInactive(e.target.checked)}
-            className="w-4 h-4 rounded"
-          />
-          Pasif kullanıcıları göster
-        </label>
-        <span className="ml-auto text-sm text-gray-400 self-center">
-          {users.length} kullanıcı
-        </span>
+        <div className="flex items-center justify-between sm:justify-start gap-3">
+          <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 cursor-pointer select-none whitespace-nowrap">
+            <input
+              type="checkbox" checked={includeInactive}
+              onChange={(e) => setIncludeInactive(e.target.checked)}
+              className="w-4 h-4 rounded"
+            />
+            Pasif kullanıcıları göster
+          </label>
+          <span className="sm:ml-auto text-xs sm:text-sm text-gray-400">
+            {users.length} kullanıcı
+          </span>
+        </div>
       </div>
 
       {/* Tablo */}
@@ -562,80 +561,104 @@ export default function AdminUsersPage() {
         ) : users.length === 0 ? (
           <div className="p-8 text-center text-gray-400">Kullanıcı bulunamadı.</div>
         ) : (
-          <div className="overflow-x-auto custom-scrollbar">
-            <table className="w-full text-sm min-w-[600px]">
-              <thead className="bg-gray-50 border-b border-gray-200">
-                <tr>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Kullanıcı</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">E-posta</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Rol</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Durum</th>
-                  <th className="text-left px-4 py-3 font-medium text-gray-600">Kayıt</th>
-                  <th className="text-right px-4 py-3 font-medium text-gray-600">İşlemler</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-gray-100">
-                {users.map((user) => (
-                  <tr key={user.id} className={`hover:bg-gray-50 transition-colors ${!user.is_active ? 'opacity-60' : ''}`}>
-                    <td className="px-4 py-3">
-                      <div className="font-medium text-gray-900">{user.display_name}</div>
-                      <div className="text-gray-400 text-xs">@{user.username}</div>
-                    </td>
-                    <td className="px-4 py-3 text-gray-600">{user.email}</td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
-                        {user.role === 'admin' ? 'Admin' : 'Kullanıcı'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3">
-                      <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
-                        <span className={`w-1.5 h-1.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
-                        {user.is_active ? 'Aktif' : 'Pasif'}
-                      </span>
-                    </td>
-                    <td className="px-4 py-3 text-gray-400 text-xs">
-                      {new Date(user.created_at).toLocaleDateString('tr-TR')}
-                    </td>
-                    <td className="px-4 py-3">
-                      <div className="flex items-center justify-end gap-1">
-                        <button
-                          onClick={() => setSelectedUserId(user.id)}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                          title="Detay"
-                        >
-                          <Eye className="w-4 h-4" />
-                        </button>
-                        <button
-                          onClick={() => setEditingUser(user)}
-                          className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
-                          title="Düzenle"
-                        >
-                          <Pencil className="w-4 h-4" />
-                        </button>
-                        {user.is_active ? (
-                          <button
-                            onClick={() => setStatusConfirm({ id: user.id, activate: false })}
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
-                            title="Devre Dışı Bırak"
-                          >
-                            <UserX className="w-4 h-4" />
-                          </button>
-                        ) : (
-                          <button
-                            onClick={() => setStatusConfirm({ id: user.id, activate: true })}
-                            className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors"
-                            title="Aktifleştir"
-                          >
-                            <UserCheck className="w-4 h-4" />
-                          </button>
-                        )}
-                      </div>
-                    </td>
+          <>
+            {/* Desktop: Tablo */}
+            <div className="hidden md:block overflow-x-auto custom-scrollbar">
+              <table className="w-full text-sm min-w-[600px]">
+                <thead className="bg-gray-50 border-b border-gray-200">
+                  <tr>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600">Kullanıcı</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600">E-posta</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600">Rol</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600">Durum</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600">Kayıt</th>
+                    <th className="text-right px-4 py-3 font-medium text-gray-600">İşlemler</th>
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
+                </thead>
+                <tbody className="divide-y divide-gray-100">
+                  {users.map((user) => (
+                    <tr key={user.id} className={`hover:bg-gray-50 transition-colors ${!user.is_active ? 'opacity-60' : ''}`}>
+                      <td className="px-4 py-3">
+                        <div className="font-medium text-gray-900">{user.display_name}</div>
+                        <div className="text-gray-400 text-xs">@{user.username}</div>
+                      </td>
+                      <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
+                          {user.role === 'admin' ? 'Admin' : 'Kullanıcı'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3">
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                          <span className={`w-1.5 h-1.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
+                          {user.is_active ? 'Aktif' : 'Pasif'}
+                        </span>
+                      </td>
+                      <td className="px-4 py-3 text-gray-400 text-xs">
+                        {new Date(user.created_at).toLocaleDateString('tr-TR')}
+                      </td>
+                      <td className="px-4 py-3">
+                        <div className="flex items-center justify-end gap-1">
+                          <button onClick={() => setSelectedUserId(user.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Detay">
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button onClick={() => setEditingUser(user)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Düzenle">
+                            <Pencil className="w-4 h-4" />
+                          </button>
+                          {user.is_active ? (
+                            <button onClick={() => setStatusConfirm({ id: user.id, activate: false })} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Devre Dışı Bırak">
+                              <UserX className="w-4 h-4" />
+                            </button>
+                          ) : (
+                            <button onClick={() => setStatusConfirm({ id: user.id, activate: true })} className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors" title="Aktifleştir">
+                              <UserCheck className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+
+            {/* Mobil: Kart görünümü */}
+            <div className="md:hidden divide-y divide-gray-100">
+              {users.map((user) => (
+                <div key={user.id} className={`p-3 ${!user.is_active ? 'opacity-60' : ''}`}>
+                  <div className="flex items-center justify-between">
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center gap-2">
+                        <span className="font-semibold text-sm text-gray-900 truncate">{user.display_name}</span>
+                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500'}`}>
+                          {user.role === 'admin' ? 'Admin' : 'User'}
+                        </span>
+                        <span className={`w-2 h-2 rounded-full flex-shrink-0 ${user.is_active ? 'bg-green-500' : 'bg-red-400'}`} />
+                      </div>
+                      <p className="text-[11px] text-gray-400 truncate">@{user.username} · {user.email}</p>
+                    </div>
+                    <div className="flex items-center gap-0.5 flex-shrink-0 ml-2">
+                      <button onClick={() => setSelectedUserId(user.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600">
+                        <Eye className="w-4 h-4" />
+                      </button>
+                      <button onClick={() => setEditingUser(user)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600">
+                        <Pencil className="w-4 h-4" />
+                      </button>
+                      {user.is_active ? (
+                        <button onClick={() => setStatusConfirm({ id: user.id, activate: false })} className="p-1.5 rounded-lg text-gray-400 hover:text-red-500">
+                          <UserX className="w-4 h-4" />
+                        </button>
+                      ) : (
+                        <button onClick={() => setStatusConfirm({ id: user.id, activate: true })} className="p-1.5 rounded-lg text-gray-400 hover:text-green-500">
+                          <UserCheck className="w-4 h-4" />
+                        </button>
+                      )}
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </>
         )}
       </div>
 

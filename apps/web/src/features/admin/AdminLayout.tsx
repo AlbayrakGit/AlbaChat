@@ -54,7 +54,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex h-screen bg-gray-100 overflow-hidden">
+    <div className="flex h-[100dvh] bg-gray-100 overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -156,9 +156,9 @@ export default function AdminLayout() {
           </div>
         </header>
 
-        {/* İçerik Scroll Alanı */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar bg-gray-50/50">
-          <div className="max-w-7xl mx-auto h-full">
+        {/* İçerik Scroll Alanı — sadece bu alan scroll edilir */}
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar bg-gray-50/50" style={{ overscrollBehavior: 'contain' }}>
+          <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>
         </main>

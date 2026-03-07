@@ -184,10 +184,10 @@ export default function ChatLayout() {
           </button>
         </div>
 
-        {/* Content Area - Scrollable */}
+        {/* Content Area - Scrollable — sadece bu alan scroll edilir */}
         <div className="flex-1 overflow-hidden flex flex-col min-h-0 bg-white">
           {sidebarTab === 'groups' ? (
-            <div className="flex-1 overflow-y-auto custom-scrollbar">
+            <div className="flex-1 overflow-y-auto custom-scrollbar" style={{ overscrollBehavior: 'contain' }}>
               {loadingGroups ? (
                 <div className="px-4 py-8 text-center text-gray-400 space-y-2">
                   <div className="w-8 h-8 border-2 border-blue-600 border-t-transparent rounded-full animate-spin mx-auto" />
