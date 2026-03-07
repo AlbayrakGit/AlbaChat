@@ -88,6 +88,27 @@ export default function AdminAnnouncementsPage() {
     },
   });
 
+  // Delete Mutation
+  const { mutate: deleteAnnouncement, isPending: isDeleting } = useMutation({
+    mutationFn: async (id: number) => {
+      const res = await apiClient.delete(`/announcements/${id}`);
+      return res.data.data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['admin-announcements'] });
+      alert('Duyuru ve ilgili tüm veriler (okunma bilgileri vb.) başarıyla temizlendi.');
+    },
+    onError: (err: any) => {
+      alert(`Duyuru silinirken bir hata oluştu: ${err.message}`);
+    },
+  });
+
+  const handleDelete = (id: number, title: string) => {
+    if (window.confirm(`"${title}" başlıklı duyuruyu ve tüm okuma verilerini kalıcı olarak silmek istediğinize emin misiniz?`)) {
+      deleteAnnouncement(id);
+    }
+  };
+
   const handleSubmit = (e: { preventDefault(): void }) => {
     e.preventDefault();
     createAnnouncement();
@@ -163,12 +184,29 @@ export default function AdminAnnouncementsPage() {
                       {new Date(ann.created_at).toLocaleDateString('tr-TR')}
                     </td>
                     <td className="px-6 py-4 text-right">
-                      <button
-                        onClick={() => setShowStatsModal(ann.id)}
-                        className="text-blue-600 hover:text-blue-800 text-sm font-medium transition-colors"
-                      >
-                        İstatistikler & Tekrar Gönder
-                      </button>
+                      <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setShowStatsModal(ann.id)}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-blue-600 hover:bg-blue-50 rounded-lg text-sm font-semibold transition-all"
+                          title="İstatistikler ve Bildirim"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
+                          </svg>
+                          İstatistik
+                        </button>
+                        <button
+                          onClick={() => handleDelete(ann.id, ann.title)}
+                          disabled={isDeleting}
+                          className="flex items-center gap-1.5 px-3 py-1.5 text-red-500 hover:bg-red-50 rounded-lg text-sm font-semibold transition-all disabled:opacity-50"
+                          title="Duyuruyu ve Tüm Verileri Sil"
+                        >
+                          <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+                          </svg>
+                          Sil
+                        </button>
+                      </div>
                     </td>
                   </tr>
                 ))}

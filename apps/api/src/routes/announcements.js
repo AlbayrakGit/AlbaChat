@@ -6,6 +6,7 @@ import {
   getAnnouncementById,
   markAsRead,
   getAnnouncementStats,
+  deleteAnnouncement,
   AnnouncementNotFoundError,
   AnnouncementForbiddenError,
 } from '../services/announcementService.js';
@@ -156,6 +157,16 @@ export default async function announcementRoutes(fastify) {
         success: true,
         data: { notified, unreadCount: stats.unreadCount },
       });
+    } catch (err) {
+      return handleError(err, reply);
+    }
+  });
+
+  // DELETE /api/announcements/:id — duyuru sil (Admin)
+  fastify.delete('/:id', { preHandler: [authenticate, requireAdmin] }, async (req, reply) => {
+    try {
+      const result = await deleteAnnouncement(parseInt(req.params.id, 10));
+      return reply.send({ success: true, data: result });
     } catch (err) {
       return handleError(err, reply);
     }

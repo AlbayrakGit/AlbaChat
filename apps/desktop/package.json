@@ -13,8 +13,8 @@
     "pack-portable": "electron-packager . AlbaChat --platform=win32 --arch=x64 --out=dist --overwrite --prune=true --icon=assets/icon.ico"
   },
   "dependencies": {
-    "electron-store": "8.2.0",
-    "electron-updater": "6.8.3"
+    "electron-store": "^8.2.0",
+    "electron-updater": "^6.8.3"
   },
   "devDependencies": {
     "electron": "^28.3.3",

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * AlbaChat Desktop - Electron Ana Surec
  */
 
@@ -67,6 +67,38 @@ function createMainWindow(serverUrl) {
       mainWindow?.hide();
     }
   });
+
+  // --- Navigasyon Takibi ile Otomatik Boyutlandirma ---
+  const updateSizeByUrl = (url) => {
+    if (!mainWindow) return;
+    if (url.includes('/admin')) {
+      mainWindow.setResizable(true);
+      mainWindow.setMinimumSize(1200, 825);
+      mainWindow.setMaximumSize(1200, 825);
+      mainWindow.setSize(1200, 825, true);
+      mainWindow.center();
+      mainWindow.setResizable(false);
+    } else if (!url.includes('/admin')) {
+      mainWindow.setResizable(true);
+      mainWindow.setMinimumSize(800, 825);
+      mainWindow.setMaximumSize(800, 825);
+      mainWindow.setSize(800, 825, true);
+      mainWindow.center();
+      mainWindow.setResizable(false);
+    }
+  };
+
+  mainWindow.webContents.on('did-navigate', (event, url) => updateSizeByUrl(url));
+  mainWindow.webContents.on('did-navigate-in-page', (event, url) => updateSizeByUrl(url));
+
+  // --- UI Temizligi: Download Linkini Gizle ---
+  mainWindow.webContents.on('did-finish-load', () => {
+    mainWindow.webContents.insertCSS(`
+      /* Electron icinde indirme linkini gizle */
+      a[href*="AlbaChat-Setup.exe"] { display: none !important; }
+      .pt-2.border-t.border-gray-100 { display: none !important; }
+    `);
+  });
 }
 
 // --- IPC: Bildirimler ---
@@ -120,6 +152,8 @@ ipcMain.on('store:set', (_, key, value) => store.set(key, value));
 ipcMain.on('window:resize', (_, { width, height }) => {
   if (!mainWindow) return;
   mainWindow.setResizable(true);
+  mainWindow.setMinimumSize(width, height);
+  mainWindow.setMaximumSize(width, height);
   mainWindow.setSize(width, height, true);
   mainWindow.center();
   mainWindow.setResizable(false);
