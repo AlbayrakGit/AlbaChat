@@ -94,8 +94,8 @@ export default function UserListPanel() {
           </div>
         )}
         <span
-          className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white transition-colors duration-300
-            ${u.is_online ? 'bg-green-500' : 'bg-gray-300'}`}
+          className={`absolute -bottom-0.5 -right-0.5 w-3.5 h-3.5 rounded-full border-2 border-white dark:border-gray-800 transition-colors duration-300
+            ${u.is_online ? 'bg-green-500' : 'bg-gray-300 dark:bg-gray-600'}`}
         />
       </div>
 
@@ -106,18 +106,18 @@ export default function UserListPanel() {
         </p>
       </div>
 
-      {/* Actions */}
-      <div className="flex items-center gap-1 opacity-0 group-hover:opacity-100 transition-opacity">
+      {/* Actions — mobilde her zaman görünür, masaüstünde hover'da */}
+      <div className="flex items-center gap-1 md:opacity-0 md:group-hover:opacity-100 transition-opacity">
         <button
-          onClick={() => favoriteDM(u.id)}
-          className="p-1.5 rounded-lg text-gray-400 hover:text-amber-500 hover:bg-amber-50 transition-all active:scale-90"
+          onClick={(e) => { e.stopPropagation(); favoriteDM(u.id); }}
+          className="p-1.5 rounded-lg text-gray-400 hover:text-amber-500 hover:bg-amber-50 dark:hover:bg-amber-900/30 transition-all active:scale-90"
           title="Favorilere Ekle"
         >
           <Star className="w-4 h-4" />
         </button>
         <button
-          onClick={() => startDM(u.id)}
-          className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-all active:scale-90"
+          onClick={(e) => { e.stopPropagation(); startDM(u.id); }}
+          className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-all active:scale-90"
           title="Mesaj Gönder"
         >
           <MessageCircle className="w-4 h-4" />

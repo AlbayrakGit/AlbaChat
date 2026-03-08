@@ -12,7 +12,7 @@ files:
 win:
   target:
     - nsis
-  icon: assets/icon.png
+  icon: assets/AlbaChat.ico
   publisherName: "Erna Holding Bilgi Teknolojileri"
   signAndEditExecutable: false
 nsis:
@@ -25,8 +25,8 @@ nsis:
   artifactName: "AlbaChat-Setup-${version}.${ext}"
   uninstallDisplayName: "AlbaChat"
   deleteAppDataOnUninstall: true
-  installerIcon: assets/icon.ico
-  uninstallerIcon: assets/icon.ico
+  installerIcon: assets/AlbaChat.ico
+  uninstallerIcon: assets/AlbaChat.ico
   include: installer.nsh
 publish:
   provider: generic

@@ -40,7 +40,7 @@ function createMainWindow(serverUrl) {
       allowRunningInsecureContent: false,
     },
     title: 'AlbaChat',
-    icon: path.join(__dirname, '..', 'assets', 'icon.png'),
+    icon: path.join(__dirname, '..', 'assets', 'AlbaChat.ico'),
     show: false,
     backgroundColor: '#f9fafb',
     autoHideMenuBar: true,

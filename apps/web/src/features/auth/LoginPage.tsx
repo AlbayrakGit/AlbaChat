@@ -32,7 +32,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50">
+    <div className="min-h-screen flex items-center justify-center bg-gray-50 dark:bg-gray-900">
       <div className="w-full max-w-sm px-6">
 
         {/* Logo & Başlık */}
@@ -40,17 +40,17 @@ export default function LoginPage() {
           <div className="flex items-center justify-center w-14 h-14 rounded-2xl bg-blue-600 text-white shadow-lg mb-4">
             <MessageSquare className="w-7 h-7" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">AlbaChat</h1>
-          <p className="text-sm text-gray-500 mt-1">Kurumsal Mesajlaşma Platformu</p>
+          <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">AlbaChat</h1>
+          <p className="text-sm text-gray-500 dark:text-gray-400 mt-1">Kurumsal Mesajlaşma Platformu</p>
         </div>
 
         {/* Giriş Kartı */}
-        <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-sm border border-gray-200 dark:border-gray-700 p-6">
           <form onSubmit={handleSubmit} className="space-y-4">
 
             {/* Kullanıcı Adı */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Kullanıcı Adı
               </label>
               <input
@@ -67,7 +67,7 @@ export default function LoginPage() {
 
             {/* Şifre */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1.5">
+              <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1.5">
                 Şifre
               </label>
               <input
@@ -83,7 +83,7 @@ export default function LoginPage() {
 
             {/* Hata Mesajı */}
             {error && (
-              <div className="flex items-start gap-2.5 p-3 bg-red-50 text-red-700 border border-red-200 rounded-xl">
+              <div className="flex items-start gap-2.5 p-3 bg-red-50 dark:bg-red-900/30 text-red-700 dark:text-red-400 border border-red-200 dark:border-red-700 rounded-xl">
                 <AlertCircle className="w-4 h-4 shrink-0 mt-0.5" />
                 <span className="text-sm">{error}</span>
               </div>
@@ -118,10 +118,10 @@ export default function LoginPage() {
           </p>
 
           {!window.electronAPI && (
-            <div className="pt-2 border-t border-gray-100 flex justify-center">
+            <div className="pt-2 border-t border-gray-100 dark:border-gray-700 flex justify-center">
               <a
                 href="/download/AlbaChat-Setup.exe"
-                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 hover:bg-gray-200 text-gray-700 rounded-full text-xs font-semibold transition-all active:scale-95"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-semibold transition-all active:scale-95"
               >
                 <div className="w-5 h-5 rounded-full bg-blue-600 flex items-center justify-center text-white">
                   <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
