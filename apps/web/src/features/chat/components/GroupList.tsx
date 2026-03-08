@@ -147,8 +147,10 @@ function GroupItem({ group, isActive, onSelect }: {
 }
 
 export default function GroupList({ groups, activeGroupId, onSelect }: Props) {
-  // ZORUNLU KURAL: Sadece daha önce mesaj atılmış VEYA favoriye eklenmiş sohbetler listelenir
-  const visibleGroups = groups.filter(g => g.is_favorite || g.last_message);
+  // Departman/özel gruplar her zaman görünür; DM'ler sadece mesaj varsa veya favoriyse
+  const visibleGroups = groups.filter(g =>
+    g.type === 'department' || g.type === 'private' || g.is_favorite || g.last_message
+  );
 
   if (visibleGroups.length === 0) {
     return (

@@ -95,8 +95,9 @@ function createMainWindow(serverUrl) {
   mainWindow.webContents.on('did-finish-load', () => {
     mainWindow.webContents.insertCSS(`
       /* Electron icinde indirme linkini gizle */
-      a[href*="AlbaChat-Setup.exe"] { display: none !important; }
-      .pt-2.border-t.border-gray-100 { display: none !important; }
+      a[href*="AlbaChat-Setup"] { display: none !important; }
+      /* Login altindaki download container — sadece login sayfasinda */
+      .min-h-screen .border-t:has(a[href*="AlbaChat-Setup"]) { display: none !important; }
       /* Scrollbar gizle — mouse tekerleği ile kaydırma çalışmaya devam eder */
       ::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
       * { scrollbar-width: none !important; }
