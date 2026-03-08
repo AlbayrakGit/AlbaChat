@@ -5,8 +5,8 @@ const config: CapacitorConfig = {
   appName: 'AlbaChat',
   webDir: '../web/dist',
   server: {
-    // LAN sunucusunu doğrudan yükle — relative path'ler (/api, /socket.io) çalışır
-    url: 'http://10.55.0.27:8080',
+    // Sunucuyu doğrudan yükle — relative path'ler (/api, /socket.io) çalışır
+    url: 'http://95.0.18.60:8080',
     cleartext: true, // HTTP (non-SSL) bağlantıya izin ver
   },
   plugins: {
