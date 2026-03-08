@@ -381,7 +381,7 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
               <button
                 id={`msg-btn-${message.id}`}
                 onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+                className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
@@ -473,7 +473,7 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
             <button
               id={`msg-btn-${message.id}`}
               onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-              className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all opacity-0 group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+              className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
             >
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
