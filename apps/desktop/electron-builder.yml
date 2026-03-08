@@ -9,6 +9,7 @@ files:
   - "electron/**/*"
   - "setup/**/*"
   - "assets/**/*"
+afterPack: ./afterPack.js
 win:
   target:
     - nsis

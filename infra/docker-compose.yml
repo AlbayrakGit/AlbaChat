@@ -93,6 +93,8 @@ services:
     restart: unless-stopped
     ports:
       - "${APP_PORT:-8080}:80"
+    volumes:
+      - ../apps/desktop/dist:/usr/share/nginx/download:ro
     depends_on:
       - albachat-api
 
