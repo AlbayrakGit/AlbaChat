@@ -5,7 +5,66 @@ import { type Message } from '@/store/chatStore';
 import { useAuthStore } from '@/store/authStore';
 import { getSocket } from '@/socket/socketClient';
 import { apiClient } from '@/api/client';
-import { Check, CheckCheck, Trash2, FileIcon, Download, Reply, Forward, ChevronDown } from 'lucide-react';
+import { Check, CheckCheck, Trash2, FileIcon, Download, Reply, Forward, ChevronDown, X } from 'lucide-react';
+
+/** Tam ekran dosya/görsel önizleme overlay'i */
+function FilePreviewOverlay({ url, fileName, mimeType, downloadUrl, onClose }: {
+  url: string; fileName: string; mimeType: string; downloadUrl?: string; onClose: () => void;
+}) {
+  const isImage = mimeType.startsWith('image/');
+  const isVideo = mimeType.startsWith('video/');
+  const isPdf = mimeType === 'application/pdf';
+
+  return createPortal(
+    <div className="fixed inset-0 z-[99999] bg-black/90 flex flex-col" onClick={onClose}>
+      {/* Üst bar */}
+      <div className="flex items-center justify-between px-4 py-3 bg-black/50 backdrop-blur-sm" onClick={e => e.stopPropagation()}>
+        <p className="text-white text-sm font-medium truncate flex-1 mr-4">{fileName}</p>
+        <div className="flex items-center gap-2">
+          {downloadUrl && (
+            <a
+              href={downloadUrl}
+              download={fileName}
+              className="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+              title="İndir"
+            >
+              <Download className="w-5 h-5" />
+            </a>
+          )}
+          <button
+            onClick={onClose}
+            className="p-2 rounded-full bg-white/20 hover:bg-white/30 text-white transition-colors"
+            title="Kapat"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+      </div>
+      {/* İçerik */}
+      <div className="flex-1 flex items-center justify-center p-4 overflow-auto" onClick={e => e.stopPropagation()}>
+        {isImage ? (
+          <img src={url} alt={fileName} className="max-w-full max-h-full object-contain rounded" />
+        ) : isVideo ? (
+          <video src={url} controls className="max-w-full max-h-full rounded" />
+        ) : isPdf ? (
+          <iframe src={url} className="w-full h-full rounded bg-white" title={fileName} />
+        ) : (
+          <div className="text-center text-white">
+            <FileIcon className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <p className="text-lg font-medium">{fileName}</p>
+            <p className="text-sm text-white/60 mt-1">Önizleme desteklenmiyor</p>
+            {downloadUrl && (
+              <a href={downloadUrl} download={fileName} className="mt-4 inline-flex items-center gap-2 px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                <Download className="w-4 h-4" /> İndir
+              </a>
+            )}
+          </div>
+        )}
+      </div>
+    </div>,
+    document.body
+  );
+}
 
 interface Props {
   message: Message;
@@ -36,6 +95,7 @@ function FileAttachment({
 }) {
   const isImage = file.mime_type.startsWith('image/');
   const [imgError, setImgError] = useState(false);
+  const [showPreview, setShowPreview] = useState(false);
 
   const { data } = useQuery({
     queryKey: ['file-url', file.id],
@@ -58,20 +118,25 @@ function FileAttachment({
     }
   };
 
+  const openPreview = (e: React.MouseEvent) => {
+    e.stopPropagation();
+    if (url) setShowPreview(true);
+  };
+
   if (isImage && !imgError) {
     return (
       <div className="mt-1 group/image relative" draggable={!!url} onDragStart={handleDragStart}>
         {url ? (
           <div className="relative overflow-hidden rounded-xl">
-            <a href={url} target="_blank" rel="noopener noreferrer" onClick={stopProp} title="Ön izleme için tıklayın">
+            <div onClick={openPreview} className="cursor-pointer" title="Ön izleme için tıklayın">
               <img
                 src={url}
                 alt={file.original_name}
-                className="max-w-[280px] sm:max-w-xs max-h-64 min-h-[80px] object-cover block rounded-xl cursor-pointer"
+                className="max-w-[280px] sm:max-w-xs max-h-64 min-h-[80px] object-cover block rounded-xl"
                 loading="lazy"
                 onError={() => setImgError(true)}
               />
-            </a>
+            </div>
             <div className="absolute inset-0 bg-black/0 group-hover/image:bg-black/30 transition-colors pointer-events-none" />
             <div className="absolute bottom-2 right-2 flex items-center gap-1 opacity-0 group-hover/image:opacity-100 transition-opacity">
               <a
@@ -88,21 +153,25 @@ function FileAttachment({
         ) : (
           <div className="w-48 h-32 bg-black/10 dark:bg-white/10 rounded-xl animate-pulse" />
         )}
+        {showPreview && url && (
+          <FilePreviewOverlay
+            url={url}
+            fileName={file.original_name}
+            mimeType={file.mime_type}
+            downloadUrl={downloadUrl}
+            onClose={() => setShowPreview(false)}
+          />
+        )}
       </div>
     );
   }
-
-  const handleBalloonClick = (e: React.MouseEvent) => {
-    e.stopPropagation();
-    if (url) window.open(url, '_blank', 'noopener,noreferrer');
-  };
 
   return (
     <div className="flex items-center gap-2">
       <div
         draggable="true"
         onDragStart={handleDragStart}
-        onClick={handleBalloonClick}
+        onClick={openPreview}
         className={`mt-1 flex items-center gap-2.5 rounded-2xl px-3 py-2 border transition-all
           ${url ? 'cursor-pointer hover:opacity-90 active:scale-[0.98]' : 'cursor-default'}
           ${isOwn
@@ -138,6 +207,15 @@ function FileAttachment({
           {formatSize(file.size_bytes)}
         </span>
       </div>
+      {showPreview && url && (
+        <FilePreviewOverlay
+          url={url}
+          fileName={file.original_name}
+          mimeType={file.mime_type}
+          downloadUrl={downloadUrl}
+          onClose={() => setShowPreview(false)}
+        />
+      )}
     </div>
   );
 }
