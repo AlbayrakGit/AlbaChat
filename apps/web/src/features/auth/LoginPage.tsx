@@ -118,7 +118,7 @@ export default function LoginPage() {
           </p>
 
           {!window.electronAPI && (
-            <div className="pt-2 border-t border-gray-100 dark:border-gray-700 flex justify-center">
+            <div className="pt-2 border-t border-gray-100 dark:border-gray-700 flex justify-center gap-3">
               <a
                 href="/download/AlbaChat-Setup-1.0.0.exe"
                 download="AlbaChat-Setup-1.0.0.exe"
@@ -129,7 +129,19 @@ export default function LoginPage() {
                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
                   </svg>
                 </div>
-                Masaüstü Uygulamasını İndir
+                Windows
+              </a>
+              <a
+                href="/download/AlbaChat-1.0.0.apk"
+                download="AlbaChat-1.0.0.apk"
+                className="inline-flex items-center gap-2 px-4 py-2 bg-gray-100 dark:bg-gray-800 hover:bg-gray-200 dark:hover:bg-gray-700 text-gray-700 dark:text-gray-300 rounded-full text-xs font-semibold transition-all active:scale-95"
+              >
+                <div className="w-5 h-5 rounded-full bg-green-600 flex items-center justify-center text-white">
+                  <svg className="w-3 h-3" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4" />
+                  </svg>
+                </div>
+                Android
               </a>
             </div>
           )}
