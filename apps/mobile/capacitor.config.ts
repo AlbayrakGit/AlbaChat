@@ -6,8 +6,8 @@ const config: CapacitorConfig = {
   webDir: '../web/dist',
   server: {
     // Sunucuyu doğrudan yükle — relative path'ler (/api, /socket.io) çalışır
-    url: 'http://95.0.18.60:8080',
-    cleartext: true, // HTTP (non-SSL) bağlantıya izin ver
+    url: 'https://albachat.ernaholding.com',
+    androidScheme: 'https',
   },
   plugins: {
     SplashScreen: {
