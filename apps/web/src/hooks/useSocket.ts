@@ -243,12 +243,37 @@ export function useSocket() {
       removeGroupFromList(groupId);
     });
 
+    // ─── Mobil: arka plandan dönünce socket'i yeniden bağla ──────────────
+    const handleResume = () => {
+      console.log('[Socket] Uygulama ön plana geldi');
+      try {
+        const s = getSocket();
+        if (!s.connected) {
+          console.log('[Socket] Bağlantı kopmuş, yeniden bağlanıyor...');
+          s.connect();
+        } else {
+          // Bağlı ama sunucu offline görmüş olabilir — hemen heartbeat
+          s.emit('presence:ping');
+          sendCatchup();
+        }
+      } catch { /* socket yok */ }
+    };
+
+    // Capacitor resume + tarayıcı visibility
+    document.addEventListener('resume', handleResume);
+    const handleVisibility = () => {
+      if (document.visibilityState === 'visible') handleResume();
+    };
+    document.addEventListener('visibilitychange', handleVisibility);
+
     return () => {
       // Heartbeat'i temizle
       if (heartbeatRef.current) {
         clearInterval(heartbeatRef.current);
         heartbeatRef.current = null;
       }
+      document.removeEventListener('resume', handleResume);
+      document.removeEventListener('visibilitychange', handleVisibility);
       socket.off('connect');
       socket.off('disconnect');
       socket.off('reconnect_attempt');
