@@ -69,6 +69,53 @@ export async function pushRoutes(fastify) {
       return reply.send({ ok: true });
     },
   );
+
+  /** FCM token kaydet (Android/iOS mobil uygulama) */
+  fastify.post(
+    '/fcm-register',
+    { preHandler: [authenticate] },
+    async (req, reply) => {
+      const { token, platform = 'android' } = req.body;
+      const userId = req.user.id;
+
+      if (!token) {
+        return reply.status(400).send({ error: 'FCM token gerekli.' });
+      }
+
+      await db('push_subscriptions')
+        .insert({
+          user_id: userId,
+          fcm_token: token,
+          platform,
+          // Web Push alanları NULL kalır
+          endpoint: `fcm:${token.slice(0, 64)}`, // unique constraint için
+          p256dh: '',
+          auth: '',
+        })
+        .onConflict('fcm_token')
+        .merge(['user_id', 'platform']);
+
+      return reply.status(201).send({ ok: true });
+    },
+  );
+
+  /** FCM token sil (çıkış yaparken) */
+  fastify.delete(
+    '/fcm-register',
+    { preHandler: [authenticate] },
+    async (req, reply) => {
+      const { token } = req.body;
+      if (!token) {
+        return reply.status(400).send({ error: 'FCM token gerekli.' });
+      }
+
+      await db('push_subscriptions')
+        .where({ fcm_token: token, user_id: req.user.id })
+        .delete();
+
+      return reply.send({ ok: true });
+    },
+  );
 }
 
 /**
@@ -82,7 +129,11 @@ export async function sendPushToUsers(userIds, payload) {
   const ids = Array.isArray(userIds) ? userIds : [userIds];
   if (ids.length === 0) return;
 
-  const subscriptions = await db('push_subscriptions').whereIn('user_id', ids);
+  // Sadece Web Push kayıtlarını al (FCM token'lı olanları hariç tut)
+  const subscriptions = await db('push_subscriptions')
+    .whereIn('user_id', ids)
+    .whereNull('fcm_token')
+    .whereNot('p256dh', '');
 
   const notification = JSON.stringify({
     title: payload.title,

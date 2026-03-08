@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "968161868159",
+    "project_id": "albachat-a96f6",
+    "storage_bucket": "albachat-a96f6.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:968161868159:android:a1524a7d4c8c53cb47c24a",
+        "android_client_info": {
+          "package_name": "com.albachat.mobile"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCsOA_hf-MbyS9CKXc3bh9Sh4pOjtaXPO0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

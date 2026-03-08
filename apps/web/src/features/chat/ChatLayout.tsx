@@ -9,6 +9,7 @@ import { useSocket } from '@/hooks/useSocket';
 import { useElectron, useElectronUpdate } from '@/hooks/useElectron';
 import { usePushNotification } from '@/hooks/usePushNotification';
 import { useMediaSession } from '@/hooks/useMediaSession';
+import { initCapacitorPush } from '@/utils/capacitorPush';
 import ConnectionStatusBar from '@/components/ConnectionStatusBar';
 import { InstallPromptBanner } from '@/components/InstallPromptBanner';
 import AnnouncementModal from '@/features/announcements/components/AnnouncementModal';
@@ -53,6 +54,19 @@ export default function ChatLayout() {
     }, 5000);
     return () => clearTimeout(timer);
   }, [isElectron, pushSupported, pushSubscribed, subscribePush]);
+
+  // Capacitor (Android/iOS) push bildirimleri — FCM
+  useEffect(() => {
+    initCapacitorPush();
+
+    // Bildirime tıklandığında ilgili sohbete yönlendir
+    const handlePushNav = (e: Event) => {
+      const detail = (e as CustomEvent).detail;
+      if (detail?.groupId) setActiveGroup(detail.groupId);
+    };
+    window.addEventListener('push:navigate', handlePushNav);
+    return () => window.removeEventListener('push:navigate', handlePushNav);
+  }, [setActiveGroup]);
 
   // Socket.IO bağlantısını başlat
   useSocket();

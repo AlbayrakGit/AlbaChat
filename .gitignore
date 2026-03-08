@@ -80,5 +80,9 @@ desktop.ini
 *.bak
 *.backup
 
+# Firebase — GİZLİ, asla commit'leme
+**/firebase-service-account*.json
+**/firebase-adminsdk*.json
+
 # Docker yerel override
 docker-compose.override.yml

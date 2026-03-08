@@ -12,10 +12,11 @@
   },
   "dependencies": {
     "@capacitor/android": "^6.2.0",
-    "@capacitor/core": "^6.2.0",
     "@capacitor/cli": "^6.2.0",
+    "@capacitor/core": "^6.2.0",
+    "@capacitor/keyboard": "^6.0.0",
+    "@capacitor/push-notifications": "^6.0.5",
     "@capacitor/splash-screen": "^6.0.0",
-    "@capacitor/status-bar": "^6.0.0",
-    "@capacitor/keyboard": "^6.0.0"
+    "@capacitor/status-bar": "^6.0.0"
   }
 }

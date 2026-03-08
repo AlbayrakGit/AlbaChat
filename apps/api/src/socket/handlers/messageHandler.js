@@ -6,6 +6,7 @@ import {
   GroupArchivedError,
 } from '../../services/messageService.js';
 import { publishMessageNew, publishMessageDeleted, publishMessageReacted } from '../pubsub.js';
+import { sendPushForMessage } from '../../services/pushService.js';
 
 /**
  * Mesaj gönderme ve silme event handler'ları
@@ -45,6 +46,11 @@ export function setupMessageHandler(io, socket) {
 
       // Redis Pub/Sub üzerinden tüm instance'lara yayınla
       await publishMessageNew(groupId, message);
+
+      // Çevrimdışı kullanıcılara push bildirim gönder (arka planda)
+      sendPushForMessage(groupId, user, message).catch((err) =>
+        console.error('[Push] Mesaj bildirimi hatası:', err.message),
+      );
 
       callback?.({ success: true, messageId: message.id });
     } catch (err) {
