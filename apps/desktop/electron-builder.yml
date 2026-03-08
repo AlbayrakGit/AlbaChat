@@ -14,8 +14,9 @@ win:
     - nsis
   icon: assets/icon.png
   publisherName: "Erna Holding Bilgi Teknolojileri"
+  signAndEditExecutable: false
 nsis:
-  oneClick: true
+  oneClick: false
   perMachine: true
   allowToChangeInstallationDirectory: false
   createDesktopShortcut: true
@@ -24,6 +25,9 @@ nsis:
   artifactName: "AlbaChat-Setup-${version}.${ext}"
   uninstallDisplayName: "AlbaChat"
   deleteAppDataOnUninstall: true
+  installerIcon: assets/icon.ico
+  uninstallerIcon: assets/icon.ico
+  include: installer.nsh
 publish:
   provider: generic
   url: https://albachat.ernaholding.com/download

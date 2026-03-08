@@ -97,6 +97,9 @@ function createMainWindow(serverUrl) {
       /* Electron icinde indirme linkini gizle */
       a[href*="AlbaChat-Setup.exe"] { display: none !important; }
       .pt-2.border-t.border-gray-100 { display: none !important; }
+      /* Scrollbar gizle — mouse tekerleği ile kaydırma çalışmaya devam eder */
+      ::-webkit-scrollbar { width: 0 !important; height: 0 !important; }
+      * { scrollbar-width: none !important; }
     `);
   });
 }

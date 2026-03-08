@@ -28,8 +28,8 @@ interface Stats {
 function StatCard({ label, value, sub }: { label: string; value: string; sub?: string }) {
   return (
     <div className="card p-5">
-      <p className="text-sm text-gray-500">{label}</p>
-      <p className="text-2xl font-bold text-gray-900 mt-1">{value}</p>
+      <p className="text-sm text-gray-500 dark:text-gray-400">{label}</p>
+      <p className="text-2xl font-bold text-gray-900 dark:text-gray-100 mt-1">{value}</p>
       {sub && <p className="text-xs text-gray-400 mt-0.5">{sub}</p>}
     </div>
   );
@@ -57,13 +57,13 @@ function StorageStats() {
       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
         {/* Türe göre */}
         <div className="card p-5">
-          <p className="text-sm font-medium text-gray-700 mb-3">Türe Göre Dağılım</p>
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Türe Göre Dağılım</p>
           <div className="space-y-2">
             {stats.by_type.slice(0, 6).map((t) => (
               <div key={t.mime_type} className="flex items-center justify-between text-sm">
-                <span className="text-gray-600 truncate max-w-[60%]">{t.mime_type.split('/')[1] || t.mime_type}</span>
+                <span className="text-gray-600 dark:text-gray-400 truncate max-w-[60%]">{t.mime_type.split('/')[1] || t.mime_type}</span>
                 <div className="text-right">
-                  <span className="text-gray-900 font-medium">{formatBytes(t.size_bytes)}</span>
+                  <span className="text-gray-900 dark:text-gray-100 font-medium">{formatBytes(t.size_bytes)}</span>
                   <span className="text-gray-400 ml-2">({t.file_count})</span>
                 </div>
               </div>
@@ -73,13 +73,13 @@ function StorageStats() {
 
         {/* Gruba göre */}
         <div className="card p-5">
-          <p className="text-sm font-medium text-gray-700 mb-3">Gruba Göre Dağılım</p>
+          <p className="text-sm font-medium text-gray-700 dark:text-gray-300 mb-3">Gruba Göre Dağılım</p>
           <div className="space-y-2">
             {stats.by_group.slice(0, 6).map((g) => (
               <div key={g.group_id} className="flex items-center justify-between text-sm">
-                <span className="text-gray-600 truncate max-w-[60%]">{g.group_name}</span>
+                <span className="text-gray-600 dark:text-gray-400 truncate max-w-[60%]">{g.group_name}</span>
                 <div className="text-right">
-                  <span className="text-gray-900 font-medium">{formatBytes(g.size_bytes)}</span>
+                  <span className="text-gray-900 dark:text-gray-100 font-medium">{formatBytes(g.size_bytes)}</span>
                   <span className="text-gray-400 ml-2">({g.file_count})</span>
                 </div>
               </div>
@@ -132,27 +132,27 @@ function BulkDeleteModal({ onClose, onSuccess }: { onClose: () => void; onSucces
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Toplu Silme</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Toplu Silme</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
           </button>
         </div>
-        <p className="text-sm text-gray-500 mb-4">Kriterlere uyan dosyalar soft-delete yapılır. 24 saat sonra MinIO'dan kalıcı olarak silinir.</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Kriterlere uyan dosyalar soft-delete yapılır. 24 saat sonra MinIO'dan kalıcı olarak silinir.</p>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Grup ID (opsiyonel)</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Grup ID (opsiyonel)</label>
             <input type="number" value={form.groupId} onChange={(e) => setForm((f) => ({ ...f, groupId: e.target.value }))} className="input-field" placeholder="Boş = tüm gruplar" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">MIME Türü (opsiyonel)</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">MIME Türü (opsiyonel)</label>
             <input type="text" value={form.mimeType} onChange={(e) => setForm((f) => ({ ...f, mimeType: e.target.value }))} className="input-field" placeholder="Örn: image/ veya application/pdf" />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">N günden eski (opsiyonel)</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">N günden eski (opsiyonel)</label>
             <input type="number" value={form.olderThanDays} onChange={(e) => setForm((f) => ({ ...f, olderThanDays: e.target.value }))} className="input-field" placeholder="Örn: 90" />
           </div>
           {error && <p className="text-sm text-red-600">{error}</p>}
@@ -193,12 +193,12 @@ function FileList() {
   return (
     <div className="space-y-4">
       <div className="flex gap-3 items-center">
-        <label className="flex items-center gap-2 text-sm text-gray-600 cursor-pointer">
+        <label className="flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer">
           <input type="checkbox" checked={showDeleted} onChange={(e) => { setShowDeleted(e.target.checked); setPage(1); }} className="w-4 h-4 rounded" />
           Silinmişleri göster
         </label>
         <span className="ml-auto text-sm text-gray-400">{total} dosya</span>
-        <button onClick={() => setShowBulkModal(true)} className="bg-red-100 text-red-700 hover:bg-red-200 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
+        <button onClick={() => setShowBulkModal(true)} className="bg-red-100 text-red-700 hover:bg-red-200 dark:bg-red-900/30 dark:text-red-400 dark:hover:bg-red-900/50 px-3 py-1.5 rounded-lg text-sm font-medium transition-colors">
           Toplu Sil
         </button>
       </div>
@@ -210,26 +210,26 @@ function FileList() {
           <div className="p-8 text-center text-gray-400">Dosya bulunamadı.</div>
         ) : (
           <table className="w-full text-sm">
-            <thead className="bg-gray-50 border-b border-gray-200">
+            <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
               <tr>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Dosya</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Grup</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Yükleyen</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Boyut</th>
-                <th className="text-left px-4 py-3 font-medium text-gray-600">Tarih</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Dosya</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Grup</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Yükleyen</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Boyut</th>
+                <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Tarih</th>
                 <th className="px-4 py-3" />
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
               {files.map((f) => (
-                <tr key={f.id} className={`hover:bg-gray-50 ${f.is_deleted ? 'opacity-50' : ''}`}>
+                <tr key={f.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 ${f.is_deleted ? 'opacity-50' : ''}`}>
                   <td className="px-4 py-3">
-                    <p className="font-medium text-gray-900 truncate max-w-[200px]">{f.original_name}</p>
+                    <p className="font-medium text-gray-900 dark:text-gray-100 truncate max-w-[200px]">{f.original_name}</p>
                     <p className="text-xs text-gray-400">{f.mime_type}</p>
                   </td>
-                  <td className="px-4 py-3 text-gray-600">{f.group_name}</td>
-                  <td className="px-4 py-3 text-gray-600">{f.uploader_display_name}</td>
-                  <td className="px-4 py-3 text-gray-600">{formatBytes(f.size_bytes)}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{f.group_name}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{f.uploader_display_name}</td>
+                  <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{formatBytes(f.size_bytes)}</td>
                   <td className="px-4 py-3 text-gray-400 text-xs">{formatDate(f.created_at)}</td>
                   <td className="px-4 py-3 text-right">
                     {f.is_deleted && f.deleted_at ? (
@@ -251,7 +251,7 @@ function FileList() {
           <button disabled={page === 1} onClick={() => setPage((p) => p - 1)} className="btn-secondary text-sm px-3 py-1.5 disabled:opacity-40">
             ‹ Önceki
           </button>
-          <span className="text-sm text-gray-500 self-center">{page} / {totalPages}</span>
+          <span className="text-sm text-gray-500 dark:text-gray-400 self-center">{page} / {totalPages}</span>
           <button disabled={page === totalPages} onClick={() => setPage((p) => p + 1)} className="btn-secondary text-sm px-3 py-1.5 disabled:opacity-40">
             Sonraki ›
           </button>
@@ -316,10 +316,10 @@ function PolicyForm({ onClose, onSuccess }: { onClose: () => void; onSuccess: ()
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Yeni Temizleme Politikası</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yeni Temizleme Politikası</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -327,33 +327,33 @@ function PolicyForm({ onClose, onSuccess }: { onClose: () => void; onSuccess: ()
         </div>
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Politika Adı</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Politika Adı</label>
             <input type="text" value={form.name} onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))} className="input-field" placeholder="Örn: 90 günden eski görseller" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Max Yaş (gün)</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Max Yaş (gün)</label>
               <input type="number" value={form.max_age_days} onChange={(e) => setForm((f) => ({ ...f, max_age_days: e.target.value }))} className="input-field" placeholder="Örn: 90" />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Min Boyut (MB)</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Min Boyut (MB)</label>
               <input type="number" value={form.max_size_mb} onChange={(e) => setForm((f) => ({ ...f, max_size_mb: e.target.value }))} className="input-field" placeholder="Örn: 100" />
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">MIME Türü Filtresi (opsiyonel)</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">MIME Türü Filtresi (opsiyonel)</label>
             <input type="text" value={form.mime_type_filter} onChange={(e) => setForm((f) => ({ ...f, mime_type_filter: e.target.value }))} className="input-field" placeholder="image/jpeg,video/mp4" />
           </div>
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Kapsam</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Kapsam</label>
               <select value={form.scope} onChange={(e) => setForm((f) => ({ ...f, scope: e.target.value }))} className="input-field">
                 <option value="global">Global</option>
                 <option value="group">Grup</option>
               </select>
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Eylem</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Eylem</label>
               <select value={form.action} onChange={(e) => setForm((f) => ({ ...f, action: e.target.value }))} className="input-field">
                 <option value="delete">Sil</option>
               </select>
@@ -406,14 +406,14 @@ function CleanupPolicies() {
   return (
     <div className="space-y-4">
       <div className="flex justify-between items-center">
-        <p className="text-sm text-gray-500">Otomatik temizleme kuralları — her gece 02:00 çalışır</p>
+        <p className="text-sm text-gray-500 dark:text-gray-400">Otomatik temizleme kuralları — her gece 02:00 çalışır</p>
         <button onClick={() => setShowForm(true)} className="btn-primary">+ Yeni Politika</button>
       </div>
 
       {runResult && (
-        <div className="bg-green-50 border border-green-200 rounded-xl p-4 text-sm text-green-800 flex items-center justify-between">
+        <div className="bg-green-50 dark:bg-green-900/30 border border-green-200 dark:border-green-700 rounded-xl p-4 text-sm text-green-800 dark:text-green-300 flex items-center justify-between">
           <span>Politika #{runResult.id} çalıştı: {runResult.deleted} dosya silindi, {runResult.purged} MinIO'dan kaldırıldı.</span>
-          <button onClick={() => setRunResult(null)} className="text-green-600 hover:text-green-800 ml-4">✕</button>
+          <button onClick={() => setRunResult(null)} className="text-green-600 hover:text-green-800 dark:text-green-400 dark:hover:text-green-300 ml-4">✕</button>
         </div>
       )}
 
@@ -427,8 +427,8 @@ function CleanupPolicies() {
             <div key={p.id} className={`card p-4 ${!p.is_active ? 'opacity-60' : ''}`}>
               <div className="flex items-start justify-between gap-3">
                 <div className="flex-1 min-w-0">
-                  <p className="font-medium text-gray-900">{p.name}</p>
-                  <div className="flex gap-3 mt-1 text-xs text-gray-500 flex-wrap">
+                  <p className="font-medium text-gray-900 dark:text-gray-100">{p.name}</p>
+                  <div className="flex gap-3 mt-1 text-xs text-gray-500 dark:text-gray-400 flex-wrap">
                     {p.max_age_days && <span>{p.max_age_days} günden eski</span>}
                     {p.max_size_mb && <span>{p.max_size_mb} MB üzeri</span>}
                     {p.mime_type_filter && <span>{p.mime_type_filter}</span>}
@@ -445,20 +445,20 @@ function CleanupPolicies() {
                 <div className="flex items-center gap-2 shrink-0">
                   <button
                     onClick={() => toggleActive({ id: p.id, is_active: !p.is_active })}
-                    className={`text-xs px-2 py-1 rounded-lg font-medium transition-colors ${p.is_active ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}
+                    className={`text-xs px-2 py-1 rounded-lg font-medium transition-colors ${p.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}
                   >
                     {p.is_active ? 'Aktif' : 'Pasif'}
                   </button>
                   <button
                     onClick={() => runNow(p.id)}
                     disabled={isRunning && runningId === p.id}
-                    className="text-xs px-2 py-1 rounded-lg bg-blue-100 text-blue-700 font-medium hover:bg-blue-200 transition-colors disabled:opacity-50"
+                    className="text-xs px-2 py-1 rounded-lg bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 font-medium hover:bg-blue-200 dark:hover:bg-blue-900/50 transition-colors disabled:opacity-50"
                   >
                     {isRunning && runningId === p.id ? '...' : 'Çalıştır'}
                   </button>
                   <button
                     onClick={() => deletePolicy(p.id)}
-                    className="text-gray-300 hover:text-red-500 transition-colors"
+                    className="text-gray-300 dark:text-gray-600 hover:text-red-500 dark:hover:text-red-400 transition-colors"
                   >
                     <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
@@ -496,15 +496,15 @@ export default function AdminFilesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-bold text-gray-900 mb-6">Dosya Yönetimi</h1>
+      <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Dosya Yönetimi</h1>
 
       {/* Tab Bar */}
-      <div className="flex gap-1 mb-6 bg-gray-100 rounded-xl p-1 w-fit">
+      <div className="flex gap-1 mb-6 bg-gray-100 dark:bg-gray-800 rounded-xl p-1 w-fit">
         {tabs.map((t) => (
           <button
             key={t.key}
             onClick={() => setTab(t.key)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t.key ? 'bg-white text-gray-900 shadow-sm' : 'text-gray-500 hover:text-gray-700'}`}
+            className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${tab === t.key ? 'bg-white dark:bg-gray-700 text-gray-900 dark:text-gray-100 shadow-sm' : 'text-gray-500 dark:text-gray-400 hover:text-gray-700 dark:hover:text-gray-300'}`}
           >
             {t.label}
           </button>

@@ -59,10 +59,10 @@ function CreateGroupModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Yeni Grup Oluştur</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yeni Grup Oluştur</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -71,7 +71,7 @@ function CreateGroupModal({ onClose }: { onClose: () => void }) {
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Grup Adı</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Grup Adı</label>
             <input
               type="text" value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
@@ -79,7 +79,7 @@ function CreateGroupModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Açıklama (opsiyonel)</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Açıklama (opsiyonel)</label>
             <input
               type="text" value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
@@ -87,7 +87,7 @@ function CreateGroupModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Tür</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Tür</label>
             <select
               value={form.type}
               onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as 'department' | 'private' }))}
@@ -99,7 +99,7 @@ function CreateGroupModal({ onClose }: { onClose: () => void }) {
           </div>
           {form.type === 'department' && (
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Departman Kodu</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Departman Kodu</label>
               <input
                 type="text" value={form.department_code}
                 onChange={(e) => setForm((f) => ({ ...f, department_code: e.target.value }))}
@@ -153,17 +153,17 @@ function EditGroupModal({ group, onClose }: { group: AdminGroup; onClose: () => 
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Grubu Düzenle</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Grubu Düzenle</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Grup Adı</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Grup Adı</label>
             <input
               type="text" value={form.name}
               onChange={(e) => setForm((f) => ({ ...f, name: e.target.value }))}
@@ -171,7 +171,7 @@ function EditGroupModal({ group, onClose }: { group: AdminGroup; onClose: () => 
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Açıklama</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Açıklama</label>
             <input
               type="text" value={form.description}
               onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
@@ -179,7 +179,7 @@ function EditGroupModal({ group, onClose }: { group: AdminGroup; onClose: () => 
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Tür</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Tür</label>
             <select
               value={form.type}
               onChange={(e) => setForm((f) => ({ ...f, type: e.target.value as 'department' | 'private' }))}
@@ -191,7 +191,7 @@ function EditGroupModal({ group, onClose }: { group: AdminGroup; onClose: () => 
           </div>
           {form.type === 'department' && (
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Departman Kodu</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Departman Kodu</label>
               <input
                 type="text" value={form.department_code}
                 onChange={(e) => setForm((f) => ({ ...f, department_code: e.target.value }))}
@@ -274,17 +274,17 @@ function GroupDetailModal({ group, onClose }: { group: AdminGroup; onClose: () =
 
   const typeLabels = { department: 'Departman', private: 'Özel', direct: '1-1 DM' };
   const typeColors = {
-    department: 'bg-blue-100 text-blue-700',
-    private: 'bg-gray-100 text-gray-700',
-    direct: 'bg-purple-100 text-purple-700',
+    department: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    private: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
+    direct: 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400',
   };
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Grup Detayı</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Grup Detayı</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -298,19 +298,19 @@ function GroupDetailModal({ group, onClose }: { group: AdminGroup; onClose: () =
               {group.name[0].toUpperCase()}
             </div>
             <div>
-              <p className="font-semibold text-gray-900">{group.name}</p>
-              {group.description && <p className="text-sm text-gray-500">{group.description}</p>}
+              <p className="font-semibold text-gray-900 dark:text-gray-100">{group.name}</p>
+              {group.description && <p className="text-sm text-gray-500 dark:text-gray-400">{group.description}</p>}
               <div className="flex gap-2 mt-1">
                 <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${typeColors[group.type]}`}>
                   {typeLabels[group.type]}
                 </span>
                 {group.department_code && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-medium">
                     {group.department_code}
                   </span>
                 )}
                 {group.is_archived && (
-                  <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">
+                  <span className="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-medium">
                     Arşivlendi
                   </span>
                 )}
@@ -321,7 +321,7 @@ function GroupDetailModal({ group, onClose }: { group: AdminGroup; onClose: () =
 
         {/* Mevcut üyeler */}
         <div className="mb-4">
-          <p className="text-xs font-medium text-gray-500 mb-2">
+          <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">
             Mevcut Üyeler ({isLoading ? '...' : members.length})
           </p>
           <div className="space-y-1 max-h-48 overflow-y-auto">
@@ -331,13 +331,13 @@ function GroupDetailModal({ group, onClose }: { group: AdminGroup; onClose: () =
               <div className="text-sm text-gray-400 py-4 text-center">Üye yok</div>
             ) : (
               members.map((m) => (
-                <div key={m.id} className="flex items-center justify-between bg-gray-50 rounded-lg px-3 py-2">
+                <div key={m.id} className="flex items-center justify-between bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2">
                   <div>
-                    <span className="text-sm font-medium text-gray-800">{m.display_name}</span>
+                    <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{m.display_name}</span>
                     <span className="text-xs text-gray-400 ml-2">@{m.username}</span>
                   </div>
                   <div className="flex items-center gap-2">
-                    <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">
+                    <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-1.5 py-0.5 rounded">
                       {m.member_role}
                     </span>
                     {m.member_role !== 'owner' && group.type !== 'direct' && (
@@ -361,8 +361,8 @@ function GroupDetailModal({ group, onClose }: { group: AdminGroup; onClose: () =
 
         {/* Üye ekleme (arşivli ve DM dışında) */}
         {!group.is_archived && group.type !== 'direct' && (
-          <div className="mb-5 border border-blue-100 rounded-xl p-3 bg-blue-50/40">
-            <p className="text-xs font-medium text-gray-600 mb-2">Üye Ekle</p>
+          <div className="mb-5 border border-blue-100 dark:border-blue-800 rounded-xl p-3 bg-blue-50/40 dark:bg-blue-900/20">
+            <p className="text-xs font-medium text-gray-600 dark:text-gray-400 mb-2">Üye Ekle</p>
             <input
               type="text"
               value={addSearch}
@@ -380,10 +380,10 @@ function GroupDetailModal({ group, onClose }: { group: AdminGroup; onClose: () =
                 addableUsers.map((u) => (
                   <div
                     key={u.id}
-                    className="flex items-center justify-between bg-white rounded-lg px-3 py-2 border border-gray-100"
+                    className="flex items-center justify-between bg-white dark:bg-gray-700 rounded-lg px-3 py-2 border border-gray-100 dark:border-gray-600"
                   >
                     <div>
-                      <span className="text-sm font-medium text-gray-800">{u.display_name}</span>
+                      <span className="text-sm font-medium text-gray-800 dark:text-gray-200">{u.display_name}</span>
                       <span className="text-xs text-gray-400 ml-2">@{u.username}</span>
                     </div>
                     <button
@@ -402,10 +402,10 @@ function GroupDetailModal({ group, onClose }: { group: AdminGroup; onClose: () =
 
         {/* Arşivleme */}
         {!group.is_archived && group.type !== 'direct' && (
-          <div className="border-t border-gray-100 pt-4">
+          <div className="border-t border-gray-100 dark:border-gray-700 pt-4">
             {archiveConfirm ? (
-              <div className="bg-red-50 border border-red-200 rounded-xl p-4 space-y-3">
-                <p className="text-sm text-red-800">
+              <div className="bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-xl p-4 space-y-3">
+                <p className="text-sm text-red-800 dark:text-red-300">
                   Grubu arşivlemek istediğinizden emin misiniz? Arşivlenen gruba yeni mesaj gönderilemez.
                 </p>
                 <div className="flex gap-2">
@@ -471,14 +471,14 @@ export default function AdminGroupsPage() {
 
   const typeLabels: Record<string, string> = { department: 'Departman', private: 'Özel', all: 'Tümü' };
   const typeColors: Record<string, string> = {
-    department: 'bg-blue-100 text-blue-700',
-    private: 'bg-gray-100 text-gray-700',
+    department: 'bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400',
+    private: 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300',
   };
 
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Grup Yönetimi</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Grup Yönetimi</h1>
         <button onClick={() => setShowCreate(true)} className="btn-primary">
           + Yeni Grup
         </button>
@@ -491,13 +491,13 @@ export default function AdminGroupsPage() {
             key={t}
             onClick={() => setFilter(t)}
             className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
-              filter === t ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-blue-300'
+              filter === t ? 'bg-blue-600 text-white' : 'bg-white border border-gray-200 text-gray-600 hover:border-blue-300 dark:bg-gray-800 dark:border-gray-600 dark:text-gray-400 dark:hover:border-blue-500'
             }`}
           >
             {typeLabels[t]}
           </button>
         ))}
-        <label className="ml-auto flex items-center gap-2 text-sm text-gray-600 cursor-pointer select-none">
+        <label className="ml-auto flex items-center gap-2 text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none">
           <input
             type="checkbox"
             checked={showArchived}
@@ -529,23 +529,23 @@ export default function AdminGroupsPage() {
                   {g.name[0].toUpperCase()}
                 </div>
                 <div className="flex-1 min-w-0 cursor-pointer" onClick={() => setSelectedGroup(g)}>
-                  <p className="font-medium text-gray-900 truncate">{g.name}</p>
+                  <p className="font-medium text-gray-900 dark:text-gray-100 truncate">{g.name}</p>
                   {g.description && <p className="text-xs text-gray-400 truncate">{g.description}</p>}
                   <div className="flex gap-1 mt-1.5 flex-wrap">
-                    <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${typeColors[g.type] || 'bg-gray-100 text-gray-700'}`}>
+                    <span className={`text-xs px-1.5 py-0.5 rounded-full font-medium ${typeColors[g.type] || 'bg-gray-100 text-gray-700 dark:bg-gray-700 dark:text-gray-300'}`}>
                       {typeLabels[g.type] || g.type}
                     </span>
                     {g.department_code && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 font-medium">
+                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-yellow-100 text-yellow-700 dark:bg-yellow-900/30 dark:text-yellow-400 font-medium">
                         {g.department_code}
                       </span>
                     )}
                     {g.is_archived && (
-                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 font-medium">
+                      <span className="text-xs px-1.5 py-0.5 rounded-full bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 font-medium">
                         Arşiv
                       </span>
                     )}
-                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-50 text-gray-500 font-medium flex items-center gap-0.5">
+                    <span className="text-xs px-1.5 py-0.5 rounded-full bg-gray-50 text-gray-500 dark:bg-gray-700 dark:text-gray-400 font-medium flex items-center gap-0.5">
                       <Users className="w-3 h-3" /> {g.member_count}
                     </span>
                   </div>
@@ -555,14 +555,14 @@ export default function AdminGroupsPage() {
                   <div className="flex items-center gap-1 shrink-0">
                     <button
                       onClick={(e) => { e.stopPropagation(); setEditingGroup(g); }}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors"
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors"
                       title="Düzenle"
                     >
                       <Pencil className="w-4 h-4" />
                     </button>
                     <button
                       onClick={(e) => { e.stopPropagation(); setArchiveConfirmId(g.id); }}
-                      className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors"
+                      className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors"
                       title="Arşivle"
                     >
                       <Archive className="w-4 h-4" />
@@ -573,12 +573,12 @@ export default function AdminGroupsPage() {
 
               {/* Arşivleme onay */}
               {archiveConfirmId === g.id && (
-                <div className="mt-3 bg-red-50 border border-red-200 rounded-lg p-3">
-                  <p className="text-xs text-red-700 mb-2">Bu grubu arşivlemek istediğinizden emin misiniz?</p>
+                <div className="mt-3 bg-red-50 dark:bg-red-900/30 border border-red-200 dark:border-red-700 rounded-lg p-3">
+                  <p className="text-xs text-red-700 dark:text-red-400 mb-2">Bu grubu arşivlemek istediğinizden emin misiniz?</p>
                   <div className="flex gap-2">
                     <button
                       onClick={() => setArchiveConfirmId(null)}
-                      className="flex-1 text-xs py-1.5 rounded-lg bg-white border border-gray-200 text-gray-600 hover:bg-gray-50"
+                      className="flex-1 text-xs py-1.5 rounded-lg bg-white dark:bg-gray-700 border border-gray-200 dark:border-gray-600 text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-gray-600"
                     >
                       İptal
                     </button>

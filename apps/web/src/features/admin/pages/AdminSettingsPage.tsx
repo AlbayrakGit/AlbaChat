@@ -26,8 +26,8 @@ function SettingsSection({ title, description, children }: {
   return (
     <div className="card p-6">
       <div className="mb-5">
-        <h2 className="text-base font-semibold text-gray-900">{title}</h2>
-        <p className="text-sm text-gray-500 mt-0.5">{description}</p>
+        <h2 className="text-base font-semibold text-gray-900 dark:text-gray-100">{title}</h2>
+        <p className="text-sm text-gray-500 dark:text-gray-400 mt-0.5">{description}</p>
       </div>
       <div className="space-y-4">{children}</div>
     </div>
@@ -38,7 +38,7 @@ function FieldRow({ label, hint, children }: { label: string; hint?: string; chi
   return (
     <div className="flex items-start gap-4">
       <div className="w-48 shrink-0 pt-2">
-        <p className="text-sm font-medium text-gray-700">{label}</p>
+        <p className="text-sm font-medium text-gray-700 dark:text-gray-300">{label}</p>
         {hint && <p className="text-xs text-gray-400 mt-0.5">{hint}</p>}
       </div>
       <div className="flex-1">{children}</div>
@@ -88,7 +88,7 @@ export default function AdminSettingsPage() {
   if (isLoading || !form) {
     return (
       <div>
-        <h1 className="text-2xl font-bold text-gray-900 mb-6">Sistem Ayarları</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100 mb-6">Sistem Ayarları</h1>
         <div className="card p-8 text-center text-gray-400">Yükleniyor...</div>
       </div>
     );
@@ -97,7 +97,7 @@ export default function AdminSettingsPage() {
   return (
     <div>
       <div className="flex items-center justify-between mb-6">
-        <h1 className="text-2xl font-bold text-gray-900">Sistem Ayarları</h1>
+        <h1 className="text-2xl font-bold text-gray-900 dark:text-gray-100">Sistem Ayarları</h1>
         {saved && (
           <span className="inline-flex items-center gap-1.5 text-sm text-green-700 bg-green-100 px-3 py-1.5 rounded-xl">
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -110,7 +110,7 @@ export default function AdminSettingsPage() {
 
       {/* Nginx durum bildirimleri */}
       {saved && saveMeta?.nginx_reloaded && (
-        <div className="mb-4 flex items-center gap-2 bg-blue-50 border border-blue-200 rounded-xl px-4 py-3 text-sm text-blue-800">
+        <div className="mb-4 flex items-center gap-2 bg-blue-50 border border-blue-200 dark:bg-blue-900/30 dark:border-blue-700 rounded-xl px-4 py-3 text-sm text-blue-800 dark:text-blue-300">
           <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
           </svg>
@@ -118,20 +118,20 @@ export default function AdminSettingsPage() {
         </div>
       )}
       {saved && saveMeta?.nginx_restart_required && (
-        <div className="mb-4 flex items-start gap-2 bg-yellow-50 border border-yellow-300 rounded-xl px-4 py-3 text-sm text-yellow-800">
+        <div className="mb-4 flex items-start gap-2 bg-yellow-50 border border-yellow-300 dark:bg-yellow-900/30 dark:border-yellow-700 rounded-xl px-4 py-3 text-sm text-yellow-800 dark:text-yellow-300">
           <svg className="w-4 h-4 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
           <div>
             <p className="font-medium">Port değişikliği için nginx yeniden başlatılmalı.</p>
-            <p className="text-xs mt-0.5 font-mono text-yellow-700">
+            <p className="text-xs mt-0.5 font-mono text-yellow-700 dark:text-yellow-400">
               docker compose -f infra/docker-compose.prod.yml up -d --force-recreate nginx
             </p>
           </div>
         </div>
       )}
       {saved && saveMeta?.nginx_error && (
-        <div className="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 rounded-xl px-4 py-3 text-sm text-red-700">
+        <div className="mb-4 flex items-center gap-2 bg-red-50 border border-red-200 dark:bg-red-900/30 dark:border-red-700 rounded-xl px-4 py-3 text-sm text-red-700 dark:text-red-400">
           <svg className="w-4 h-4 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
           </svg>
@@ -171,7 +171,7 @@ export default function AdminSettingsPage() {
                 onChange={(e) => update('max_file_size_mb', e.target.value)}
                 className="input-field w-24"
               />
-              <span className="text-sm text-gray-500">MB</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">MB</span>
             </div>
           </FieldRow>
           <FieldRow label="İzin Verilen Uzantılar" hint="Virgülle ayırın">
@@ -181,7 +181,7 @@ export default function AdminSettingsPage() {
               className="input-field" placeholder="jpg,jpeg,png,pdf,docx"
             />
             <p className="text-xs text-gray-400 mt-1">
-              Örn: <span className="bg-gray-100 px-1 rounded font-mono text-xs">jpg,png,pdf,docx,xlsx</span>
+              Örn: <span className="bg-gray-100 dark:bg-gray-700 px-1 rounded font-mono text-xs">jpg,png,pdf,docx,xlsx</span>
             </p>
           </FieldRow>
         </SettingsSection>
@@ -197,7 +197,7 @@ export default function AdminSettingsPage() {
                 onChange={(e) => update('session_timeout_hours', e.target.value)}
                 className="input-field w-24"
               />
-              <span className="text-sm text-gray-500">saat</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">saat</span>
             </div>
           </FieldRow>
           <FieldRow label="Maks. Mesaj Uzunluğu" hint="Karakter sayısı">
@@ -207,7 +207,7 @@ export default function AdminSettingsPage() {
                 onChange={(e) => update('max_message_length', e.target.value)}
                 className="input-field w-28"
               />
-              <span className="text-sm text-gray-500">karakter</span>
+              <span className="text-sm text-gray-500 dark:text-gray-400">karakter</span>
             </div>
           </FieldRow>
         </SettingsSection>
@@ -226,7 +226,7 @@ export default function AdminSettingsPage() {
                 onChange={(e) => update('nginx_port', e.target.value)}
                 className="input-field w-28"
               />
-              <span className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 rounded-lg px-2 py-1">
+              <span className="text-xs text-yellow-700 bg-yellow-50 border border-yellow-200 dark:bg-yellow-900/30 dark:border-yellow-700 dark:text-yellow-400 rounded-lg px-2 py-1">
                 Değişiklik sonrası nginx restart gerekli
               </span>
             </div>

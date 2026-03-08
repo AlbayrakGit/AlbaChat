@@ -54,7 +54,7 @@ export default function AdminLayout() {
   }
 
   return (
-    <div className="flex h-[100dvh] bg-gray-100 overflow-hidden">
+    <div className="flex h-[100dvh] bg-gray-100 dark:bg-gray-900 overflow-hidden">
       {/* Mobile Sidebar Overlay */}
       {sidebarOpen && (
         <div
@@ -144,20 +144,20 @@ export default function AdminLayout() {
       {/* Main Content Area */}
       <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
         {/* Mobile Header */}
-        <header className="md:hidden h-14 bg-white border-b border-gray-200 flex items-center px-4 shrink-0 z-30">
+        <header className="md:hidden h-14 bg-white dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700 flex items-center px-4 shrink-0 z-30">
           <button
             onClick={() => setSidebarOpen(true)}
-            className="p-2 -ml-2 text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
+            className="p-2 -ml-2 text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-700 rounded-lg transition-colors"
           >
             <Menu className="w-6 h-6" />
           </button>
           <div className="ml-3">
-            <h1 className="text-sm font-bold text-gray-900">Yönetim Paneli</h1>
+            <h1 className="text-sm font-bold text-gray-900 dark:text-gray-100">Yönetim Paneli</h1>
           </div>
         </header>
 
         {/* İçerik Scroll Alanı — sadece bu alan scroll edilir */}
-        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar bg-gray-50/50" style={{ overscrollBehavior: 'contain' }}>
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 custom-scrollbar bg-gray-50/50 dark:bg-gray-900" style={{ overscrollBehavior: 'contain' }}>
           <div className="max-w-7xl mx-auto">
             <Outlet />
           </div>

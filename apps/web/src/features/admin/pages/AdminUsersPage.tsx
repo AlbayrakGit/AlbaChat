@@ -57,10 +57,10 @@ function CsvImportModal({ onClose, onSuccess }: { onClose: () => void; onSuccess
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">CSV ile Toplu Import</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">CSV ile Toplu Import</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -70,18 +70,18 @@ function CsvImportModal({ onClose, onSuccess }: { onClose: () => void; onSuccess
         {!result ? (
           <div className="space-y-4">
             {/* Format açıklaması */}
-            <div className="bg-blue-50 rounded-xl p-4 text-sm text-blue-800">
+            <div className="bg-blue-50 dark:bg-blue-900/30 rounded-xl p-4 text-sm text-blue-800 dark:text-blue-300">
               <p className="font-semibold mb-1">CSV Format (ilk satır başlık):</p>
-              <code className="text-xs text-blue-700 break-all">
+              <code className="text-xs text-blue-700 dark:text-blue-400 break-all">
                 display_name,username,email,password,role<br />
                 Ahmet Yılmaz,ahmetyilmaz,ahmet@sirket.com,sifre1234,user
               </code>
-              <p className="mt-2 text-xs text-blue-600">role alanı opsiyonel (varsayılan: user). Maks. 500 satır, 1 MB.</p>
+              <p className="mt-2 text-xs text-blue-600 dark:text-blue-400">role alanı opsiyonel (varsayılan: user). Maks. 500 satır, 1 MB.</p>
             </div>
 
             {/* Dosya seçici */}
             <div
-              className="border-2 border-dashed border-gray-200 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-colors"
+              className="border-2 border-dashed border-gray-200 dark:border-gray-600 rounded-xl p-8 text-center cursor-pointer hover:border-blue-400 transition-colors"
               onClick={() => document.getElementById('csv-file-input')?.click()}
             >
               <input
@@ -92,7 +92,7 @@ function CsvImportModal({ onClose, onSuccess }: { onClose: () => void; onSuccess
                 onChange={(e) => setFile(e.target.files?.[0] || null)}
               />
               {file ? (
-                <div className="text-sm text-gray-700">
+                <div className="text-sm text-gray-700 dark:text-gray-300">
                   <p className="font-medium">{file.name}</p>
                   <p className="text-gray-400 text-xs mt-1">{(file.size / 1024).toFixed(1)} KB</p>
                 </div>
@@ -119,18 +119,18 @@ function CsvImportModal({ onClose, onSuccess }: { onClose: () => void; onSuccess
           /* Sonuç ekranı */
           <div className="space-y-4">
             <div className="grid grid-cols-2 gap-3">
-              <div className="bg-green-50 rounded-xl p-4 text-center">
+              <div className="bg-green-50 dark:bg-green-900/30 rounded-xl p-4 text-center">
                 <p className="text-2xl font-bold text-green-700">{result.created}</p>
                 <p className="text-sm text-green-600 mt-1">Oluşturuldu</p>
               </div>
-              <div className="bg-yellow-50 rounded-xl p-4 text-center">
+              <div className="bg-yellow-50 dark:bg-yellow-900/30 rounded-xl p-4 text-center">
                 <p className="text-2xl font-bold text-yellow-700">{result.skipped}</p>
                 <p className="text-sm text-yellow-600 mt-1">Atlandı</p>
               </div>
             </div>
 
             {result.errors.length > 0 && (
-              <div className="bg-red-50 rounded-xl p-3 max-h-48 overflow-y-auto">
+              <div className="bg-red-50 dark:bg-red-900/30 rounded-xl p-3 max-h-48 overflow-y-auto">
                 <p className="text-xs font-semibold text-red-700 mb-2">Hatalar:</p>
                 {result.errors.map((e, i) => (
                   <div key={i} className="text-xs text-red-600 mb-1">
@@ -183,10 +183,10 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Yeni Kullanıcı Oluştur</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Yeni Kullanıcı Oluştur</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -196,7 +196,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-2 gap-3">
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Ad Soyad</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Ad Soyad</label>
               <input
                 type="text" value={form.display_name}
                 onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
@@ -204,7 +204,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
               />
             </div>
             <div>
-              <label className="block text-xs font-medium text-gray-600 mb-1">Kullanıcı Adı</label>
+              <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Kullanıcı Adı</label>
               <input
                 type="text" value={form.username}
                 onChange={(e) => setForm((f) => ({ ...f, username: e.target.value }))}
@@ -213,7 +213,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
             </div>
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">E-posta</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">E-posta</label>
             <input
               type="email" value={form.email}
               onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
@@ -221,7 +221,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Şifre</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Şifre</label>
             <input
               type="password" value={form.password}
               onChange={(e) => setForm((f) => ({ ...f, password: e.target.value }))}
@@ -229,7 +229,7 @@ function CreateUserModal({ onClose }: { onClose: () => void }) {
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Rol</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Rol</label>
             <select
               value={form.role}
               onChange={(e) => setForm((f) => ({ ...f, role: e.target.value as 'admin' | 'user' }))}
@@ -296,10 +296,10 @@ function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => v
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-lg p-6 max-h-[90vh] overflow-y-auto">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Kullanıcı Detayı</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Kullanıcı Detayı</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
             </svg>
@@ -316,17 +316,17 @@ function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => v
                 {data.display_name?.[0]?.toUpperCase()}
               </div>
               <div>
-                <p className="font-semibold text-gray-900 text-lg">{data.display_name}</p>
-                <p className="text-sm text-gray-500">@{data.username}</p>
-                <p className="text-sm text-gray-500">{data.email}</p>
+                <p className="font-semibold text-gray-900 dark:text-gray-100 text-lg">{data.display_name}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">@{data.username}</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400">{data.email}</p>
               </div>
             </div>
 
             <div className="flex gap-3">
-              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${data.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
+              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${data.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
                 {data.role === 'admin' ? 'Admin' : 'Kullanıcı'}
               </span>
-              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${data.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+              <span className={`px-2.5 py-1 rounded-full text-xs font-medium ${data.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
                 {data.is_active ? 'Aktif' : 'Devre Dışı'}
               </span>
             </div>
@@ -334,14 +334,14 @@ function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => v
             {/* Üye olduğu gruplar */}
             {data.groups && data.groups.length > 0 && (
               <div>
-                <p className="text-xs font-medium text-gray-500 mb-2">Üye Olduğu Gruplar</p>
+                <p className="text-xs font-medium text-gray-500 dark:text-gray-400 mb-2">Üye Olduğu Gruplar</p>
                 <div className="space-y-1">
                   {data.groups.map((g) => (
-                    <div key={g.id} className="flex items-center justify-between text-sm bg-gray-50 rounded-lg px-3 py-2">
-                      <span className="text-gray-800">{g.name}</span>
+                    <div key={g.id} className="flex items-center justify-between text-sm bg-gray-50 dark:bg-gray-700/50 rounded-lg px-3 py-2">
+                      <span className="text-gray-800 dark:text-gray-200">{g.name}</span>
                       <div className="flex items-center gap-2">
                         <span className="text-xs text-gray-400">{g.type}</span>
-                        <span className="text-xs bg-blue-100 text-blue-700 px-1.5 py-0.5 rounded">{g.member_role}</span>
+                        <span className="text-xs bg-blue-100 text-blue-700 dark:bg-blue-900/30 dark:text-blue-400 px-1.5 py-0.5 rounded">{g.member_role}</span>
                       </div>
                     </div>
                   ))}
@@ -351,8 +351,8 @@ function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => v
 
             {/* Şifre sıfırlama */}
             {showPasswordForm ? (
-              <form onSubmit={handlePasswordReset} className="bg-yellow-50 border border-yellow-200 rounded-xl p-4 space-y-3">
-                <p className="text-sm font-medium text-yellow-800">Yeni Şifre Belirle</p>
+              <form onSubmit={handlePasswordReset} className="bg-yellow-50 dark:bg-yellow-900/20 border border-yellow-200 dark:border-yellow-700 rounded-xl p-4 space-y-3">
+                <p className="text-sm font-medium text-yellow-800 dark:text-yellow-300">Yeni Şifre Belirle</p>
                 <input
                   type="password" value={newPassword} placeholder="En az 8 karakter"
                   onChange={(e) => setNewPassword(e.target.value)}
@@ -369,7 +369,7 @@ function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => v
             ) : null}
 
             {/* Eylemler */}
-            <div className="flex gap-2 pt-2 border-t border-gray-100">
+            <div className="flex gap-2 pt-2 border-t border-gray-100 dark:border-gray-700">
               <button
                 onClick={() => setShowPasswordForm((v) => !v)}
                 className="btn-secondary text-sm flex-1"
@@ -380,8 +380,8 @@ function UserDetailModal({ userId, onClose }: { userId: number; onClose: () => v
                 onClick={() => toggleStatus(!data.is_active)}
                 disabled={isToggling}
                 className={`text-sm flex-1 rounded-xl px-4 py-2 font-medium transition-colors ${data.is_active
-                    ? 'bg-red-100 text-red-700 hover:bg-red-200'
-                    : 'bg-green-100 text-green-700 hover:bg-green-200'
+                    ? 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400 hover:bg-red-200'
+                    : 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400 hover:bg-green-200'
                   }`}
               >
                 {isToggling ? '...' : data.is_active ? 'Devre Dışı Bırak' : 'Aktifleştir'}
@@ -427,17 +427,17 @@ function EditUserModal({ user, onClose }: { user: AdminUser; onClose: () => void
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-      <div className="bg-white rounded-2xl shadow-xl w-full max-w-md p-6">
+      <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-md p-6">
         <div className="flex items-center justify-between mb-5">
-          <h2 className="text-lg font-semibold text-gray-900">Kullanıcıyı Düzenle</h2>
-          <button onClick={onClose} className="text-gray-400 hover:text-gray-600">
+          <h2 className="text-lg font-semibold text-gray-900 dark:text-gray-100">Kullanıcıyı Düzenle</h2>
+          <button onClick={onClose} className="text-gray-400 hover:text-gray-600 dark:hover:text-gray-300">
             <X className="w-5 h-5" />
           </button>
         </div>
 
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Ad Soyad</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Ad Soyad</label>
             <input
               type="text" value={form.display_name}
               onChange={(e) => setForm((f) => ({ ...f, display_name: e.target.value }))}
@@ -445,7 +445,7 @@ function EditUserModal({ user, onClose }: { user: AdminUser; onClose: () => void
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">E-posta</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">E-posta</label>
             <input
               type="email" value={form.email}
               onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
@@ -453,7 +453,7 @@ function EditUserModal({ user, onClose }: { user: AdminUser; onClose: () => void
             />
           </div>
           <div>
-            <label className="block text-xs font-medium text-gray-600 mb-1">Rol</label>
+            <label className="block text-xs font-medium text-gray-600 dark:text-gray-400 mb-1">Rol</label>
             <select
               value={form.role}
               onChange={(e) => setForm((f) => ({ ...f, role: e.target.value as 'admin' | 'user' }))}
@@ -518,7 +518,7 @@ export default function AdminUsersPage() {
     <div>
       {/* Başlık */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-4 md:mb-6">
-        <h1 className="text-xl md:text-2xl font-bold text-gray-900">Kullanıcı Yönetimi</h1>
+        <h1 className="text-xl md:text-2xl font-bold text-gray-900 dark:text-gray-100">Kullanıcı Yönetimi</h1>
         <div className="flex gap-2">
           <button
             onClick={() => setShowCsvImport(true)}
@@ -540,7 +540,7 @@ export default function AdminUsersPage() {
           className="input-field sm:max-w-xs"
         />
         <div className="flex items-center justify-between sm:justify-start gap-3">
-          <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 cursor-pointer select-none whitespace-nowrap">
+          <label className="flex items-center gap-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400 cursor-pointer select-none whitespace-nowrap">
             <input
               type="checkbox" checked={includeInactive}
               onChange={(e) => setIncludeInactive(e.target.checked)}
@@ -565,31 +565,31 @@ export default function AdminUsersPage() {
             {/* Desktop: Tablo */}
             <div className="hidden md:block overflow-x-auto custom-scrollbar">
               <table className="w-full text-sm min-w-[600px]">
-                <thead className="bg-gray-50 border-b border-gray-200">
+                <thead className="bg-gray-50 dark:bg-gray-700/50 border-b border-gray-200 dark:border-gray-700">
                   <tr>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Kullanıcı</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">E-posta</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Rol</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Durum</th>
-                    <th className="text-left px-4 py-3 font-medium text-gray-600">Kayıt</th>
-                    <th className="text-right px-4 py-3 font-medium text-gray-600">İşlemler</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kullanıcı</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">E-posta</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Rol</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Durum</th>
+                    <th className="text-left px-4 py-3 font-medium text-gray-600 dark:text-gray-400">Kayıt</th>
+                    <th className="text-right px-4 py-3 font-medium text-gray-600 dark:text-gray-400">İşlemler</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-gray-100 dark:divide-gray-700">
                   {users.map((user) => (
-                    <tr key={user.id} className={`hover:bg-gray-50 transition-colors ${!user.is_active ? 'opacity-60' : ''}`}>
+                    <tr key={user.id} className={`hover:bg-gray-50 dark:hover:bg-gray-700/50 transition-colors ${!user.is_active ? 'opacity-60' : ''}`}>
                       <td className="px-4 py-3">
-                        <div className="font-medium text-gray-900">{user.display_name}</div>
+                        <div className="font-medium text-gray-900 dark:text-gray-100">{user.display_name}</div>
                         <div className="text-gray-400 text-xs">@{user.username}</div>
                       </td>
-                      <td className="px-4 py-3 text-gray-600">{user.email}</td>
+                      <td className="px-4 py-3 text-gray-600 dark:text-gray-400">{user.email}</td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-600'}`}>
+                        <span className={`inline-flex px-2 py-0.5 rounded-full text-xs font-medium ${user.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-gray-100 text-gray-600 dark:bg-gray-700 dark:text-gray-400'}`}>
                           {user.role === 'admin' ? 'Admin' : 'Kullanıcı'}
                         </span>
                       </td>
                       <td className="px-4 py-3">
-                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.is_active ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                        <span className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-medium ${user.is_active ? 'bg-green-100 text-green-700 dark:bg-green-900/30 dark:text-green-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}`}>
                           <span className={`w-1.5 h-1.5 rounded-full ${user.is_active ? 'bg-green-500' : 'bg-red-500'}`} />
                           {user.is_active ? 'Aktif' : 'Pasif'}
                         </span>
@@ -599,18 +599,18 @@ export default function AdminUsersPage() {
                       </td>
                       <td className="px-4 py-3">
                         <div className="flex items-center justify-end gap-1">
-                          <button onClick={() => setSelectedUserId(user.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Detay">
+                          <button onClick={() => setSelectedUserId(user.id)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors" title="Detay">
                             <Eye className="w-4 h-4" />
                           </button>
-                          <button onClick={() => setEditingUser(user)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 transition-colors" title="Düzenle">
+                          <button onClick={() => setEditingUser(user)} className="p-1.5 rounded-lg text-gray-400 hover:text-blue-600 hover:bg-blue-50 dark:hover:bg-blue-900/30 transition-colors" title="Düzenle">
                             <Pencil className="w-4 h-4" />
                           </button>
                           {user.is_active ? (
-                            <button onClick={() => setStatusConfirm({ id: user.id, activate: false })} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 transition-colors" title="Devre Dışı Bırak">
+                            <button onClick={() => setStatusConfirm({ id: user.id, activate: false })} className="p-1.5 rounded-lg text-gray-400 hover:text-red-600 hover:bg-red-50 dark:hover:bg-red-900/30 transition-colors" title="Devre Dışı Bırak">
                               <UserX className="w-4 h-4" />
                             </button>
                           ) : (
-                            <button onClick={() => setStatusConfirm({ id: user.id, activate: true })} className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 transition-colors" title="Aktifleştir">
+                            <button onClick={() => setStatusConfirm({ id: user.id, activate: true })} className="p-1.5 rounded-lg text-gray-400 hover:text-green-600 hover:bg-green-50 dark:hover:bg-green-900/30 transition-colors" title="Aktifleştir">
                               <UserCheck className="w-4 h-4" />
                             </button>
                           )}
@@ -623,14 +623,14 @@ export default function AdminUsersPage() {
             </div>
 
             {/* Mobil: Kart görünümü */}
-            <div className="md:hidden divide-y divide-gray-100">
+            <div className="md:hidden divide-y divide-gray-100 dark:divide-gray-700">
               {users.map((user) => (
                 <div key={user.id} className={`p-3 ${!user.is_active ? 'opacity-60' : ''}`}>
                   <div className="flex items-center justify-between">
                     <div className="flex-1 min-w-0">
                       <div className="flex items-center gap-2">
-                        <span className="font-semibold text-sm text-gray-900 truncate">{user.display_name}</span>
-                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-700' : 'bg-gray-100 text-gray-500'}`}>
+                        <span className="font-semibold text-sm text-gray-900 dark:text-gray-100 truncate">{user.display_name}</span>
+                        <span className={`text-[10px] font-medium px-1.5 py-0.5 rounded-full ${user.role === 'admin' ? 'bg-purple-100 text-purple-700 dark:bg-purple-900/30 dark:text-purple-400' : 'bg-gray-100 text-gray-500 dark:bg-gray-700 dark:text-gray-400'}`}>
                           {user.role === 'admin' ? 'Admin' : 'User'}
                         </span>
                         <span className={`w-2 h-2 rounded-full flex-shrink-0 ${user.is_active ? 'bg-green-500' : 'bg-red-400'}`} />
@@ -665,11 +665,11 @@ export default function AdminUsersPage() {
       {/* Durum değiştirme onay */}
       {statusConfirm && (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40">
-          <div className="bg-white rounded-2xl shadow-xl w-full max-w-sm p-6">
-            <h3 className="text-lg font-semibold text-gray-900 mb-3">
+          <div className="bg-white dark:bg-gray-800 rounded-2xl shadow-xl w-full max-w-sm p-6">
+            <h3 className="text-lg font-semibold text-gray-900 dark:text-gray-100 mb-3">
               {statusConfirm.activate ? 'Kullanıcıyı Aktifleştir' : 'Kullanıcıyı Devre Dışı Bırak'}
             </h3>
-            <p className="text-sm text-gray-600 mb-5">
+            <p className="text-sm text-gray-600 dark:text-gray-400 mb-5">
               {statusConfirm.activate
                 ? 'Bu kullanıcı tekrar sisteme giriş yapabilecek.'
                 : 'Bu kullanıcı sisteme giriş yapamayacak ve tüm aktif oturumları sonlandırılacak.'}

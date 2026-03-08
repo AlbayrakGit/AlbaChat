@@ -140,6 +140,14 @@
   .sidebar-item {
     @apply flex items-center gap-3 px-3 py-2 rounded-lg transition-all hover:bg-muted/50 cursor-pointer;
   }
+
+  .btn-secondary {
+    @apply inline-flex items-center justify-center px-4 py-2 text-sm font-semibold transition-all duration-200 rounded-md border border-gray-200 dark:border-gray-600 bg-white dark:bg-gray-700 text-gray-700 dark:text-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600 active:scale-[0.98] disabled:opacity-50;
+  }
+
+  .card {
+    @apply bg-white dark:bg-gray-800 border border-gray-200 dark:border-gray-700 rounded-2xl shadow-sm;
+  }
 }
 
 @keyframes fadeIn {
