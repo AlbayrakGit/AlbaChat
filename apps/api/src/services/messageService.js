@@ -200,13 +200,29 @@ export async function deleteMessage(messageId, requesterId, requesterRole) {
   const message = await knex('messages').where({ id: messageId }).first();
   if (!message || message.is_deleted) throw new MessageNotFoundError();
 
-  // Kendisi için silecekse, grup üyesi mi diye kontrol edebiliriz ama socket middleware ve endpointler zaten kontrol ediyor.
-  // Burada array'e requesterId ekliyoruz. is_deleted'i global set etmiyoruz.
   await knex('messages')
     .where({ id: messageId })
     .update({
       deleted_for: knex.raw('array_append(deleted_for, ?)', [parseInt(requesterId, 10)])
     });
+
+  return { id: messageId, group_id: message.group_id };
+}
+
+/**
+ * Mesaj sil (Herkesten sil) — sadece mesaj sahibi veya admin
+ */
+export async function deleteMessageForEveryone(messageId, requesterId, requesterRole) {
+  const message = await knex('messages').where({ id: messageId }).first();
+  if (!message || message.is_deleted) throw new MessageNotFoundError();
+
+  if (message.sender_id !== requesterId && requesterRole !== 'admin') {
+    throw new MessageForbiddenError();
+  }
+
+  await knex('messages')
+    .where({ id: messageId })
+    .update({ is_deleted: true, content: null });
 
   return { id: messageId, group_id: message.group_id };
 }

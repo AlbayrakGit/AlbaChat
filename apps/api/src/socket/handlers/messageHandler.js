@@ -1,6 +1,7 @@
 import {
   createMessage,
   deleteMessage,
+  deleteMessageForEveryone,
   addReaction,
   MessageForbiddenError,
   GroupArchivedError,
@@ -66,12 +67,17 @@ export function setupMessageHandler(io, socket) {
   });
 
   // ─── message:delete ───────────────────────────────────────────────────────
-  socket.on('message:delete', async ({ messageId }, callback) => {
+  socket.on('message:delete', async ({ messageId, forEveryone = false }, callback) => {
     try {
-      const result = await deleteMessage(messageId, user.id, user.role);
-
-      // Sadece işlemi yapan tarafa bildir, diğer kullanıcının ekranında mesaj kalsın
-      socket.emit('message:deleted', { groupId: result.group_id, messageId });
+      if (forEveryone) {
+        const result = await deleteMessageForEveryone(messageId, user.id, user.role);
+        // Tüm gruba bildir
+        await publishMessageDeleted(result.group_id, messageId);
+      } else {
+        const result = await deleteMessage(messageId, user.id, user.role);
+        // Sadece işlemi yapan tarafa bildir
+        socket.emit('message:deleted', { groupId: result.group_id, messageId });
+      }
 
       callback?.({ success: true });
     } catch (err) {

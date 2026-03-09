@@ -234,47 +234,35 @@ function ReadTick({ isRead }: { isRead: boolean }) {
 }
 
 function MessageMenu({
-  message, anchorId, isOwn, onClose, onReply, onForward, onDelete, confirmDelete
+  message, anchorRef, isOwn, onClose, onReply, onForward, onDeleteForMe, onDeleteForEveryone
 }: {
-  message: Message, anchorId: string, isOwn: boolean, onClose: () => void,
+  message: Message, anchorRef: { x: number; y: number }, isOwn: boolean, onClose: () => void,
   onReply?: (m: Message) => void, onForward?: (m: Message) => void,
-  onDelete: (e: React.MouseEvent) => void, confirmDelete: boolean
+  onDeleteForMe: () => void, onDeleteForEveryone: () => void
 }) {
   const [coords, setCoords] = useState({ top: 0, left: 0 });
-  const menuRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const btn = document.getElementById(anchorId);
-    if (btn) {
-      const rect = btn.getBoundingClientRect();
-      const menuW = 160;
-      const menuH = 220;
-      let top = rect.bottom + 4;
-      let left = isOwn ? rect.right - menuW : rect.left;
+    const menuW = 170;
+    const menuH = 280;
+    let top = anchorRef.y;
+    let left = anchorRef.x;
 
-      // Prevent overflow bottom
-      if (top + menuH > window.innerHeight) {
-        top = rect.top - menuH - 4;
-      }
-      // Prevent overflow top
-      if (top < 10) top = 10;
-      // Prevent overflow right
-      if (left + menuW > window.innerWidth - 10) left = window.innerWidth - menuW - 10;
-      // Prevent overflow left
-      if (left < 10) left = 10;
+    if (top + menuH > window.innerHeight) top = anchorRef.y - menuH;
+    if (top < 10) top = 10;
+    if (left + menuW > window.innerWidth - 10) left = window.innerWidth - menuW - 10;
+    if (left < 10) left = 10;
 
-      setCoords({ top, left });
-    }
-  }, [anchorId, isOwn]);
+    setCoords({ top, left });
+  }, [anchorRef, isOwn]);
 
   return (
     <div
-      ref={menuRef}
       style={{ top: coords.top, left: coords.left }}
-      className="fixed min-w-[140px] bg-white dark:bg-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100 dark:border-gray-700 py-1.5 z-[9999]"
+      className="fixed min-w-[170px] bg-white dark:bg-gray-800 rounded-xl shadow-[0_10px_40px_rgba(0,0,0,0.2)] border border-gray-100 dark:border-gray-700 py-1.5 z-[9999]"
     >
       {/* Quick Reactions Bar */}
-      <div className="flex items-center justify-between px-2 py-2 border-b border-gray-50 mb-1">
+      <div className="flex items-center justify-between px-2 py-2 border-b border-gray-50 dark:border-gray-700 mb-1">
         {['❤️', '👍', '👎', '⭐', '🎉', '😊'].map((emoji) => (
           <button
             key={emoji}
@@ -303,15 +291,23 @@ function MessageMenu({
         <Forward className="w-3.5 h-3.5 text-green-500" />
         <span>İlet</span>
       </button>
-      <div className="h-px bg-gray-50 my-1" />
+      <div className="h-px bg-gray-100 dark:bg-gray-700 my-1" />
       <button
-        onClick={onDelete}
-        className={`w-full flex items-center gap-3 px-3 py-2 text-xs font-bold transition-all
-          ${confirmDelete ? 'bg-red-500 text-white' : 'text-red-500 hover:bg-red-50'}`}
+        onClick={(e) => { e.stopPropagation(); onClose(); onDeleteForMe(); }}
+        className="w-full flex items-center gap-3 px-3 py-2 text-xs font-semibold text-red-400 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
       >
         <Trash2 className="w-3.5 h-3.5" />
-        <span>{confirmDelete ? 'EMİN MİSİN?' : 'Sil'}</span>
+        <span>Benden Sil</span>
       </button>
+      {isOwn && (
+        <button
+          onClick={(e) => { e.stopPropagation(); onClose(); onDeleteForEveryone(); }}
+          className="w-full flex items-center gap-3 px-3 py-2 text-xs font-bold text-red-600 hover:bg-red-50 dark:hover:bg-red-900/20 transition-colors"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+          <span>Herkesten Sil</span>
+        </button>
+      )}
     </div>
   );
 }
@@ -342,27 +338,31 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
   const { sender } = message;
   const displayName = sender.display_name || sender.username;
 
-  const [confirmDelete, setConfirmDelete] = useState(false);
   const [showMenu, setShowMenu] = useState(false);
-  const [deleteTimer, setDeleteTimer] = useState<ReturnType<typeof setTimeout> | null>(null);
+  const [menuPos, setMenuPos] = useState({ x: 0, y: 0 });
 
-  const handleDeleteClick = useCallback((e: React.MouseEvent) => {
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
     e.stopPropagation();
-    if (!confirmDelete) {
-      setConfirmDelete(true);
-      const t = setTimeout(() => setConfirmDelete(false), 4000);
-      setDeleteTimer(t);
-      return;
-    }
-    if (deleteTimer) clearTimeout(deleteTimer);
-    setConfirmDelete(false);
-    setShowMenu(false);
+    setMenuPos({ x: e.clientX, y: e.clientY });
+    setShowMenu(true);
+  }, []);
+
+  const handleDeleteForMe = useCallback(() => {
     try {
-      getSocket().emit('message:delete', { messageId: message.id });
+      getSocket().emit('message:delete', { messageId: message.id, forEveryone: false });
     } catch (err) {
       console.error('[MessageBubble] Silme hatası:', err);
     }
-  }, [confirmDelete, deleteTimer, message.id]);
+  }, [message.id]);
+
+  const handleDeleteForEveryone = useCallback(() => {
+    try {
+      getSocket().emit('message:delete', { messageId: message.id, forEveryone: true });
+    } catch (err) {
+      console.error('[MessageBubble] Silme hatası:', err);
+    }
+  }, [message.id]);
 
   const isHighlighted = highlightId === message.id;
 
@@ -379,18 +379,10 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
             <p className="text-[10px] font-bold text-blue-500 mb-0.5 text-right mr-1 opacity-80">{user?.display_name || user?.username}</p>
           )}
 
-          <div className="flex items-end gap-2 relative">
+          <div className="flex items-end gap-2 relative" onContextMenu={handleContextMenu}>
             <div className={`relative px-3 py-0.5 shadow-sm break-words transition-all duration-300 ring-2 ring-transparent
               ${isSelected ? 'ring-primary/40' : ''}
               ${message.file ? 'bg-transparent shadow-none p-0 ring-0' : 'bg-primary text-primary-foreground rounded-2xl'}`}>
-
-              <button
-                id={`msg-btn-${message.id}`}
-                onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                className={`absolute top-0.5 right-0.5 p-1 rounded-full bg-white/80 dark:bg-gray-700/80 shadow-sm border border-gray-100 dark:border-gray-600 text-gray-400 hover:text-blue-600 transition-all z-10 md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 !opacity-100' : ''}`}
-              >
-                <ChevronDown className="w-3.5 h-3.5" />
-              </button>
 
               {message.is_forwarded && (
                 <div className="flex items-center justify-end gap-1 mb-1 opacity-70">
@@ -419,9 +411,15 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
               {message.reactions && <ReactionsList reactions={message.reactions} isOwn={true} />}
             </div>
 
-            <div className="flex items-center gap-1 opacity-70 mb-1 flex-shrink-0 min-w-[40px]">
+            <div className="flex items-center gap-1 opacity-70 mb-1 flex-shrink-0">
               <span className="text-[9px] font-medium tracking-tight text-muted-foreground whitespace-nowrap">{formatTime(message.created_at)}</span>
               <ReadTick isRead={message.isRead ?? false} />
+              <button
+                onClick={(e) => { e.stopPropagation(); setMenuPos({ x: e.clientX, y: e.clientY }); setShowMenu(!showMenu); }}
+                className={`ml-1 p-0.5 rounded text-gray-900 dark:text-gray-100 hover:text-blue-600 transition-all ${showMenu ? 'rotate-180 text-blue-600' : ''}`}
+              >
+                <ChevronDown className="w-3 h-3" />
+              </button>
             </div>
 
             {showMenu && createPortal(
@@ -429,13 +427,13 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
                 <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
                 <MessageMenu
                   message={message}
-                  anchorId={`msg-btn-${message.id}`}
+                  anchorRef={menuPos}
                   isOwn={true}
                   onClose={() => setShowMenu(false)}
                   onReply={onReply}
                   onForward={onForward}
-                  onDelete={handleDeleteClick}
-                  confirmDelete={confirmDelete}
+                  onDeleteForMe={handleDeleteForMe}
+                  onDeleteForEveryone={handleDeleteForEveryone}
                 />
               </>,
               document.body
@@ -471,18 +469,10 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
         {showSender && !message.is_forwarded && (
           <p className="text-[10px] font-bold tracking-wide text-blue-600 mb-0.5 ml-1 opacity-80">{displayName}</p>
         )}
-        <div className="flex items-end gap-2 relative">
+        <div className="flex items-end gap-2 relative" onContextMenu={handleContextMenu}>
           <div className={`relative px-3 py-0.5 break-words shadow-sm border transition-all duration-300 ring-2 ring-transparent
             ${isSelected ? 'ring-primary/40' : ''}
             ${message.file ? 'bg-transparent shadow-none border-none p-0 ring-0' : 'bg-white dark:bg-gray-700 border-gray-100 dark:border-gray-600 rounded-2xl'}`}>
-
-            <button
-              id={`msg-btn-${message.id}`}
-              onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-              className={`absolute top-0.5 right-0.5 p-1 rounded-full bg-white/80 dark:bg-gray-700/80 shadow-sm border border-gray-100 dark:border-gray-600 text-gray-400 hover:text-blue-600 transition-all z-10 md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 !opacity-100' : ''}`}
-            >
-              <ChevronDown className="w-3.5 h-3.5" />
-            </button>
 
             {message.is_forwarded && (
               <div className="flex items-center gap-1 mb-1 opacity-60">
@@ -509,8 +499,14 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
             {message.reactions && <ReactionsList reactions={message.reactions} isOwn={false} />}
           </div>
 
-          <div className="opacity-70 mb-1 flex-shrink-0 min-w-[30px]">
+          <div className="flex items-center gap-1 opacity-70 mb-1 flex-shrink-0">
             <span className="text-[9px] font-medium tracking-tight text-muted-foreground whitespace-nowrap">{formatTime(message.created_at)}</span>
+            <button
+              onClick={(e) => { e.stopPropagation(); setMenuPos({ x: e.clientX, y: e.clientY }); setShowMenu(!showMenu); }}
+              className={`ml-1 p-0.5 rounded text-gray-900 dark:text-gray-100 hover:text-blue-600 transition-all ${showMenu ? 'rotate-180 text-blue-600' : ''}`}
+            >
+              <ChevronDown className="w-3 h-3" />
+            </button>
           </div>
 
           {showMenu && createPortal(
@@ -518,13 +514,13 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
               <div className="fixed inset-0 z-[9998]" onClick={(e) => { e.stopPropagation(); setShowMenu(false); }} />
               <MessageMenu
                 message={message}
-                anchorId={`msg-btn-${message.id}`}
+                anchorRef={menuPos}
                 isOwn={false}
                 onClose={() => setShowMenu(false)}
                 onReply={onReply}
                 onForward={onForward}
-                onDelete={handleDeleteClick}
-                confirmDelete={confirmDelete}
+                onDeleteForMe={handleDeleteForMe}
+                onDeleteForEveryone={handleDeleteForEveryone}
               />
             </>,
             document.body
