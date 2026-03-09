@@ -1,6 +1,6 @@
 {
   "name": "albachat-desktop",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "AlbaChat - Kurumsal Anlik Mesajlasma",
   "author": "Erna Holding Bilgi Teknolojileri",
   "main": "electron/main.js",

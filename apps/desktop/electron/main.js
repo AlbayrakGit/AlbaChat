@@ -6,7 +6,7 @@ const { app, BrowserWindow, ipcMain, shell, Notification, nativeImage, Menu } = 
 const Store = require('electron-store');
 const { autoUpdater } = require('electron-updater');
 const path = require('path');
-const { createTray } = require('./tray');
+const { createTray, getTray } = require('./tray');
 
 // --- Tek Ornek Kontrolu ---
 const gotLock = app.requestSingleInstanceLock();
@@ -16,7 +16,8 @@ if (!gotLock) {
 
 const store = new Store();
 
-// Windows bildirim sistemiyle uyumlu AppUserModelId (nokta-ayirici format zorunlu)
+// Windows bildirim sistemiyle uyumlu AppUserModelId
+// electron-builder.yml'deki appId ile birebir uyusmali
 app.setAppUserModelId('com.albachat.desktop');
 
 /** @type {BrowserWindow | null} */
@@ -28,6 +29,18 @@ let tray = null;
 const ASSETS_DIR = path.join(__dirname, '..', 'assets');
 const APP_ICON_PATH = path.join(ASSETS_DIR, 'AlbaChat.ico');
 const NOTIFICATION_ICON_PATH = path.join(ASSETS_DIR, 'notification-icon.png');
+
+/** Bildirim ikonu (bir kez yukle, tekrar kullan) */
+let _notifIcon = null;
+function getNotificationIcon() {
+  if (!_notifIcon) {
+    _notifIcon = nativeImage.createFromPath(NOTIFICATION_ICON_PATH);
+    if (_notifIcon.isEmpty()) {
+      _notifIcon = nativeImage.createFromPath(APP_ICON_PATH);
+    }
+  }
+  return _notifIcon;
+}
 
 // --- Pencere: Ana Uygulama ---
 function createMainWindow(serverUrl) {
@@ -112,27 +125,49 @@ function createMainWindow(serverUrl) {
 
 // --- IPC: Bildirimler ---
 ipcMain.on('notification:show', (_, { title, body, urgent }) => {
-  // Windows 10/11 toast bildirimi — ikon ile birlikte
-  const notification = new Notification({
-    title: title || 'AlbaChat',
-    body: body || '',
-    icon: NOTIFICATION_ICON_PATH,
-    silent: false,
-    urgency: urgent ? 'critical' : 'normal',
-    timeoutType: urgent ? 'never' : 'default',
-  });
+  const notifTitle = title || 'AlbaChat';
+  const notifBody = body || '';
+  const icon = getNotificationIcon();
 
-  notification.on('click', () => {
-    if (mainWindow) {
-      if (mainWindow.isMinimized()) mainWindow.restore();
-      mainWindow.show();
-      mainWindow.focus();
+  // Yontem 1: Tray.displayBalloon — Windows system tray baloncuk bildirimi
+  // Bu yontem Electron Notification'dan daha guvenilir calisiyor
+  const trayInstance = getTray();
+  if (trayInstance && !trayInstance.isDestroyed()) {
+    trayInstance.displayBalloon({
+      iconType: urgent ? 'warning' : 'info',
+      icon: icon.isEmpty() ? undefined : icon,
+      title: notifTitle,
+      content: notifBody,
+      noSound: false,
+      respectQuietTime: false,
+    });
+  }
+
+  // Yontem 2: Electron Notification API (yedek — bazi Windows surumlerinde calismayabilir)
+  try {
+    if (Notification.isSupported()) {
+      const notification = new Notification({
+        title: notifTitle,
+        body: notifBody,
+        icon: icon.isEmpty() ? undefined : icon,
+        silent: true, // Balloon zaten ses caliyor, cift ses olmasin
+        urgency: urgent ? 'critical' : 'normal',
+        timeoutType: urgent ? 'never' : 'default',
+      });
+      notification.on('click', () => {
+        if (mainWindow) {
+          if (mainWindow.isMinimized()) mainWindow.restore();
+          mainWindow.show();
+          mainWindow.focus();
+        }
+      });
+      notification.show();
     }
-  });
+  } catch (err) {
+    console.error('[Notification] Electron Notification hatasi:', err.message);
+  }
 
-  notification.show();
-
-  // Pencere odakta degilse taskbar'da flash + tray bildirim
+  // Pencere odakta degilse taskbar'da flash
   if (mainWindow && !mainWindow.isFocused()) {
     mainWindow.flashFrame(true);
   }
@@ -142,7 +177,6 @@ ipcMain.on('notification:show', (_, { title, body, urgent }) => {
 ipcMain.on('badge:update', (_, count) => {
   if (process.platform === 'win32' && mainWindow) {
     if (count > 0) {
-      // Overlay ikon: kirmizi daire icinde sayi
       try {
         const badgeIcon = createBadgeIcon(count);
         mainWindow.setOverlayIcon(badgeIcon, `${count} okunmamis mesaj`);
@@ -158,11 +192,9 @@ ipcMain.on('badge:update', (_, count) => {
 
 /**
  * Taskbar overlay icin kirmizi badge ikonu olustur.
- * Kucuk kirmizi daire icinde beyaz sayi gosterir.
  */
 function createBadgeIcon(count) {
   const size = 16;
-  // Data URL ile SVG — Electron nativeImage destekler
   const text = count > 99 ? '99+' : String(count);
   const fontSize = text.length > 2 ? 8 : 10;
   const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
@@ -218,6 +250,18 @@ app.whenReady().then(() => {
 
   createMainWindow(EMBEDDED_SERVER_URL);
   tray = createTray(mainWindow);
+
+  // Tray balon tiklandiktan sonra pencereyi ac
+  const trayInstance = getTray();
+  if (trayInstance) {
+    trayInstance.on('balloon-click', () => {
+      if (mainWindow) {
+        if (mainWindow.isMinimized()) mainWindow.restore();
+        mainWindow.show();
+        mainWindow.focus();
+      }
+    });
+  }
 
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;

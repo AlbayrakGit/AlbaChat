@@ -102,4 +102,9 @@ function _smallIcon() {
   }
 }
 
-module.exports = { createTray };
+/** Ham Tray instance'ini don (displayBalloon icin) */
+function getTray() {
+  return trayInstance;
+}
+
+module.exports = { createTray, getTray };
