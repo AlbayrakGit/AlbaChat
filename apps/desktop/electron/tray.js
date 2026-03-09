@@ -1,19 +1,35 @@
-﻿const { Tray, Menu, nativeImage, app } = require('electron');
+const { Tray, Menu, nativeImage, app } = require('electron');
 const path = require('path');
 
 let trayInstance = null;
 let unreadCount = 0;
 
+const ASSETS_DIR = path.join(__dirname, '..', 'assets');
+
 /**
  * Sistem tepsisi ikonunu oluştur ve yönet.
+ * Windows tray ikonu: ICO formatı tercih edilir (tüm çözünürlükleri içerir).
+ * PNG fallback: 16x16 tray-icon.png
  * @param {import('electron').BrowserWindow} mainWindow
  * @param {import('electron-store').default} store
  */
 function createTray(mainWindow, store) {
-  const iconPath = path.join(__dirname, '..', 'assets', 'tray-icon.png');
-  const icon = nativeImage.createFromPath(iconPath);
+  // Windows'ta ICO en güvenilir format — tüm DPI çözünürlüklerini destekler
+  const icoPath = path.join(ASSETS_DIR, 'AlbaChat.ico');
+  const pngPath = path.join(ASSETS_DIR, 'tray-icon.png');
 
-  trayInstance = new Tray(icon.isEmpty() ? nativeImage.createEmpty() : icon);
+  let icon = nativeImage.createFromPath(icoPath);
+  if (icon.isEmpty()) {
+    icon = nativeImage.createFromPath(pngPath);
+  }
+  if (icon.isEmpty()) {
+    console.error('[Tray] Ikon yuklenemedi! ICO ve PNG bulunamadi.');
+    icon = nativeImage.createEmpty();
+  }
+
+  // Windows tray icin 16x16 resize (ICO'dan en yakin boyutu secer)
+  const trayIcon = icon.resize({ width: 16, height: 16 });
+  trayInstance = new Tray(trayIcon);
   trayInstance.setToolTip('AlbaChat');
 
   _updateMenu(mainWindow, store);
@@ -23,6 +39,14 @@ function createTray(mainWindow, store) {
     if (!mainWindow) return;
     if (mainWindow.isMinimized()) mainWindow.restore();
     mainWindow.isVisible() ? mainWindow.focus() : mainWindow.show();
+  });
+
+  // Çift tık → pencereyi göster
+  trayInstance.on('double-click', () => {
+    if (!mainWindow) return;
+    if (mainWindow.isMinimized()) mainWindow.restore();
+    mainWindow.show();
+    mainWindow.focus();
   });
 
   return {
@@ -87,9 +111,9 @@ function _updateMenu(mainWindow, store) {
 
 function _smallIcon() {
   try {
-    return nativeImage.createFromPath(
-      path.join(__dirname, '..', 'assets', 'tray-icon.png'),
-    ).resize({ width: 16, height: 16 });
+    const icon = nativeImage.createFromPath(path.join(ASSETS_DIR, 'AlbaChat.ico'));
+    if (icon.isEmpty()) return undefined;
+    return icon.resize({ width: 16, height: 16 });
   } catch {
     return undefined;
   }

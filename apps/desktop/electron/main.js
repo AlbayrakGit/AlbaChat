@@ -16,13 +16,18 @@ if (!gotLock) {
 
 const store = new Store();
 
-// Windows bildirim alaninda gorunecek kurumsal isim (AlbaChat - Erna Holding Bilgi Teknolojileri)
-app.setAppUserModelId('AlbaChat - Erna Holding Bilgi Teknolojileri');
+// Windows bildirim sistemiyle uyumlu AppUserModelId (nokta-ayirici format zorunlu)
+app.setAppUserModelId('com.albachat.desktop');
 
 /** @type {BrowserWindow | null} */
 let mainWindow = null;
 /** @type {ReturnType<typeof createTray> | null} */
 let tray = null;
+
+// --- Ikon Yollari ---
+const ASSETS_DIR = path.join(__dirname, '..', 'assets');
+const APP_ICON_PATH = path.join(ASSETS_DIR, 'AlbaChat.ico');
+const NOTIFICATION_ICON_PATH = path.join(ASSETS_DIR, 'notification-icon.png');
 
 // --- Pencere: Ana Uygulama ---
 function createMainWindow(serverUrl) {
@@ -40,7 +45,7 @@ function createMainWindow(serverUrl) {
       allowRunningInsecureContent: false,
     },
     title: 'AlbaChat',
-    icon: path.join(__dirname, '..', 'assets', 'AlbaChat.ico'),
+    icon: APP_ICON_PATH,
     show: false,
     backgroundColor: '#f9fafb',
     autoHideMenuBar: true,
@@ -107,12 +112,16 @@ function createMainWindow(serverUrl) {
 
 // --- IPC: Bildirimler ---
 ipcMain.on('notification:show', (_, { title, body, urgent }) => {
+  // Windows 10/11 toast bildirimi — ikon ile birlikte
   const notification = new Notification({
-    title,
-    body,
+    title: title || 'AlbaChat',
+    body: body || '',
+    icon: NOTIFICATION_ICON_PATH,
     silent: false,
     urgency: urgent ? 'critical' : 'normal',
+    timeoutType: urgent ? 'never' : 'default',
   });
+
   notification.on('click', () => {
     if (mainWindow) {
       if (mainWindow.isMinimized()) mainWindow.restore();
@@ -120,26 +129,50 @@ ipcMain.on('notification:show', (_, { title, body, urgent }) => {
       mainWindow.focus();
     }
   });
+
   notification.show();
 
-  // Acil bildirimlerde pencereyi flash yap (taskbar'da yanıp söner)
-  if (urgent && mainWindow && !mainWindow.isFocused()) {
+  // Pencere odakta degilse taskbar'da flash + tray bildirim
+  if (mainWindow && !mainWindow.isFocused()) {
     mainWindow.flashFrame(true);
   }
 });
 
 // --- IPC: Badge ---
 ipcMain.on('badge:update', (_, count) => {
-  if (process.platform === 'win32') {
+  if (process.platform === 'win32' && mainWindow) {
     if (count > 0) {
-      mainWindow?.setOverlayIcon(null, '');
-      mainWindow?.setProgressBar(0.5);
+      // Overlay ikon: kirmizi daire icinde sayi
+      try {
+        const badgeIcon = createBadgeIcon(count);
+        mainWindow.setOverlayIcon(badgeIcon, `${count} okunmamis mesaj`);
+      } catch {
+        mainWindow.setOverlayIcon(null, '');
+      }
     } else {
-      mainWindow?.setProgressBar(-1);
+      mainWindow.setOverlayIcon(null, '');
     }
   }
   if (tray) tray.setUnreadCount(count);
 });
+
+/**
+ * Taskbar overlay icin kirmizi badge ikonu olustur.
+ * Kucuk kirmizi daire icinde beyaz sayi gosterir.
+ */
+function createBadgeIcon(count) {
+  const size = 16;
+  // Data URL ile SVG — Electron nativeImage destekler
+  const text = count > 99 ? '99+' : String(count);
+  const fontSize = text.length > 2 ? 8 : 10;
+  const svg = `<svg width="${size}" height="${size}" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="${size / 2}" cy="${size / 2}" r="${size / 2}" fill="#EF4444"/>
+    <text x="${size / 2}" y="${size / 2 + fontSize / 3}" text-anchor="middle"
+          font-family="Arial" font-size="${fontSize}" font-weight="bold" fill="white">${text}</text>
+  </svg>`;
+  const dataUrl = `data:image/svg+xml;base64,${Buffer.from(svg).toString('base64')}`;
+  return nativeImage.createFromDataURL(dataUrl);
+}
 
 // --- IPC: Duyuru Popup ---
 ipcMain.on('announcement:force-show', (_, data) => {
@@ -147,6 +180,8 @@ ipcMain.on('announcement:force-show', (_, data) => {
   if (mainWindow.isMinimized()) mainWindow.restore();
   mainWindow.show();
   mainWindow.focus();
+  mainWindow.setAlwaysOnTop(true);
+  setTimeout(() => mainWindow?.setAlwaysOnTop(false), 1000);
   mainWindow.webContents.send('announcement:show', data);
 });
 
