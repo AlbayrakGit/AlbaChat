@@ -139,17 +139,22 @@ export function useSocket() {
         // 1. Sesli uyarı
         playMessageSound();
 
+        const senderName = message.sender?.display_name || message.sender?.username || 'Biri';
+        const bodyText = message.content || '📎 Dosya';
+
         // 2. Görsel / Panel uyarıları (Eğer grup aktif değilse)
         if (message.group_id !== activeGroupId) {
           incrementUnread(message.group_id);
+          showToast(senderName, bodyText);
+        }
 
-          const senderName = message.sender?.display_name || message.sender?.username || 'Biri';
-
-          // Toast bildirimi
-          showToast(senderName, message.content || '📎 Dosya');
-
-          // Electron: sistem bildirimi
-          showNotification(senderName, message.content || '📎 Dosya');
+        // 3. Electron: sistem bildirimi — pencere odakta değilse HER mesajda göster
+        //    (aktif grup olsa bile arka plandayken bildirim gelsin)
+        if (document.hidden || !document.hasFocus()) {
+          showNotification(senderName, bodyText);
+        } else if (message.group_id !== activeGroupId) {
+          // Pencere önde ama farklı gruptaysa da bildirim
+          showNotification(senderName, bodyText);
         }
       }
     });

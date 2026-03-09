@@ -106,11 +106,12 @@ function createMainWindow(serverUrl) {
 }
 
 // --- IPC: Bildirimler ---
-ipcMain.on('notify', (_, { title, body, silent }) => {
+ipcMain.on('notification:show', (_, { title, body, urgent }) => {
   const notification = new Notification({
     title,
     body,
-    silent: !!silent,
+    silent: false,
+    urgency: urgent ? 'critical' : 'normal',
   });
   notification.on('click', () => {
     if (mainWindow) {
@@ -120,6 +121,11 @@ ipcMain.on('notify', (_, { title, body, silent }) => {
     }
   });
   notification.show();
+
+  // Acil bildirimlerde pencereyi flash yap (taskbar'da yanıp söner)
+  if (urgent && mainWindow && !mainWindow.isFocused()) {
+    mainWindow.flashFrame(true);
+  }
 });
 
 // --- IPC: Badge ---
