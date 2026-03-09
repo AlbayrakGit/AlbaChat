@@ -205,23 +205,31 @@ export function useSocket() {
     });
 
     // ─── Online/Offline durum güncellemesi ────────────────────────────────
-    socket.on('user:online', ({ userId, isOnline }: { userId: number; username: string; isOnline: boolean }) => {
+    socket.on('user:online', ({ userId, isOnline, lastSeen }: { userId: number; username: string; isOnline: boolean; lastSeen?: string | null }) => {
       // 1. onlineUsers haritasını güncelle (KİŞİLER sekmesi)
       setUserOnlineStatus(userId, isOnline);
 
-      // 2. KİŞİLER listesini güncelle
+      // 2. KİŞİLER listesini güncelle (last_seen dahil)
       queryClient.setQueryData(['users-list'], (old: any) => {
         if (!Array.isArray(old)) return old;
-        return old.map((u: any) => u.id === userId ? { ...u, is_online: isOnline } : u);
+        return old.map((u: any) => u.id === userId ? {
+          ...u,
+          is_online: isOnline,
+          last_seen: lastSeen || (isOnline ? null : u.last_seen),
+        } : u);
       });
 
-      // 3. DM grubundaki other_user_online alanını güncelle (SOHBETLER sekmesi)
+      // 3. DM grubundaki other_user_online + last_seen güncelle (SOHBETLER sekmesi)
       const { groups } = useChatStore.getState();
       const dmGroup = groups.find(
         (g: import('@/store/chatStore').Group) => g.type === 'direct' && g.other_user_id === userId,
       );
       if (dmGroup) {
-        updateGroupInList({ id: dmGroup.id, other_user_online: isOnline });
+        updateGroupInList({
+          id: dmGroup.id,
+          other_user_online: isOnline,
+          other_user_last_seen: lastSeen || (isOnline ? null : dmGroup.other_user_last_seen),
+        });
       }
     });
 

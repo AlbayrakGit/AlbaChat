@@ -10,6 +10,7 @@ import MessageBubble from './MessageBubble';
 import MessageInput from './MessageInput';
 import GroupSettingsPanel from './GroupSettingsPanel';
 import ForwardModal from '@/components/ForwardModal';
+import { formatLastSeen } from '@/utils/lastSeen';
 import { Settings, ChevronLeft, ArrowDownToLine, User, Users, Eraser, Search, X, Star } from 'lucide-react';
 const COLORS = [
   'bg-red-500', 'bg-blue-500', 'bg-emerald-500', 'bg-amber-500',
@@ -308,7 +309,15 @@ export default function ChatWindow({ group, onBack }: Props) {
         <div className="min-w-0 flex-1">
           <h2 className="font-bold text-gray-900 dark:text-gray-100 text-base leading-tight truncate">{group.name}</h2>
           <p className="text-xs text-gray-400 mt-0.5">
-            {group.type === 'direct' ? 'Özel Mesaj' : group.type === 'department' ? 'Departman' : 'Grup'}
+            {group.type === 'direct' ? (
+              group.other_user_online
+                ? <span className="text-green-500 font-medium">çevrimiçi</span>
+                : group.other_user_last_seen
+                  ? <>son görülme: {formatLastSeen(group.other_user_last_seen)}</>
+                  : 'Özel Mesaj'
+            ) : (
+              group.type === 'department' ? 'Departman' : 'Grup'
+            )}
             {group.is_archived && ' · Arşivlendi'}
           </p>
         </div>

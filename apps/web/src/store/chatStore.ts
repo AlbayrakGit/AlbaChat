@@ -54,6 +54,7 @@ export interface Group {
   is_favorite?: boolean;
   other_user_id?: number | null;
   other_user_online?: boolean | null;
+  other_user_last_seen?: string | null;
 }
 
 export interface TypingUser {

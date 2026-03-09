@@ -5,6 +5,7 @@ import { useAuthStore } from '@/store/authStore';
 import { useChatStore } from '@/store/chatStore';
 import { Star, MessageCircle, User, Wifi, WifiOff, ChevronDown, ChevronRight } from 'lucide-react';
 import { getSocket } from '@/socket/socketClient';
+import { formatLastSeen } from '@/utils/lastSeen';
 
 interface UserItem {
   id: number;
@@ -12,6 +13,7 @@ interface UserItem {
   display_name: string | null;
   avatar_url: string | null;
   is_online: boolean;
+  last_seen: string | null;
   role: string;
 }
 
@@ -99,11 +101,16 @@ export default function UserListPanel() {
         />
       </div>
 
-      {/* Ad Soyad */}
+      {/* Ad Soyad + Son Görülme */}
       <div className="flex-1 min-w-0">
         <p className="text-sm font-semibold text-gray-900 dark:text-gray-100 truncate">
           {u.display_name || u.username}
         </p>
+        {!u.is_online && u.last_seen && (
+          <p className="text-[10px] text-gray-400 dark:text-gray-500 truncate leading-tight">
+            {formatLastSeen(u.last_seen)}
+          </p>
+        )}
       </div>
 
       {/* Actions — mobilde her zaman görünür, masaüstünde hover'da */}

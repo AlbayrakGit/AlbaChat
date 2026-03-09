@@ -73,7 +73,7 @@ export async function listUserGroups(userId) {
         END as other_user_id
       `, [userId]),
       knex.raw(`
-        CASE 
+        CASE
           WHEN g.type = 'direct' THEN (
             SELECT u.is_online
             FROM group_members m2
@@ -83,6 +83,18 @@ export async function listUserGroups(userId) {
           )
           ELSE NULL
         END as other_user_online
+      `, [userId]),
+      knex.raw(`
+        CASE
+          WHEN g.type = 'direct' THEN (
+            SELECT u.last_seen
+            FROM group_members m2
+            JOIN users u ON m2.user_id = u.id
+            WHERE m2.group_id = g.id AND m2.user_id != ?
+            LIMIT 1
+          )
+          ELSE NULL
+        END as other_user_last_seen
       `, [userId])
     );
 

@@ -10,13 +10,14 @@ async function broadcastPresence(io, socket, userId, username, isOnline) {
   try {
     const groupIds = socket.data.groupIds || [];
 
+    // last_seen bilgisini al (offline olduğunda göstermek için)
+    const lastSeen = isOnline ? null : new Date().toISOString();
+
+    const payload = { userId, username, isOnline, lastSeen };
+
     // 1. Grup üyelerine bildir
     for (const gid of groupIds) {
-      socket.to(`group:${gid}`).emit('user:online', {
-        userId,
-        username,
-        isOnline,
-      });
+      socket.to(`group:${gid}`).emit('user:online', payload);
     }
 
     // 2. DM geçmişi olan kişilere de bildir (user:{id} odası üzerinden)
@@ -30,11 +31,7 @@ async function broadcastPresence(io, socket, userId, username, isOnline) {
       .distinct();
 
     for (const row of dmPartnerRows) {
-      io.to(`user:${row.partner_id}`).emit('user:online', {
-        userId,
-        username,
-        isOnline,
-      });
+      io.to(`user:${row.partner_id}`).emit('user:online', payload);
     }
   } catch (err) {
     console.error('[Presence] broadcastPresence error:', err.message);
