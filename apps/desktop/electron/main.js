@@ -57,7 +57,7 @@ function createMainWindow(serverUrl) {
       webSecurity: true,
       allowRunningInsecureContent: false,
     },
-    title: 'AlbaChat',
+    title: `AlbaChat v${app.getVersion()}`,
     icon: APP_ICON_PATH,
     show: false,
     backgroundColor: '#f9fafb',
