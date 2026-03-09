@@ -22,16 +22,6 @@ export async function sendPushForMessage(groupId, sender, message) {
 
   const memberIds = members.map((m) => m.user_id);
 
-  // Çevrimdışı olanları filtrele
-  const offlineUsers = await knex('users')
-    .whereIn('id', memberIds)
-    .where('is_online', false)
-    .select('id');
-
-  if (offlineUsers.length === 0) return;
-
-  const offlineIds = offlineUsers.map((u) => u.id);
-
   // Grup bilgisi — DM ise gönderici adı, grup ise grup adı
   const group = await knex('groups').where('id', groupId).first();
   const title = group.type === 'direct'
@@ -64,7 +54,7 @@ export async function sendPushForMessage(groupId, sender, message) {
   const payload = {
     title,
     body,
-    tag: `group:${groupId}`,
+    tag: `msg:${message.id}`,
     data: {
       groupId: String(groupId),
       messageId: String(message.id),
@@ -72,9 +62,9 @@ export async function sendPushForMessage(groupId, sender, message) {
     },
   };
 
-  // Web Push + FCM paralel gönder
+  // Web Push + FCM paralel gönder — tüm üyelere (uygulama açıksa bildirim bastırılır)
   await Promise.allSettled([
-    sendPushToUsers(offlineIds, payload),
-    sendFcmToUsers(offlineIds, payload),
+    sendPushToUsers(memberIds, payload),
+    sendFcmToUsers(memberIds, payload),
   ]);
 }
