@@ -8,31 +8,22 @@ const ASSETS_DIR = path.join(__dirname, '..', 'assets');
 
 /**
  * Sistem tepsisi ikonunu oluştur ve yönet.
- * Windows tray ikonu: ICO formatı tercih edilir (tüm çözünürlükleri içerir).
- * PNG fallback: 16x16 tray-icon.png
+ * Windows tray: PNG dosyası kullanılır (ICO tray'de görünmez ikon sorununa yol açar).
  * @param {import('electron').BrowserWindow} mainWindow
- * @param {import('electron-store').default} store
  */
-function createTray(mainWindow, store) {
-  // Windows'ta ICO en güvenilir format — tüm DPI çözünürlüklerini destekler
-  const icoPath = path.join(ASSETS_DIR, 'AlbaChat.ico');
+function createTray(mainWindow) {
+  // PNG dosyası — Windows tray için en güvenilir format
   const pngPath = path.join(ASSETS_DIR, 'tray-icon.png');
+  const icon = nativeImage.createFromPath(pngPath);
 
-  let icon = nativeImage.createFromPath(icoPath);
   if (icon.isEmpty()) {
-    icon = nativeImage.createFromPath(pngPath);
-  }
-  if (icon.isEmpty()) {
-    console.error('[Tray] Ikon yuklenemedi! ICO ve PNG bulunamadi.');
-    icon = nativeImage.createEmpty();
+    console.error('[Tray] tray-icon.png yuklenemedi!');
   }
 
-  // Windows tray icin 16x16 resize (ICO'dan en yakin boyutu secer)
-  const trayIcon = icon.resize({ width: 16, height: 16 });
-  trayInstance = new Tray(trayIcon);
+  trayInstance = new Tray(icon.isEmpty() ? nativeImage.createEmpty() : icon);
   trayInstance.setToolTip('AlbaChat');
 
-  _updateMenu(mainWindow, store);
+  _updateMenu(mainWindow);
 
   // Sol tık → pencereyi göster / odakla
   trayInstance.on('click', () => {
@@ -55,7 +46,7 @@ function createTray(mainWindow, store) {
       unreadCount = count;
       const label = count > 0 ? `AlbaChat (${count} okunmam\u0131\u015f)` : 'AlbaChat';
       trayInstance.setToolTip(label);
-      _updateMenu(mainWindow, store);
+      _updateMenu(mainWindow);
     },
 
     destroy() {
@@ -67,7 +58,7 @@ function createTray(mainWindow, store) {
   };
 }
 
-function _updateMenu(mainWindow, store) {
+function _updateMenu(mainWindow) {
   const unreadItem = unreadCount > 0
     ? { label: `${unreadCount} okunmam\u0131\u015f mesaj`, enabled: false }
     : { label: 'Yeni mesaj yok', enabled: false };
@@ -84,14 +75,6 @@ function _updateMenu(mainWindow, store) {
         if (mainWindow.isMinimized()) mainWindow.restore();
         mainWindow.show();
         mainWindow.focus();
-      },
-    },
-    {
-      label: 'Sunucu De\u011fi\u015ftir',
-      click() {
-        store.delete('serverUrl');
-        app.relaunch();
-        app.exit(0);
       },
     },
     { type: 'separator' },
@@ -111,7 +94,7 @@ function _updateMenu(mainWindow, store) {
 
 function _smallIcon() {
   try {
-    const icon = nativeImage.createFromPath(path.join(ASSETS_DIR, 'AlbaChat.ico'));
+    const icon = nativeImage.createFromPath(path.join(ASSETS_DIR, 'tray-icon.png'));
     if (icon.isEmpty()) return undefined;
     return icon.resize({ width: 16, height: 16 });
   } catch {

@@ -217,7 +217,7 @@ app.whenReady().then(() => {
   }
 
   createMainWindow(EMBEDDED_SERVER_URL);
-  tray = createTray(mainWindow, store);
+  tray = createTray(mainWindow);
 
   autoUpdater.autoDownload = true;
   autoUpdater.autoInstallOnAppQuit = true;
