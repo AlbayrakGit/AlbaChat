@@ -247,15 +247,21 @@ function MessageMenu({
     const btn = document.getElementById(anchorId);
     if (btn) {
       const rect = btn.getBoundingClientRect();
-      let top = rect.bottom + 8;
-      let left = isOwn ? rect.right - 140 : rect.left;
+      const menuW = 160;
+      const menuH = 220;
+      let top = rect.bottom + 4;
+      let left = isOwn ? rect.right - menuW : rect.left;
 
-      // Prevent overflow
-      if (top + 180 > window.innerHeight) {
-        top = rect.top - 170;
+      // Prevent overflow bottom
+      if (top + menuH > window.innerHeight) {
+        top = rect.top - menuH - 4;
       }
+      // Prevent overflow top
+      if (top < 10) top = 10;
+      // Prevent overflow right
+      if (left + menuW > window.innerWidth - 10) left = window.innerWidth - menuW - 10;
+      // Prevent overflow left
       if (left < 10) left = 10;
-      if (left + 140 > window.innerWidth) left = window.innerWidth - 150;
 
       setCoords({ top, left });
     }
@@ -381,7 +387,7 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
               <button
                 id={`msg-btn-${message.id}`}
                 onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-                className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+                className={`absolute top-0.5 right-0.5 p-1 rounded-full bg-white/80 dark:bg-gray-700/80 shadow-sm border border-gray-100 dark:border-gray-600 text-gray-400 hover:text-blue-600 transition-all z-10 md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 !opacity-100' : ''}`}
               >
                 <ChevronDown className="w-3.5 h-3.5" />
               </button>
@@ -473,7 +479,7 @@ export default function MessageBubble({ message, showSender, isSelected, highlig
             <button
               id={`msg-btn-${message.id}`}
               onClick={(e) => { e.stopPropagation(); setShowMenu(!showMenu); }}
-              className={`absolute -top-1 -right-7 p-1 rounded-full bg-white shadow-md border border-gray-100 text-gray-400 hover:text-blue-600 transition-all md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 opacity-100' : ''}`}
+              className={`absolute top-0.5 right-0.5 p-1 rounded-full bg-white/80 dark:bg-gray-700/80 shadow-sm border border-gray-100 dark:border-gray-600 text-gray-400 hover:text-blue-600 transition-all z-10 md:opacity-0 md:group-hover/msg:opacity-100 ${showMenu ? 'rotate-180 text-blue-600 !opacity-100' : ''}`}
             >
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
