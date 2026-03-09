@@ -12,6 +12,7 @@ import {
 } from '../services/announcementService.js';
 import { io } from '../server.js';
 import { sendPushToUsers } from './push.js';
+import { sendFcmToUsers } from '../utils/fcm.js';
 import { knex as db } from '../db/knex.js';
 
 function handleError(err, reply) {
@@ -67,12 +68,16 @@ export default async function announcementRoutes(fastify) {
             .select('user_id');
           targetUserIds = rows.map((r) => r.user_id);
         }
-        await sendPushToUsers(targetUserIds, {
+        const pushPayload = {
           title: `📢 ${announcement.title}`,
           body: announcement.content.slice(0, 120),
           tag: `announcement-${announcement.id}`,
-          data: { type: 'announcement', id: announcement.id },
-        });
+          data: { type: 'announcement', id: String(announcement.id) },
+        };
+        await Promise.allSettled([
+          sendPushToUsers(targetUserIds, pushPayload),
+          sendFcmToUsers(targetUserIds, pushPayload),
+        ]);
       } catch (_e) {
         // Push hatası ana isteği engellemesin
       }
