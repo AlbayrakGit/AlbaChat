@@ -83,11 +83,18 @@ export function setupPresenceHandler(io, socket) {
   // ─── Bağlantı kesildi ───────────────────────────────────────────────────
   socket.on('disconnect', async () => {
     try {
-      await setUserOffline(user.id);
-      await knex('users').where({ id: user.id }).update({ is_online: false, last_seen: new Date() });
+      // Aynı kullanıcının başka aktif socket'i var mı kontrol et
+      const sockets = await io.fetchSockets();
+      const hasOtherSocket = sockets.some(
+        (s) => s.data?.user?.id === user.id && s.id !== socket.id,
+      );
 
-      // Tüm ilgili kişilere offline bildir
-      await broadcastPresence(io, socket, user.id, user.username, false);
+      if (!hasOtherSocket) {
+        // Son socket de kapandı — gerçekten offline yap
+        await setUserOffline(user.id);
+        await knex('users').where({ id: user.id }).update({ is_online: false, last_seen: new Date() });
+        await broadcastPresence(io, socket, user.id, user.username, false);
+      }
     } catch (err) {
       console.error('[Presence] disconnect error:', err.message);
     }
@@ -108,11 +115,15 @@ export function setupPresenceHandler(io, socket) {
     }
   });
 
-  // ─── Heartbeat ping — client'tan düzenli ping gelirse last_seen güncelle ─
+  // ─── Heartbeat ping — client'tan düzenli ping gelirse online durumunu yenile ─
   socket.on('presence:ping', async () => {
     try {
       await setUserOnline(user.id);
-      await knex('users').where({ id: user.id }).update({ last_seen: new Date() });
+      await knex('users')
+        .where({ id: user.id })
+        .update({ is_online: true, last_seen: new Date() });
+      // Online bildirimi yayınla (arka plandan döndüyse diğer cihazlarda görünsün)
+      await broadcastPresence(io, socket, user.id, user.username, true);
       socket.emit('presence:pong');
     } catch (err) {
       console.error('[Presence] heartbeat error:', err.message);
