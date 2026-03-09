@@ -55,6 +55,10 @@ export default function AnnouncementModal({ announcement }: Props) {
     onSuccess: () => {
       shiftQueue();
     },
+    onError: () => {
+      // Duyuru silinmiş veya erişilemiyorsa modalı kapat — takılıp kalmasın
+      shiftQueue();
+    },
   });
 
   const handleRead = () => {
