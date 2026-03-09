@@ -228,49 +228,49 @@ export default function ChatLayout() {
         <div className="mt-auto flex flex-col flex-shrink-0 bg-white dark:bg-gray-800 border-t border-gray-100 dark:border-gray-700">
           <ConnectionStatusBar />
 
-          <div className="p-4 pb-[calc(1rem+env(safe-area-inset-bottom))] bg-gray-50/30 dark:bg-gray-800 flex items-center gap-3 flex-shrink-0">
-            <div className="relative">
-              <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
+          <div className="p-3 pb-[calc(0.75rem+env(safe-area-inset-bottom))] bg-gray-50/30 dark:bg-gray-800 flex items-center gap-2 flex-shrink-0">
+            <div className="relative flex-shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-blue-600 flex items-center justify-center text-white text-xs font-bold">
                 {(user?.display_name || user?.username || 'U').slice(0, 2).toUpperCase()}
               </div>
               <div className="absolute -bottom-0.5 -right-0.5 w-3 h-3 bg-green-500 border-2 border-white rounded-full" />
             </div>
             <div className="flex-1 min-w-0">
-              <p className="text-sm font-bold text-gray-900 dark:text-gray-100 truncate tracking-tight">
+              <p className="text-[13px] font-bold text-gray-900 dark:text-gray-100 truncate tracking-tight leading-tight">
                 {user?.display_name || user?.username}
               </p>
-              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold truncate uppercase opacity-70">
+              <p className="text-[10px] text-gray-500 dark:text-gray-400 font-semibold truncate uppercase opacity-70 leading-tight">
                 {user?.role === 'admin' ? 'Sistem Yöneticisi' : 'Kullanıcı'}
               </p>
             </div>
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-0 flex-shrink-0">
               {user?.role === 'admin' && (
                 <Link
                   to="/admin"
-                  className="p-2 text-gray-400 hover:text-blue-600 transition-colors"
+                  className="p-1.5 text-gray-400 hover:text-blue-600 transition-colors"
                   title="Admin"
                 >
-                  <Settings className="w-4 h-4" />
+                  <Settings className="w-3.5 h-3.5" />
                 </Link>
               )}
               <button
                 onClick={toggleTheme}
-                className="p-2 text-gray-400 hover:text-blue-600"
+                className="p-1.5 text-gray-400 hover:text-blue-600"
                 title={theme === 'light' ? 'Koyu Mod' : 'Açık Mod'}
               >
-                {theme === 'light' ? <Moon className="w-4 h-4" /> : <Sun className="w-4 h-4" />}
+                {theme === 'light' ? <Moon className="w-3.5 h-3.5" /> : <Sun className="w-3.5 h-3.5" />}
               </button>
               <button
                 onClick={() => setShowPasswordModal(true)}
-                className="p-2 text-gray-400 hover:text-blue-600"
+                className="p-1.5 text-gray-400 hover:text-blue-600"
               >
-                <Lock className="w-4 h-4" />
+                <Lock className="w-3.5 h-3.5" />
               </button>
               <button
                 onClick={handleLogout}
-                className="p-2 text-gray-400 hover:text-red-600"
+                className="p-1.5 text-gray-400 hover:text-red-600"
               >
-                <LogOut className="w-4 h-4" />
+                <LogOut className="w-3.5 h-3.5" />
               </button>
             </div>
 

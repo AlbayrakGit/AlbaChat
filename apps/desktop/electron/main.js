@@ -47,9 +47,11 @@ function createMainWindow(serverUrl) {
   mainWindow = new BrowserWindow({
     width: 800,
     height: 825,
-    resizable: false,
-    maximizable: false,
-    fullscreenable: false,
+    resizable: true,
+    maximizable: true,
+    fullscreenable: true,
+    minWidth: 800,
+    minHeight: 600,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
       contextIsolation: true,
@@ -88,21 +90,15 @@ function createMainWindow(serverUrl) {
 
   // --- Navigasyon Takibi ile Otomatik Boyutlandirma ---
   const updateSizeByUrl = (url) => {
-    if (!mainWindow) return;
+    if (!mainWindow || mainWindow.isMaximized()) return;
     if (url.includes('/admin')) {
-      mainWindow.setResizable(true);
-      mainWindow.setMinimumSize(1200, 825);
-      mainWindow.setMaximumSize(1200, 825);
+      mainWindow.setMinimumSize(1200, 600);
       mainWindow.setSize(1200, 825, true);
       mainWindow.center();
-      mainWindow.setResizable(false);
-    } else if (!url.includes('/admin')) {
-      mainWindow.setResizable(true);
-      mainWindow.setMinimumSize(800, 825);
-      mainWindow.setMaximumSize(800, 825);
+    } else {
+      mainWindow.setMinimumSize(800, 600);
       mainWindow.setSize(800, 825, true);
       mainWindow.center();
-      mainWindow.setResizable(false);
     }
   };
 
